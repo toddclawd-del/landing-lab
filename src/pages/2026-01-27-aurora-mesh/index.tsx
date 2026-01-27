@@ -25,11 +25,12 @@ const AuroraMesh = () => {
     window.addEventListener('resize', resize);
     
     const gradientPoints = [
-      { x: 0.2, y: 0.3, vx: 0.0003, vy: 0.0002, color: '#6366f1' },
-      { x: 0.8, y: 0.2, vx: -0.0002, vy: 0.0003, color: '#8b5cf6' },
-      { x: 0.5, y: 0.7, vx: 0.0002, vy: -0.0002, color: '#a855f7' },
-      { x: 0.3, y: 0.8, vx: 0.0001, vy: -0.0001, color: '#ec4899' },
-      { x: 0.7, y: 0.5, vx: -0.0003, vy: 0.0001, color: '#06b6d4' },
+      { x: 0.2, y: 0.3, vx: 0.0004, vy: 0.0003, color: '#6366f1' },
+      { x: 0.8, y: 0.2, vx: -0.0003, vy: 0.0004, color: '#8b5cf6' },
+      { x: 0.5, y: 0.7, vx: 0.0003, vy: -0.0003, color: '#c026d3' },
+      { x: 0.3, y: 0.8, vx: 0.0002, vy: -0.0002, color: '#ec4899' },
+      { x: 0.7, y: 0.5, vx: -0.0004, vy: 0.0002, color: '#06b6d4' },
+      { x: 0.1, y: 0.1, vx: 0.0003, vy: 0.0003, color: '#8b5cf6' },
     ];
     
     const animate = () => {
@@ -62,8 +63,8 @@ const AuroraMesh = () => {
           canvas.width * 0.5
         );
         
-        gradient.addColorStop(0, point.color + '40');
-        gradient.addColorStop(0.5, point.color + '10');
+        gradient.addColorStop(0, point.color + '70');
+        gradient.addColorStop(0.4, point.color + '30');
         gradient.addColorStop(1, 'transparent');
         
         ctx.globalCompositeOperation = 'screen';
