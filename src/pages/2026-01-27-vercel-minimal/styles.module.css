@@ -1,10 +1,11 @@
 /* Vercel-Minimal Landing Page */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
 .container {
   min-height: 100vh;
   background: #fafafa;
   color: #171717;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Navigation */
@@ -104,10 +105,11 @@
 }
 
 .heroTitle {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(3rem, 5vw, 4.5rem);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
   margin-bottom: 1.5rem;
 }
 
@@ -279,11 +281,233 @@
   font-weight: 600;
 }
 
+/* Bento Grid Section */
+.bentoSection {
+  padding: 6rem 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 240px);
+  gap: 1rem;
+}
+
+.bentoCard {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 1.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.bentoCard:hover {
+  border-color: #ccc;
+}
+
+.bentoLarge {
+  grid-row: span 2;
+}
+
+.bentoWide {
+  grid-column: span 2;
+}
+
+.bentoContent {
+  position: relative;
+  z-index: 2;
+}
+
+.bentoContent h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.bentoContent p {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.bentoLabel {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #999;
+  margin-bottom: 0.5rem;
+}
+
+.bentoGradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(135deg, #ff0080 0%, #7928ca 50%, #0070f3 100%);
+  opacity: 0.1;
+  border-radius: 16px 16px 0 0;
+}
+
+.bentoMetric {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  text-align: right;
+}
+
+.metricValue {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #ff0080, #7928ca);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.metricLabel {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Orbs animation */
+.bentoOrbs {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  width: 120px;
+  height: 120px;
+}
+
+.orb1, .orb2, .orb3 {
+  position: absolute;
+  border-radius: 50%;
+  animation: orbFloat 4s ease-in-out infinite;
+}
+
+.orb1 {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #ff0080, #ff00ff);
+  top: 0;
+  left: 30px;
+  opacity: 0.8;
+}
+
+.orb2 {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #7928ca, #0070f3);
+  bottom: 10px;
+  left: 0;
+  opacity: 0.7;
+  animation-delay: 0.5s;
+}
+
+.orb3 {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #0070f3, #00d4ff);
+  bottom: 20px;
+  right: 0;
+  opacity: 0.6;
+  animation-delay: 1s;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Lines animation */
+.bentoLines {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.line {
+  height: 4px;
+  background: linear-gradient(90deg, #e5e5e5 0%, #0070f3 50%, #e5e5e5 100%);
+  background-size: 200% 100%;
+  border-radius: 2px;
+  animation: lineMove 2s ease-in-out infinite;
+}
+
+@keyframes lineMove {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* Code block */
+.bentoCode {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #171717;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.95rem;
+}
+
+.bentoCode code {
+  color: #e5e5e5;
+}
+
+.codeComment {
+  color: #666;
+}
+
+.codeKeyword {
+  color: #0070f3;
+}
+
+@media (max-width: 768px) {
+  .bentoSection {
+    padding: 3rem 1.5rem;
+  }
+  
+  .bentoGrid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  
+  .bentoLarge,
+  .bentoWide {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+  
+  .bentoCard {
+    min-height: 200px;
+  }
+}
+
 /* Features Section */
 .features {
   padding: 8rem 4rem;
   max-width: 1200px;
   margin: 0 auto;
+  background: #fafafa;
 }
 
 .featuresHeader {
@@ -303,10 +527,11 @@
 }
 
 .featuresTitle {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
 }
 
 .featuresGrid {
@@ -318,14 +543,15 @@
 .featureCard {
   padding: 2rem;
   background: #fff;
-  border: 1px solid #eaeaea;
-  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
   transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .featureCard:hover {
   border-color: #ccc;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
   transform: translateY(-4px);
 }
 
@@ -357,9 +583,10 @@
 }
 
 .ctaTitle {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   margin-bottom: 1rem;
 }
 

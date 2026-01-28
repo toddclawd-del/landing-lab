@@ -102,6 +102,81 @@ export default function VercelMinimal() {
         </div>
       </section>
 
+      {/* Bento Grid - Visual Intrigue */}
+      <section className={styles.bentoSection}>
+        <div className={styles.bentoGrid}>
+          <motion.div 
+            className={`${styles.bentoCard} ${styles.bentoLarge}`}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className={styles.bentoGradient}></div>
+            <div className={styles.bentoContent}>
+              <span className={styles.bentoLabel}>Performance</span>
+              <h3>Sub-second deploys</h3>
+              <p>From git push to live in milliseconds.</p>
+            </div>
+            <div className={styles.bentoMetric}>
+              <span className={styles.metricValue}>~50ms</span>
+              <span className={styles.metricLabel}>avg deploy</span>
+            </div>
+          </motion.div>
+          
+          <motion.div 
+            className={styles.bentoCard}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true }}
+          >
+            <div className={styles.bentoOrbs}>
+              <div className={styles.orb1}></div>
+              <div className={styles.orb2}></div>
+              <div className={styles.orb3}></div>
+            </div>
+            <div className={styles.bentoContent}>
+              <span className={styles.bentoLabel}>Scale</span>
+              <h3>100+ edge locations</h3>
+            </div>
+          </motion.div>
+          
+          <motion.div 
+            className={styles.bentoCard}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <div className={styles.bentoLines}>
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className={styles.line} style={{ animationDelay: `${i * 0.2}s` }}></div>
+              ))}
+            </div>
+            <div className={styles.bentoContent}>
+              <span className={styles.bentoLabel}>Analytics</span>
+              <h3>Real-time insights</h3>
+            </div>
+          </motion.div>
+          
+          <motion.div 
+            className={`${styles.bentoCard} ${styles.bentoWide}`}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            <div className={styles.bentoCode}>
+              <code>
+                <span className={styles.codeComment}>// Deploy with one command</span><br/>
+                <span className={styles.codeKeyword}>$</span> vercel --prod
+              </code>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section id="features" className={styles.features}>
         <div className={styles.featuresHeader}>
