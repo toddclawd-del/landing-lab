@@ -115,29 +115,34 @@ export default function SunnySide() {
           <img 
             src="https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=600&h=500&fit=crop" 
             alt="Delicious brunch spread"
+            className="sunny-hero-img"
             style={styles.heroImg}
           />
           <div className="sunny-hero-image-decor" style={styles.heroImageDecor} />
         </div>
       </section>
 
-      {/* Features Strip */}
+      {/* Features Strip - Marquee */}
       <section className="sunny-features" style={styles.features}>
-        <div style={styles.feature}>
-          <span style={styles.featureIcon}>🌿</span>
-          <span style={styles.featureText}>Locally Sourced</span>
-        </div>
-        <div style={styles.feature}>
-          <span style={styles.featureIcon}>☕</span>
-          <span style={styles.featureText}>Fresh Roasted Coffee</span>
-        </div>
-        <div style={styles.feature}>
-          <span style={styles.featureIcon}>🥑</span>
-          <span style={styles.featureText}>Veggie Friendly</span>
-        </div>
-        <div style={styles.feature}>
-          <span style={styles.featureIcon}>🏔️</span>
-          <span style={styles.featureText}>Mountain Views</span>
+        <div className="sunny-marquee">
+          <div className="sunny-marquee-content">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="sunny-marquee-group">
+                <span style={styles.feature}><span style={styles.featureIcon}>🌿</span> Locally Sourced</span>
+                <span style={styles.featureDot}>✦</span>
+                <span style={styles.feature}><span style={styles.featureIcon}>☕</span> Fresh Roasted Coffee</span>
+                <span style={styles.featureDot}>✦</span>
+                <span style={styles.feature}><span style={styles.featureIcon}>🥑</span> Veggie Friendly</span>
+                <span style={styles.featureDot}>✦</span>
+                <span style={styles.feature}><span style={styles.featureIcon}>🏔️</span> Mountain Views</span>
+                <span style={styles.featureDot}>✦</span>
+                <span style={styles.feature}><span style={styles.featureIcon}>🍳</span> Made Fresh Daily</span>
+                <span style={styles.featureDot}>✦</span>
+                <span style={styles.feature}><span style={styles.featureIcon}>❤️</span> Family Owned</span>
+                <span style={styles.featureDot}>✦</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -180,9 +185,9 @@ export default function SunnySide() {
         </div>
         <div style={styles.menuGrid}>
           {menuHighlights.map((item) => (
-            <div key={item.name} style={styles.menuCard}>
-              <div style={styles.menuCardImage}>
-                <img src={item.image} alt={item.name} style={styles.menuImg} />
+            <div key={item.name} className="sunny-menu-card" style={styles.menuCard}>
+              <div className="sunny-menu-card-image" style={styles.menuCardImage}>
+                <img src={item.image} alt={item.name} className="sunny-menu-img" style={styles.menuImg} />
                 {item.tag && <span style={styles.menuTag}>{item.tag}</span>}
               </div>
               <div style={styles.menuCardContent}>
@@ -277,8 +282,80 @@ export default function SunnySide() {
         </div>
       </footer>
 
-      {/* Mobile Responsive Styles */}
+      {/* Animations + Mobile Responsive Styles */}
       <style>{`
+        /* Hero image floating animation */
+        .sunny-hero-img {
+          animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-12px); }
+        }
+        
+        /* Marquee animation */
+        .sunny-marquee {
+          overflow: hidden;
+          width: 100%;
+        }
+        .sunny-marquee-content {
+          display: flex;
+          animation: marquee 30s linear infinite;
+        }
+        .sunny-marquee-group {
+          display: flex;
+          align-items: center;
+          gap: 2rem;
+          padding-right: 2rem;
+          flex-shrink: 0;
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .sunny-marquee:hover .sunny-marquee-content {
+          animation-play-state: paused;
+        }
+        
+        /* Menu card hover effects */
+        .sunny-menu-card {
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .sunny-menu-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px rgba(93, 78, 55, 0.15);
+        }
+        .sunny-menu-img {
+          transition: transform 0.5s ease;
+        }
+        .sunny-menu-card:hover .sunny-menu-img {
+          transform: scale(1.08);
+        }
+        .sunny-menu-card-image {
+          overflow: hidden;
+        }
+        
+        /* Reserve section animated background */
+        .sunny-reserve {
+          position: relative;
+          overflow: hidden;
+        }
+        .sunny-reserve::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+          animation: pulse-bg 8s ease-in-out infinite;
+        }
+        @keyframes pulse-bg {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+          50% { transform: translate(10%, 10%) scale(1.1); opacity: 0.8; }
+        }
+        
+
         @media (max-width: 900px) {
           /* Nav */
           .sunny-nav {
@@ -529,17 +606,25 @@ const styles: Record<string, React.CSSProperties> = {
   features: {
     display: 'flex',
     justifyContent: 'center',
-    gap: '4rem',
-    padding: '3rem 4rem',
+    padding: '1.25rem 0',
     background: colors.sage,
+    overflow: 'hidden',
   },
   feature: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.75rem',
+    gap: '0.5rem',
+    color: colors.white,
+    fontWeight: 600,
+    fontSize: '1rem',
+    whiteSpace: 'nowrap',
   },
   featureIcon: {
-    fontSize: '1.5rem',
+    fontSize: '1.25rem',
+  },
+  featureDot: {
+    color: 'rgba(255,255,255,0.4)',
+    fontSize: '0.75rem',
   },
   featureText: {
     color: colors.white,
