@@ -13,7 +13,7 @@
  * - Location-focused (Denver pride)
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // ============================================
 // Menu Data
@@ -51,18 +51,51 @@ const menuHighlights = [
 ]
 
 // ============================================
+// Instagram Gallery Data
+// ============================================
+
+const instagramPosts = [
+  { image: 'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=400&h=400&fit=crop', caption: 'Sunday morning vibes ☀️' },
+  { image: 'https://images.unsplash.com/photo-1495147466023-ac5c588e2e94?w=400&h=400&fit=crop', caption: 'Fresh from the garden 🌿' },
+  { image: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=400&h=400&fit=crop', caption: 'Stack em high 🥞' },
+  { image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&h=400&fit=crop', caption: 'Brunch squad goals 👯' },
+  { image: 'https://images.unsplash.com/photo-1482049016gy2-3bf0e5a3d9a1?w=400&h=400&fit=crop', caption: 'Coffee first ☕' },
+  { image: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=400&fit=crop', caption: 'Sweet treats 🍩' },
+]
+
+// ============================================
 // Main Component
 // ============================================
 
 export default function SunnySide() {
   const [reservationHover, setReservationHover] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [heroVisible, setHeroVisible] = useState(false)
+
+  useEffect(() => {
+    // Trigger hero animation on mount
+    setHeroVisible(true)
+    
+    // Scroll listener for header
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
     <div style={styles.page}>
-      {/* Navigation */}
-      <nav className="sunny-nav" style={styles.nav}>
+      {/* Navigation - Glassmorphism on scroll */}
+      <nav 
+        className={`sunny-nav ${scrolled ? 'sunny-nav-scrolled' : ''}`} 
+        style={{
+          ...styles.nav,
+          ...(scrolled ? styles.navScrolled : {}),
+        }}
+      >
         <div style={styles.logo}>
-          <span style={styles.logoIcon}>☀️</span>
+          <span className="sunny-logo-icon" style={styles.logoIcon}>☀️</span>
           <span style={styles.logoText}>Sunny Side</span>
         </div>
         <div className="sunny-nav-links" style={styles.navLinks}>
@@ -97,10 +130,16 @@ export default function SunnySide() {
       {/* Hero Section */}
       <section className="sunny-hero" style={styles.hero}>
         <div className="sunny-hero-content" style={styles.heroContent}>
-          <p style={styles.heroTagline}>Denver's Favorite Brunch Spot</p>
+          <p className={`sunny-tagline ${heroVisible ? 'visible' : ''}`} style={styles.heroTagline}>
+            Denver's Favorite Brunch Spot
+          </p>
           <h1 style={styles.heroTitle}>
-            Start Your Day<br />
-            <span style={styles.heroTitleAccent}>Sunny Side Up</span>
+            <span className={`sunny-title-line ${heroVisible ? 'visible' : ''}`} style={{ display: 'block' }}>
+              Start Your Day
+            </span>
+            <span className={`sunny-title-line sunny-title-accent ${heroVisible ? 'visible' : ''}`} style={{ ...styles.heroTitleAccent, display: 'block', transitionDelay: '0.15s' }}>
+              Sunny Side Up
+            </span>
           </h1>
           <p style={styles.heroDescription}>
             Farm-fresh breakfast & brunch in the heart of RiNo. 
@@ -258,6 +297,28 @@ export default function SunnySide() {
         </div>
       </section>
 
+      {/* Instagram Gallery Module */}
+      <section style={styles.instagram}>
+        <div style={styles.instagramHeader}>
+          <p style={styles.sectionTag}>Follow Along</p>
+          <h2 style={styles.sectionTitleDark}>@SunnySideDenver</h2>
+        </div>
+        <div className="sunny-instagram-grid" style={styles.instagramGrid}>
+          {instagramPosts.map((post, index) => (
+            <div key={index} className="sunny-instagram-item" style={styles.instagramItem}>
+              <img src={post.image} alt={post.caption} style={styles.instagramImg} />
+              <div className="sunny-instagram-overlay" style={styles.instagramOverlay}>
+                <span style={styles.instagramCaption}>{post.caption}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <a href="#" className="sunny-instagram-btn" style={styles.instagramButton}>
+          <span>Follow on Instagram</span>
+          <span style={styles.instagramArrow}>→</span>
+        </a>
+      </section>
+
       {/* Footer */}
       <footer className="sunny-footer" style={styles.footer}>
         <div className="sunny-footer-top" style={styles.footerTop}>
@@ -353,6 +414,64 @@ export default function SunnySide() {
         @keyframes pulse-bg {
           0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
           50% { transform: translate(10%, 10%) scale(1.1); opacity: 0.8; }
+        }
+        
+        /* Animated headline text reveal */
+        .sunny-tagline {
+          opacity: 0;
+          transform: translateY(20px);
+          transition: all 0.6s ease;
+        }
+        .sunny-tagline.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .sunny-title-line {
+          opacity: 0;
+          transform: translateY(40px);
+          transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .sunny-title-line.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        
+        /* Logo spin on hover */
+        .sunny-logo-icon {
+          display: inline-block;
+          transition: transform 0.5s ease;
+        }
+        .sunny-nav:hover .sunny-logo-icon {
+          transform: rotate(20deg);
+        }
+        
+        /* Glassmorphism header on scroll */
+        .sunny-nav-scrolled {
+          background: rgba(255, 249, 240, 0.85) !important;
+          backdrop-filter: blur(20px);
+          box-shadow: 0 4px 30px rgba(93, 78, 55, 0.1);
+        }
+        
+        /* Instagram hover effects */
+        .sunny-instagram-item:hover img {
+          transform: scale(1.1);
+        }
+        .sunny-instagram-item:hover .sunny-instagram-overlay {
+          opacity: 1;
+        }
+        .sunny-instagram-btn:hover {
+          background: #5D4E37;
+          color: white;
+        }
+        .sunny-instagram-btn:hover .sunny-instagram-arrow {
+          transform: translateX(4px);
+        }
+        
+        /* Instagram responsive */
+        @media (max-width: 900px) {
+          .sunny-instagram-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+          }
         }
         
 
@@ -477,6 +596,13 @@ const styles: Record<string, React.CSSProperties> = {
     position: 'sticky',
     top: 0,
     zIndex: 100,
+    transition: 'all 0.3s ease',
+  },
+  navScrolled: {
+    background: 'rgba(255, 249, 240, 0.85)',
+    backdropFilter: 'blur(20px)',
+    boxShadow: '0 4px 30px rgba(93, 78, 55, 0.1)',
+    padding: '1rem 4rem',
   },
   logo: {
     display: 'flex',
@@ -936,5 +1062,67 @@ const styles: Record<string, React.CSSProperties> = {
   copyright: {
     color: 'rgba(255,255,255,0.5)',
     fontSize: '0.9rem',
+  },
+
+  // Instagram Gallery
+  instagram: {
+    padding: '6rem 4rem',
+    background: colors.white,
+    textAlign: 'center',
+  },
+  instagramHeader: {
+    marginBottom: '3rem',
+  },
+  instagramGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(6, 1fr)',
+    gap: '0.5rem',
+    maxWidth: '1200px',
+    margin: '0 auto 2rem',
+  },
+  instagramItem: {
+    position: 'relative',
+    aspectRatio: '1',
+    overflow: 'hidden',
+    cursor: 'pointer',
+  },
+  instagramImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    transition: 'transform 0.5s ease',
+  },
+  instagramOverlay: {
+    position: 'absolute',
+    inset: 0,
+    background: 'rgba(255, 145, 77, 0.9)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0,
+    transition: 'opacity 0.3s ease',
+  },
+  instagramCaption: {
+    color: colors.white,
+    fontWeight: 600,
+    fontSize: '0.9rem',
+    padding: '1rem',
+    textAlign: 'center',
+  },
+  instagramButton: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    color: colors.brown,
+    textDecoration: 'none',
+    fontWeight: 600,
+    fontSize: '1rem',
+    padding: '1rem 2rem',
+    border: `2px solid ${colors.brown}`,
+    borderRadius: '50px',
+    transition: 'all 0.3s ease',
+  },
+  instagramArrow: {
+    transition: 'transform 0.3s ease',
   },
 }
