@@ -41,9 +41,16 @@ npm run dev
 
 ## Standards
 
-- Target score: 84+ (client-ready)
-- Score on final version, not first attempt
-- Each page should be portfolio-worthy
+**See [STANDARDS.md](./STANDARDS.md) for full requirements.**
+
+Every page must include:
+1. **Interesting UI piece** — animated text, creative buttons, micro-interactions
+2. **Interesting header** — scroll behavior, glassmorphism, logo animation
+3. **Cool module** — gallery, carousel, or creative section
+
+Plus: Custom color palette, custom font pairing, mobile responsive.
+
+Reference: **Sunny Side** (2026-01-28) is the gold standard.
 
 ---
 
