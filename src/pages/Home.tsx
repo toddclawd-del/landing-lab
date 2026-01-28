@@ -9,6 +9,18 @@ interface LandingPage {
 
 const pages: LandingPage[] = [
   {
+    slug: 'sunny-side',
+    title: 'Sunny Side Restaurant',
+    inspiration: 'Warm, playful Denver brunch spot — fun colors, not crypto vibes',
+    date: '2026-01-28'
+  },
+  {
+    slug: 'kinetic-typography',
+    title: 'Kinetic Typography',
+    inspiration: 'Bold animated text with scroll-triggered motion',
+    date: '2026-01-28'
+  },
+  {
     slug: 'vercel-minimal',
     title: 'Vercel Minimal',
     inspiration: 'Clean light theme with prism gradient hero — Vercel style',
