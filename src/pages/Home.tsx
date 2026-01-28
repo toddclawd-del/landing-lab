@@ -9,6 +9,12 @@ interface LandingPage {
 
 const pages: LandingPage[] = [
   {
+    slug: 'vercel-minimal',
+    title: 'Vercel Minimal',
+    inspiration: 'Clean light theme with prism gradient hero — Vercel style',
+    date: '2026-01-27'
+  },
+  {
     slug: 'aurora-mesh',
     title: 'Aurora Mesh',
     inspiration: 'SaaS landing with animated aurora background',
