@@ -10,8 +10,7 @@ function App() {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/" element={<VoodooBracket />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/aurora-mesh" element={<AuroraMeshLanding />} />
         <Route path="/vercel-minimal" element={<VercelMinimal />} />
         <Route path="/kinetic-typography" element={<KineticTypography />} />

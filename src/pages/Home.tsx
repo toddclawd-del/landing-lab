@@ -9,6 +9,12 @@ interface LandingPage {
 
 const pages: LandingPage[] = [
   {
+    slug: 'voodoo-bracket',
+    title: 'Voodoo Bracket',
+    inspiration: 'March Madness bracket picker with Voodoo Ranger beer branding',
+    date: '2026-01-28'
+  },
+  {
     slug: 'sunny-side',
     title: 'Sunny Side Restaurant',
     inspiration: 'Warm, playful Denver brunch spot — fun colors, not crypto vibes',
