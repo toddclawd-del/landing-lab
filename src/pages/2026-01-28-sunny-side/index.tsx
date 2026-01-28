@@ -343,6 +343,11 @@ export default function SunnySide() {
         </div>
       </footer>
 
+      {/* Google Fonts */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet" />
+      
       {/* Animations + Mobile Responsive Styles */}
       <style>{`
         /* Hero image floating animation */
@@ -567,21 +572,30 @@ export default function SunnySide() {
 // ============================================
 
 const colors = {
-  yellow: '#FFD93D',
-  yellowLight: '#FFF4CC',
-  orange: '#FF914D',
-  cream: '#FFF9F0',
-  sage: '#87A878',
-  brown: '#5D4E37',
-  brownLight: '#8B7355',
-  white: '#FFFFFF',
-  dark: '#2D2D2D',
+  // Refined warm palette - terracotta, sage, cream
+  terracotta: '#C66B3D',
+  terracottaLight: '#D4856A',
+  terracottaDark: '#A85A32',
+  sage: '#8B9E7C',
+  sageLight: '#A7B99A',
+  sageDark: '#6B7D5E',
+  cream: '#FBF7F0',
+  creamDark: '#F5EDE0',
+  peach: '#F5DDD0',
+  brown: '#3D2D1F',
+  brownLight: '#6B5344',
+  brownMuted: '#8B7B6B',
+  white: '#FFFAF5',
+  
+  // Legacy aliases for compatibility
+  yellow: '#F5DDD0', // now peach
+  orange: '#C66B3D', // now terracotta
 }
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
-    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-    color: colors.dark,
+    fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+    color: colors.brown,
     background: colors.cream,
     minHeight: '100vh',
   },
@@ -613,7 +627,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '1.75rem',
   },
   logoText: {
-    fontFamily: "'Georgia', serif",
+    fontFamily: "'Fraunces', Georgia, serif",
     fontSize: '1.5rem',
     fontWeight: 700,
     color: colors.brown,
@@ -631,7 +645,7 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'color 0.2s ease',
   },
   navButton: {
-    background: colors.orange,
+    background: colors.terracotta,
     color: colors.white,
     padding: '0.75rem 1.5rem',
     borderRadius: '50px',
@@ -641,7 +655,7 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'all 0.2s ease',
   },
   navButtonHover: {
-    background: '#E67D3A',
+    background: colors.terracottaDark,
     transform: 'translateY(-2px)',
   },
 
@@ -659,23 +673,23 @@ const styles: Record<string, React.CSSProperties> = {
     paddingRight: '2rem',
   },
   heroTagline: {
-    color: colors.orange,
+    color: colors.terracotta,
     fontWeight: 600,
-    fontSize: '1rem',
+    fontSize: '0.9rem',
     marginBottom: '1rem',
     textTransform: 'uppercase',
-    letterSpacing: '0.1em',
+    letterSpacing: '0.15em',
   },
   heroTitle: {
-    fontFamily: "'Georgia', serif",
+    fontFamily: "'Fraunces', Georgia, serif",
     fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-    fontWeight: 700,
+    fontWeight: 600,
     lineHeight: 1.1,
     color: colors.brown,
     marginBottom: '1.5rem',
   },
   heroTitleAccent: {
-    color: colors.orange,
+    color: colors.terracotta,
   },
   heroDescription: {
     fontSize: '1.2rem',
@@ -688,15 +702,15 @@ const styles: Record<string, React.CSSProperties> = {
     gap: '1rem',
   },
   primaryButton: {
-    background: colors.yellow,
-    color: colors.brown,
+    background: colors.terracotta,
+    color: colors.white,
     padding: '1rem 2rem',
     borderRadius: '50px',
     textDecoration: 'none',
     fontWeight: 600,
     fontSize: '1rem',
     transition: 'all 0.2s ease',
-    border: `2px solid ${colors.yellow}`,
+    border: `2px solid ${colors.terracotta}`,
   },
   secondaryButton: {
     background: 'transparent',
@@ -723,7 +737,7 @@ const styles: Record<string, React.CSSProperties> = {
     right: '-20px',
     width: '100%',
     height: '100%',
-    background: colors.yellow,
+    background: colors.peach,
     borderRadius: '20px',
     zIndex: -1,
   },
@@ -733,7 +747,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     justifyContent: 'center',
     padding: '1.25rem 0',
-    background: colors.sage,
+    background: colors.sageDark,
     overflow: 'hidden',
   },
   feature: {
@@ -779,25 +793,25 @@ const styles: Record<string, React.CSSProperties> = {
     paddingLeft: '2rem',
   },
   sectionTag: {
-    color: colors.orange,
+    color: colors.terracotta,
     fontWeight: 600,
-    fontSize: '0.9rem',
+    fontSize: '0.85rem',
     marginBottom: '1rem',
     textTransform: 'uppercase',
-    letterSpacing: '0.15em',
+    letterSpacing: '0.2em',
   },
   sectionTitle: {
-    fontFamily: "'Georgia', serif",
+    fontFamily: "'Fraunces', Georgia, serif",
     fontSize: 'clamp(2rem, 4vw, 2.75rem)',
-    fontWeight: 700,
+    fontWeight: 500,
     color: colors.brown,
     marginBottom: '1.5rem',
     lineHeight: 1.2,
   },
   sectionTitleDark: {
-    fontFamily: "'Georgia', serif",
+    fontFamily: "'Fraunces', Georgia, serif",
     fontSize: 'clamp(2rem, 4vw, 2.75rem)',
-    fontWeight: 700,
+    fontWeight: 500,
     color: colors.brown,
     marginBottom: '1rem',
     lineHeight: 1.2,
@@ -866,12 +880,14 @@ const styles: Record<string, React.CSSProperties> = {
     position: 'absolute',
     top: '12px',
     left: '12px',
-    background: colors.orange,
+    background: colors.terracotta,
     color: colors.white,
     padding: '0.35rem 0.75rem',
     borderRadius: '20px',
-    fontSize: '0.75rem',
+    fontSize: '0.7rem',
     fontWeight: 600,
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
   },
   menuCardContent: {
     padding: '1.25rem',
@@ -883,15 +899,15 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: '0.5rem',
   },
   menuItemName: {
-    fontFamily: "'Georgia', serif",
-    fontSize: '1.2rem',
-    fontWeight: 600,
+    fontFamily: "'Fraunces', Georgia, serif",
+    fontSize: '1.15rem',
+    fontWeight: 500,
     color: colors.brown,
   },
   menuItemPrice: {
-    color: colors.orange,
-    fontWeight: 700,
-    fontSize: '1.1rem',
+    color: colors.terracotta,
+    fontWeight: 600,
+    fontSize: '1rem',
   },
   menuItemDesc: {
     fontSize: '0.95rem',
@@ -933,11 +949,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
   locationBlock: {},
   locationLabel: {
-    color: colors.orange,
-    fontSize: '0.85rem',
+    color: colors.terracotta,
+    fontSize: '0.8rem',
     fontWeight: 600,
     textTransform: 'uppercase',
-    letterSpacing: '0.1em',
+    letterSpacing: '0.15em',
     marginBottom: '0.5rem',
   },
   locationText: {
@@ -947,7 +963,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   locationMap: {
     background: colors.sage,
-    borderRadius: '20px',
+    borderRadius: '16px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -974,7 +990,7 @@ const styles: Record<string, React.CSSProperties> = {
 
   // Reserve
   reserve: {
-    background: colors.yellow,
+    background: colors.peach,
     padding: '6rem 4rem',
     textAlign: 'center',
   },
@@ -983,9 +999,9 @@ const styles: Record<string, React.CSSProperties> = {
     margin: '0 auto',
   },
   reserveTitle: {
-    fontFamily: "'Georgia', serif",
+    fontFamily: "'Fraunces', Georgia, serif",
     fontSize: 'clamp(2rem, 4vw, 2.75rem)',
-    fontWeight: 700,
+    fontWeight: 500,
     color: colors.brown,
     marginBottom: '1rem',
   },
@@ -1027,9 +1043,9 @@ const styles: Record<string, React.CSSProperties> = {
   footerBrand: {},
   footerLogo: {
     fontSize: '1.5rem',
-    fontFamily: "'Georgia', serif",
+    fontFamily: "'Fraunces', Georgia, serif",
     color: colors.white,
-    fontWeight: 700,
+    fontWeight: 600,
   },
   footerTagline: {
     color: 'rgba(255,255,255,0.6)',
@@ -1095,7 +1111,7 @@ const styles: Record<string, React.CSSProperties> = {
   instagramOverlay: {
     position: 'absolute',
     inset: 0,
-    background: 'rgba(255, 145, 77, 0.9)',
+    background: 'rgba(198, 107, 61, 0.92)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
