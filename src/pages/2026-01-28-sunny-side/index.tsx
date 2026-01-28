@@ -60,12 +60,12 @@ export default function SunnySide() {
   return (
     <div style={styles.page}>
       {/* Navigation */}
-      <nav style={styles.nav}>
+      <nav className="sunny-nav" style={styles.nav}>
         <div style={styles.logo}>
           <span style={styles.logoIcon}>☀️</span>
           <span style={styles.logoText}>Sunny Side</span>
         </div>
-        <div style={styles.navLinks}>
+        <div className="sunny-nav-links" style={styles.navLinks}>
           <a href="#menu" style={styles.navLink}>Menu</a>
           <a href="#about" style={styles.navLink}>About</a>
           <a href="#location" style={styles.navLink}>Visit</a>
@@ -81,11 +81,22 @@ export default function SunnySide() {
             Reserve a Table
           </a>
         </div>
+        {/* Mobile nav button */}
+        <a 
+          href="#reserve" 
+          className="sunny-nav-mobile"
+          style={{
+            ...styles.navButton,
+            display: 'none',
+          }}
+        >
+          Reserve
+        </a>
       </nav>
 
       {/* Hero Section */}
-      <section style={styles.hero}>
-        <div style={styles.heroContent}>
+      <section className="sunny-hero" style={styles.hero}>
+        <div className="sunny-hero-content" style={styles.heroContent}>
           <p style={styles.heroTagline}>Denver's Favorite Brunch Spot</p>
           <h1 style={styles.heroTitle}>
             Start Your Day<br />
@@ -95,7 +106,7 @@ export default function SunnySide() {
             Farm-fresh breakfast & brunch in the heart of RiNo. 
             Good vibes, great coffee, and food that makes you smile.
           </p>
-          <div style={styles.heroButtons}>
+          <div className="sunny-hero-buttons" style={styles.heroButtons}>
             <a href="#menu" style={styles.primaryButton}>View Menu</a>
             <a href="#reserve" style={styles.secondaryButton}>Make Reservation</a>
           </div>
@@ -106,12 +117,12 @@ export default function SunnySide() {
             alt="Delicious brunch spread"
             style={styles.heroImg}
           />
-          <div style={styles.heroImageDecor} />
+          <div className="sunny-hero-image-decor" style={styles.heroImageDecor} />
         </div>
       </section>
 
       {/* Features Strip */}
-      <section style={styles.features}>
+      <section className="sunny-features" style={styles.features}>
         <div style={styles.feature}>
           <span style={styles.featureIcon}>🌿</span>
           <span style={styles.featureText}>Locally Sourced</span>
@@ -131,7 +142,7 @@ export default function SunnySide() {
       </section>
 
       {/* About Section */}
-      <section id="about" style={styles.about}>
+      <section id="about" className="sunny-about" style={styles.about}>
         <div style={styles.aboutImage}>
           <img 
             src="https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=500&h=600&fit=crop"
@@ -139,7 +150,7 @@ export default function SunnySide() {
             style={styles.aboutImg}
           />
         </div>
-        <div style={styles.aboutContent}>
+        <div className="sunny-about-content" style={styles.aboutContent}>
           <p style={styles.sectionTag}>Our Story</p>
           <h2 style={styles.sectionTitle}>Where Every Morning Feels Like Sunday</h2>
           <p style={styles.aboutText}>
@@ -159,7 +170,7 @@ export default function SunnySide() {
       </section>
 
       {/* Menu Highlights */}
-      <section id="menu" style={styles.menu}>
+      <section id="menu" className="sunny-menu" style={styles.menu}>
         <div style={styles.menuHeader}>
           <p style={styles.sectionTag}>The Good Stuff</p>
           <h2 style={styles.sectionTitleDark}>Menu Highlights</h2>
@@ -190,11 +201,11 @@ export default function SunnySide() {
       </section>
 
       {/* Location Section */}
-      <section id="location" style={styles.location}>
+      <section id="location" className="sunny-location" style={styles.location}>
         <div style={styles.locationContent}>
           <p style={styles.sectionTag}>Find Us</p>
           <h2 style={styles.sectionTitle}>In the Heart of RiNo</h2>
-          <div style={styles.locationDetails}>
+          <div className="sunny-location-details" style={styles.locationDetails}>
             <div style={styles.locationBlock}>
               <h4 style={styles.locationLabel}>Address</h4>
               <p style={styles.locationText}>
@@ -228,7 +239,7 @@ export default function SunnySide() {
       </section>
 
       {/* Reservation CTA */}
-      <section id="reserve" style={styles.reserve}>
+      <section id="reserve" className="sunny-reserve" style={styles.reserve}>
         <div style={styles.reserveContent}>
           <h2 style={styles.reserveTitle}>Ready for the Best Brunch in Denver?</h2>
           <p style={styles.reserveText}>
@@ -243,19 +254,19 @@ export default function SunnySide() {
       </section>
 
       {/* Footer */}
-      <footer style={styles.footer}>
-        <div style={styles.footerTop}>
+      <footer className="sunny-footer" style={styles.footer}>
+        <div className="sunny-footer-top" style={styles.footerTop}>
           <div style={styles.footerBrand}>
             <span style={styles.footerLogo}>☀️ Sunny Side</span>
             <p style={styles.footerTagline}>Denver's happiest breakfast.</p>
           </div>
-          <div style={styles.footerLinks}>
+          <div className="sunny-footer-links" style={styles.footerLinks}>
             <a href="#" style={styles.footerLink}>Menu</a>
             <a href="#" style={styles.footerLink}>About</a>
             <a href="#" style={styles.footerLink}>Catering</a>
             <a href="#" style={styles.footerLink}>Careers</a>
           </div>
-          <div style={styles.footerSocial}>
+          <div className="sunny-footer-social" style={styles.footerSocial}>
             <a href="#" style={styles.socialLink}>Instagram</a>
             <a href="#" style={styles.socialLink}>Facebook</a>
             <a href="#" style={styles.socialLink}>TikTok</a>
@@ -265,6 +276,92 @@ export default function SunnySide() {
           <p style={styles.copyright}>© 2026 Sunny Side Denver. Made with 🍳 in Colorado.</p>
         </div>
       </footer>
+
+      {/* Mobile Responsive Styles */}
+      <style>{`
+        @media (max-width: 900px) {
+          /* Nav */
+          .sunny-nav {
+            padding: 1rem !important;
+            gap: 1rem;
+          }
+          .sunny-nav-links {
+            display: none !important;
+          }
+          .sunny-nav-mobile {
+            display: flex !important;
+          }
+          
+          /* Hero */
+          .sunny-hero {
+            grid-template-columns: 1fr !important;
+            padding: 2rem 1.5rem !important;
+            gap: 2rem !important;
+          }
+          .sunny-hero-content {
+            padding-right: 0 !important;
+            text-align: center;
+          }
+          .sunny-hero-buttons {
+            justify-content: center;
+          }
+          .sunny-hero-image-decor {
+            display: none;
+          }
+          
+          /* Features */
+          .sunny-features {
+            flex-wrap: wrap !important;
+            gap: 1.5rem !important;
+            padding: 2rem 1.5rem !important;
+          }
+          
+          /* About */
+          .sunny-about {
+            grid-template-columns: 1fr !important;
+            padding: 3rem 1.5rem !important;
+            gap: 2rem !important;
+          }
+          .sunny-about-content {
+            padding-left: 0 !important;
+          }
+          
+          /* Menu */
+          .sunny-menu {
+            padding: 3rem 1.5rem !important;
+          }
+          
+          /* Location */
+          .sunny-location {
+            grid-template-columns: 1fr !important;
+            padding: 3rem 1.5rem !important;
+            gap: 2rem !important;
+          }
+          .sunny-location-details {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+          }
+          
+          /* Reserve */
+          .sunny-reserve {
+            padding: 3rem 1.5rem !important;
+          }
+          
+          /* Footer */
+          .sunny-footer {
+            padding: 2rem 1.5rem !important;
+          }
+          .sunny-footer-top {
+            flex-direction: column !important;
+            gap: 2rem !important;
+            text-align: center;
+          }
+          .sunny-footer-links,
+          .sunny-footer-social {
+            justify-content: center !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }
