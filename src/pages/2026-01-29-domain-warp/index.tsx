@@ -300,7 +300,7 @@ function MiniShaderOrb({ size = 120, scale = 3, speed = 0.15, offset = 0, colorS
 // Shader Strip (for accents) - Full bleed, no circle mask
 // ============================================
 
-function ShaderStrip({ height = 100, speed = 0.1 }: { height?: number, speed?: number }) {
+function ShaderStrip({ height = 180, speed = 0.1 }: { height?: number, speed?: number }) {
   return (
     <div style={{ 
       width: '100%', 
@@ -562,7 +562,7 @@ function DomainWarpPage() {
       <section style={styles.ctaSection}>
         {/* Shader strip at top */}
         <div style={styles.ctaShaderStrip}>
-          <ShaderStrip height={100} speed={0.08} />
+          <ShaderStrip height={180} speed={0.08} />
         </div>
         
         <div style={styles.ctaInner}>
@@ -576,7 +576,7 @@ function DomainWarpPage() {
       
       {/* Footer with shader strip */}
       <footer style={styles.footer}>
-        <ShaderStrip height={100} speed={0.05} />
+        <ShaderStrip height={180} speed={0.05} />
         
         <div style={styles.footerContent}>
           <div style={styles.footerInner}>
