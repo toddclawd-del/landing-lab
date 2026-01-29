@@ -4,7 +4,7 @@
  * Shader elements throughout, full-bleed only in hero
  */
 
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useControls, Leva } from 'leva'
@@ -638,6 +638,66 @@ const features: Array<{
 ]
 
 // ============================================
+// Header Component with Mobile Menu
+// ============================================
+
+function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  
+  return (
+    <>
+      <header style={styles.header}>
+        <Link to="/" style={styles.backLink} className="back-link">← Back</Link>
+        <div style={styles.logo}>Calm</div>
+        
+        {/* Desktop nav */}
+        <nav style={styles.nav} className="desktop-nav">
+          <a href="#features" style={styles.navLink}>Features</a>
+          <a href="#philosophy" style={styles.navLink}>Philosophy</a>
+          <a href="#" style={styles.navCta}>Begin Your Journey</a>
+        </nav>
+        
+        {/* Mobile hamburger */}
+        <button 
+          style={styles.hamburger}
+          className="mobile-hamburger"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span style={{
+            ...styles.hamburgerLine,
+            transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none',
+          }} />
+          <span style={{
+            ...styles.hamburgerLine,
+            opacity: mobileMenuOpen ? 0 : 1,
+          }} />
+          <span style={{
+            ...styles.hamburgerLine,
+            transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none',
+          }} />
+        </button>
+      </header>
+      
+      {/* Mobile dropdown menu */}
+      <div 
+        style={{
+          ...styles.mobileMenu,
+          transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(-100%)',
+          opacity: mobileMenuOpen ? 1 : 0,
+          pointerEvents: mobileMenuOpen ? 'auto' : 'none',
+        }}
+        className="mobile-menu"
+      >
+        <a href="#features" style={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Features</a>
+        <a href="#philosophy" style={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Philosophy</a>
+        <a href="#" style={styles.mobileNavCta} onClick={() => setMobileMenuOpen(false)}>Begin Your Journey</a>
+      </div>
+    </>
+  )
+}
+
+// ============================================
 // Main Page Component
 // ============================================
 
@@ -647,15 +707,7 @@ function DomainWarpPage() {
       <Leva hidden={true} />
       
       {/* Header */}
-      <header style={styles.header}>
-        <Link to="/" style={styles.backLink}>← Back</Link>
-        <div style={styles.logo}>Calm</div>
-        <nav style={styles.nav}>
-          <a href="#features" style={styles.navLink}>Features</a>
-          <a href="#philosophy" style={styles.navLink}>Philosophy</a>
-          <a href="#" style={styles.navCta}>Begin Your Journey</a>
-        </nav>
-      </header>
+      <Header />
       
       {/* Hero Section — Full Shader */}
       <section style={styles.hero}>
@@ -839,6 +891,29 @@ function DomainWarpPage() {
           0%, 100% { opacity: 0.6; }
           50% { opacity: 0.8; }
         }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+          .desktop-nav {
+            display: none !important;
+          }
+          .mobile-hamburger {
+            display: flex !important;
+          }
+          .back-link {
+            font-size: 0 !important;
+          }
+          .back-link::before {
+            content: '←';
+            font-size: 1.25rem;
+          }
+        }
+        
+        @media (min-width: 769px) {
+          .mobile-menu {
+            display: none !important;
+          }
+        }
       `}</style>
     </div>
   )
@@ -908,6 +983,56 @@ const styles: Record<string, React.CSSProperties> = {
     background: colors.earth,
     borderRadius: 100,
     transition: 'transform 0.2s, box-shadow 0.2s',
+  },
+  hamburger: {
+    display: 'none',
+    flexDirection: 'column',
+    gap: 5,
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 8,
+    justifySelf: 'end',
+  },
+  hamburgerLine: {
+    width: 24,
+    height: 2,
+    background: colors.earth,
+    transition: 'all 0.3s ease',
+  },
+  mobileMenu: {
+    position: 'fixed',
+    top: 70,
+    left: 0,
+    right: 0,
+    background: 'rgba(255, 251, 247, 0.98)',
+    backdropFilter: 'blur(12px)',
+    padding: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5rem',
+    zIndex: 99,
+    transition: 'transform 0.3s ease, opacity 0.3s ease',
+    borderBottom: `1px solid rgba(53, 35, 20, 0.1)`,
+  },
+  mobileNavLink: {
+    color: colors.text,
+    textDecoration: 'none',
+    fontSize: '1.1rem',
+    fontWeight: 400,
+    fontFamily: "'Fraunces', serif",
+    padding: '0.5rem 0',
+  },
+  mobileNavCta: {
+    color: colors.cream,
+    textDecoration: 'none',
+    fontSize: '1rem',
+    fontWeight: 500,
+    padding: '1rem 2rem',
+    background: colors.earth,
+    borderRadius: 100,
+    textAlign: 'center',
+    marginTop: '0.5rem',
   },
   
   // Hero
