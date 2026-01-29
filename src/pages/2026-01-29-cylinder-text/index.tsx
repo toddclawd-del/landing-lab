@@ -1,6 +1,6 @@
 /**
  * Cylinder Text Landing Page
- * Clean, minimal design following the original Codrops reference
+ * Clean, minimal design with hero + cylinder text
  */
 
 import { useEffect, useRef } from 'react'
@@ -28,16 +28,16 @@ const ITEMS = [
 function CylinderTextPage() {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const textWrapperRef = useRef<HTMLUListElement>(null)
-  const titleRef = useRef<HTMLParagraphElement>(null)
+  const triggerRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<(HTMLLIElement | null)[]>([])
 
   useEffect(() => {
     const wrapper = wrapperRef.current
     const textWrapper = textWrapperRef.current
-    const title = titleRef.current
+    const trigger = triggerRef.current
     const items = itemRefs.current.filter(Boolean) as HTMLLIElement[]
 
-    if (!wrapper || !textWrapper || !title || items.length === 0) return
+    if (!wrapper || !textWrapper || !trigger || items.length === 0) return
 
     const calculatePositions = () => {
       const offset = 0.4
@@ -58,10 +58,10 @@ function CylinderTextPage() {
 
     calculatePositions()
 
-    const trigger = ScrollTrigger.create({
-      trigger: title,
-      start: 'center center',
-      end: '+=2000vh',
+    const scrollTrigger = ScrollTrigger.create({
+      trigger: trigger,
+      start: 'top top',
+      end: '+=2000',
       pin: wrapper,
       scrub: 2,
       animation: gsap.fromTo(
@@ -75,7 +75,7 @@ function CylinderTextPage() {
     window.addEventListener('resize', handleResize)
 
     return () => {
-      trigger.kill()
+      scrollTrigger.kill()
       window.removeEventListener('resize', handleResize)
     }
   }, [])
@@ -87,31 +87,45 @@ function CylinderTextPage() {
         ← Back
       </Link>
 
-      {/* Branding */}
-      <div style={styles.branding}>CYLINDER TEXT</div>
+      {/* Hero Section */}
+      <section style={styles.hero}>
+        {/* Wordmark */}
+        <div style={styles.wordmark}>STUDIO</div>
+        
+        {/* Main statement */}
+        <h1 style={styles.heroTitle}>We create.</h1>
+        
+        {/* Scroll indicator */}
+        <div style={styles.scrollIndicator}>
+          <span style={styles.scrollText}>Scroll</span>
+          <span style={styles.scrollArrow}>↓</span>
+        </div>
+      </section>
 
-      {/* Main cylinder section */}
-      <div ref={wrapperRef} style={styles.wrapper}>
-        <p ref={titleRef} style={styles.title}>
-          Keep scrolling to see the animation
-        </p>
+      {/* Cylinder Text Section */}
+      <section ref={triggerRef} style={styles.cylinderSection}>
+        <div ref={wrapperRef} style={styles.wrapper}>
+          <ul ref={textWrapperRef} style={styles.textWrapper}>
+            {ITEMS.map((item, index) => (
+              <li
+                key={item}
+                ref={(el) => { itemRefs.current[index] = el }}
+                style={styles.textItem}
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
-        <ul ref={textWrapperRef} style={styles.textWrapper}>
-          {ITEMS.map((item, index) => (
-            <li
-              key={item}
-              ref={(el) => { itemRefs.current[index] = el }}
-              style={styles.textItem}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Spacer for scroll */}
+      <div style={styles.spacer} />
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
         html, body { overflow-x: hidden; }
       `}</style>
     </div>
@@ -120,9 +134,9 @@ function CylinderTextPage() {
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    minHeight: '300vh',
     background: '#5046e4',
     fontFamily: "'Space Grotesk', system-ui, sans-serif",
+    minHeight: '100vh',
   },
   backButton: {
     position: 'fixed',
@@ -133,19 +147,58 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 14,
     fontWeight: 500,
     zIndex: 100,
-    transition: 'color 0.2s ease',
   },
-  branding: {
-    position: 'fixed',
-    top: 24,
+  
+  // Hero
+  hero: {
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  wordmark: {
+    position: 'absolute',
+    top: 28,
     right: 24,
     color: 'rgba(255, 255, 255, 0.3)',
-    fontFamily: 'monospace',
     fontSize: 10,
+    fontWeight: 500,
+    letterSpacing: '0.2em',
+  },
+  heroTitle: {
+    color: '#ffffff',
+    fontSize: 'clamp(4rem, 15vw, 12rem)',
+    fontWeight: 700,
+    fontStyle: 'italic',
+    letterSpacing: '-0.03em',
+    margin: 0,
+    textAlign: 'center',
+  },
+  scrollIndicator: {
+    position: 'absolute',
+    bottom: 40,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 8,
+    color: 'rgba(255, 255, 255, 0.5)',
+    animation: 'bounce 2s ease-in-out infinite',
+  },
+  scrollText: {
+    fontSize: 12,
+    fontWeight: 500,
     letterSpacing: '0.15em',
-    pointerEvents: 'none',
-    userSelect: 'none',
-    zIndex: 100,
+    textTransform: 'uppercase',
+  },
+  scrollArrow: {
+    fontSize: 18,
+  },
+
+  // Cylinder section
+  cylinderSection: {
+    minHeight: '100vh',
   },
   wrapper: {
     width: '100%',
@@ -157,15 +210,6 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: '10rem',
-  },
-  title: {
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 'clamp(0.75rem, 1.5vw, 1rem)',
-    fontWeight: 400,
-    letterSpacing: '0.15em',
-    textTransform: 'uppercase',
-    margin: 0,
   },
   textWrapper: {
     position: 'absolute',
@@ -191,6 +235,11 @@ const styles: Record<string, React.CSSProperties> = {
     textTransform: 'uppercase',
     letterSpacing: '-0.02em',
     fontStyle: 'italic',
+  },
+  
+  // Spacer
+  spacer: {
+    height: '100vh',
   },
 }
 
