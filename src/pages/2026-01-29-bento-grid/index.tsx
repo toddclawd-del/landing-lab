@@ -1256,6 +1256,84 @@ const Work = () => {
       colors: [colors.accent2, colors.accent3],
       span: 'normal' as const,
     },
+    {
+      title: 'Nova AI',
+      category: 'AI Platform',
+      colors: [colors.accent1, colors.accent3],
+      span: 'wide' as const,
+    },
+    {
+      title: 'Pulse Fitness',
+      category: 'Mobile App',
+      colors: [colors.accent4, colors.accent2],
+      span: 'normal' as const,
+    },
+    {
+      title: 'Horizon Travel',
+      category: 'Booking Platform',
+      colors: [colors.accent3, colors.accent5],
+      span: 'large' as const,
+    },
+    {
+      title: 'Cipher Security',
+      category: 'SaaS Dashboard',
+      colors: [colors.accent2, colors.accent1],
+      span: 'tall' as const,
+    },
+    {
+      title: 'Bloom Garden',
+      category: 'E-commerce',
+      colors: [colors.accent3, colors.accent4],
+      span: 'normal' as const,
+    },
+    {
+      title: 'Atlas Maps',
+      category: 'Data Viz',
+      colors: [colors.accent2, colors.accent5],
+      span: 'wide' as const,
+    },
+    {
+      title: 'Spark Creative',
+      category: 'Portfolio',
+      colors: [colors.accent5, colors.accent4],
+      span: 'normal' as const,
+    },
+    {
+      title: 'Mint Finance',
+      category: 'Fintech App',
+      colors: [colors.accent3, colors.accent1],
+      span: 'normal' as const,
+    },
+    {
+      title: 'Zen Wellness',
+      category: 'Health Platform',
+      colors: [colors.accent4, colors.accent3],
+      span: 'tall' as const,
+    },
+    {
+      title: 'Rocket Launch',
+      category: 'Startup Site',
+      colors: [colors.accent1, colors.accent4],
+      span: 'wide' as const,
+    },
+    {
+      title: 'Crystal Clear',
+      category: 'Analytics',
+      colors: [colors.accent2, colors.accent4],
+      span: 'normal' as const,
+    },
+    {
+      title: 'Thunder Cloud',
+      category: 'Infrastructure',
+      colors: [colors.accent1, colors.accent5],
+      span: 'large' as const,
+    },
+    {
+      title: 'Ember Social',
+      category: 'Social App',
+      colors: [colors.accent5, colors.accent3],
+      span: 'normal' as const,
+    },
   ];
 
   return (
@@ -1301,13 +1379,13 @@ const Work = () => {
           {projects.map((project, i) => (
             <BentoTile
               key={project.title}
-              span={isMobile ? (i === 0 ? 'wide' : 'normal') : project.span}
-              delay={i * 0.1}
+              span={isMobile ? (i < 2 ? 'wide' : 'normal') : project.span}
+              delay={Math.min(i * 0.05, 0.5)}
               gradient
               gradientColors={project.colors}
               accentColor={project.colors[0]}
               style={{
-                minHeight: (isMobile && i === 0) || project.span === 'large' || project.span === 'tall' ? 280 : 140,
+                minHeight: (isMobile && i < 2) || project.span === 'large' || project.span === 'tall' ? 240 : 130,
               }}
               hoverContent={
                 <div style={{ textAlign: 'center' }}>
