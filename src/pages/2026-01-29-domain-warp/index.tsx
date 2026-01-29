@@ -219,33 +219,40 @@ function DomainWarpPage() {
         </nav>
       </header>
       
-      {/* Hero Section with Shader */}
+      {/* Hero Section — Full Shader */}
       <section style={styles.hero}>
-        <div style={styles.shaderContainer}>
-          <Canvas
-            camera={{ position: [0, 0, 1], fov: 50 }}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-          >
-            <ShaderPlane />
-          </Canvas>
-        </div>
+        <Canvas
+          camera={{ position: [0, 0, 1], fov: 50 }}
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+        >
+          <ShaderPlane />
+        </Canvas>
         
-        <div style={styles.heroContent}>
-          <h1 style={styles.heroTitle}>
+        {/* Scroll indicator */}
+        <div style={styles.scrollIndicator}>
+          <span style={styles.scrollText}>Scroll</span>
+          <span style={styles.scrollArrow}>↓</span>
+        </div>
+      </section>
+      
+      {/* Intro Section */}
+      <section style={styles.intro}>
+        <div style={styles.introInner}>
+          <h1 style={styles.introTitle}>
             Project management<br />
-            <span style={styles.heroAccent}>for mindful teams</span>
+            <span style={styles.introAccent}>for mindful teams</span>
           </h1>
-          <p style={styles.heroSub}>
+          <p style={styles.introSub}>
             Calm brings clarity to your workflow. Less noise, more focus, 
             better work — designed for teams who value intentional productivity.
           </p>
-          <div style={styles.heroCtas}>
+          <div style={styles.introCtas}>
             <a href="#" style={styles.primaryCta}>Start Free Trial</a>
             <a href="#features" style={styles.secondaryCta}>Learn More →</a>
           </div>
         </div>
       </section>
-      
+
       {/* Product Section */}
       <section id="features" style={styles.product}>
         <div style={styles.productInner}>
@@ -400,32 +407,46 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 8,
   },
   
-  // Hero
+  // Hero — Full shader
   hero: {
     position: 'relative',
     height: '100vh',
     minHeight: 600,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     overflow: 'hidden',
   },
-  shaderContainer: {
+  scrollIndicator: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    opacity: 0.7,
-  },
-  heroContent: {
-    position: 'relative',
+    bottom: 40,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 8,
+    color: 'rgba(0, 0, 0, 0.4)',
     zIndex: 10,
-    textAlign: 'center',
-    maxWidth: 700,
-    padding: '0 2rem',
   },
-  heroTitle: {
+  scrollText: {
+    fontSize: 12,
+    fontWeight: 500,
+    letterSpacing: '0.15em',
+    textTransform: 'uppercase',
+  },
+  scrollArrow: {
+    fontSize: 18,
+  },
+  
+  // Intro
+  intro: {
+    padding: '8rem 2rem',
+    background: '#fff',
+    textAlign: 'center',
+  },
+  introInner: {
+    maxWidth: 700,
+    margin: '0 auto',
+  },
+  introTitle: {
     fontSize: 'clamp(2.5rem, 6vw, 4rem)',
     fontWeight: 300,
     lineHeight: 1.15,
@@ -433,10 +454,10 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: '1.5rem',
     color: '#1a1a1a',
   },
-  heroAccent: {
+  introAccent: {
     fontWeight: 500,
   },
-  heroSub: {
+  introSub: {
     fontSize: 'clamp(1rem, 2vw, 1.2rem)',
     fontWeight: 300,
     lineHeight: 1.6,
@@ -446,7 +467,7 @@ const styles: Record<string, React.CSSProperties> = {
     marginLeft: 'auto',
     marginRight: 'auto',
   },
-  heroCtas: {
+  introCtas: {
     display: 'flex',
     gap: '1rem',
     justifyContent: 'center',
