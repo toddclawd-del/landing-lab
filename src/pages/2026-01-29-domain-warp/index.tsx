@@ -4,16 +4,63 @@
  * Shader elements throughout, full-bleed only in hero
  */
 
-import { useRef, useMemo, useState, useLayoutEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useRef, useMemo, useState, useLayoutEffect, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useControls, Leva } from 'leva'
 import * as THREE from 'three'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { getLandingPageContent, type LandingPageContent } from '../../lib/sanity'
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger)
+
+// Default content (used when Sanity is not configured or fetch fails)
+const defaultContent: LandingPageContent = {
+  _id: 'default',
+  brandName: 'Calm',
+  tagline: 'Let your work breathe',
+  headline: 'Where good work',
+  headlineEmphasis: 'finds its rhythm',
+  subheadline: 'Some teams rush. Others flow. Calm is for the ones who know that the best ideas arrive when you stop chasing them.',
+  featuresLabel: 'The gentle way',
+  featuresTitle: 'Tools that settle,',
+  featuresTitleEmphasis: 'never startle',
+  features: [
+    { title: 'Space to Think', description: 'Your workspace clears itself. What remains is just you and the work that matters.', shape: 'sphere' },
+    { title: 'Quiet When You Need It', description: 'Notifications wait for you — not the other way around. Your attention is yours to give.', shape: 'torus' },
+    { title: 'Room to Breathe', description: 'Async by nature. Your team moves at their own pace, together.', shape: 'octahedron' },
+    { title: 'Insight Without Intrusion', description: 'See where time flows. No tracking, no surveillance — just clarity.', shape: 'torusKnot' },
+  ],
+  quote: 'Slow down.',
+  quoteEmphasis: 'The work will wait.',
+  quoteHighlight: "You're worth more than your output.",
+  ctaTitle: 'Ready to slow down?',
+  ctaSubtitle: "Join teams who've learned that the best work happens when you stop rushing.",
+  colors: {
+    cream: '#fffbf7',
+    sky: '#73b7df',
+    amber: '#eca461',
+    earth: '#352314',
+  },
+}
+
+// Hook to fetch Sanity content
+function useSanityContent() {
+  const [content, setContent] = useState<LandingPageContent>(defaultContent)
+  const [loading, setLoading] = useState(true)
+  
+  useEffect(() => {
+    getLandingPageContent().then((data) => {
+      if (data) {
+        setContent({ ...defaultContent, ...data })
+      }
+      setLoading(false)
+    })
+  }, [])
+  
+  return { content, loading }
+}
 
 // ============================================
 // Brand Colors
@@ -607,59 +654,35 @@ const AnimatedBlobDivider = ({ flip = false, color = colors.cream }: { flip?: bo
 )
 
 // ============================================
-// Feature Data
+// Feature Data Helper
 // ============================================
 
-const features: Array<{
-  title: string
-  desc: string
-  colorShift: number
-  shape: ShapeType
-}> = [
-  {
-    title: 'Space to Think',
-    desc: 'Your workspace clears itself. What remains is just you and the work that matters.',
-    colorShift: 0,
-    shape: 'sphere',
-  },
-  {
-    title: 'Quiet When You Need It',
-    desc: 'Notifications wait for you — not the other way around. Your attention is yours to give.',
-    colorShift: 1,
-    shape: 'torus',
-  },
-  {
-    title: 'Room to Breathe',
-    desc: 'Async by nature. Your team moves at their own pace, together.',
-    colorShift: 2,
-    shape: 'octahedron',
-  },
-  {
-    title: 'Insight Without Intrusion',
-    desc: 'See where time flows. No tracking, no surveillance — just clarity.',
-    colorShift: 3,
-    shape: 'torusKnot',
-  },
-]
+function mapFeatures(features: LandingPageContent['features']) {
+  return features.map((f, i) => ({
+    title: f.title,
+    desc: f.description,
+    colorShift: i,
+    shape: f.shape as ShapeType,
+  }))
+}
 
 // ============================================
 // Header Component with Mobile Menu
 // ============================================
 
-function Header() {
+function Header({ brandName }: { brandName: string }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   
   return (
     <>
       <header style={styles.header}>
-        <Link to="/" style={styles.backLink} className="back-link">← Back</Link>
-        <div style={styles.logo}>Calm</div>
+        <div style={styles.headerSpacer} />
+        <div style={styles.logo}>{brandName}</div>
         
         {/* Desktop nav */}
         <nav style={styles.nav} className="desktop-nav">
           <a href="#features" style={styles.navLink}>Features</a>
           <a href="#philosophy" style={styles.navLink}>Philosophy</a>
-          <a href="#" style={styles.navCta}>Begin Your Journey</a>
         </nav>
         
         {/* Mobile hamburger */}
@@ -696,7 +719,6 @@ function Header() {
       >
         <a href="#features" style={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Features</a>
         <a href="#philosophy" style={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>Philosophy</a>
-        <a href="#" style={styles.mobileNavCta} onClick={() => setMobileMenuOpen(false)}>Begin Your Journey</a>
       </div>
     </>
   )
@@ -707,6 +729,10 @@ function Header() {
 // ============================================
 
 function DomainWarpPage() {
+  // Fetch content from Sanity (with fallback defaults)
+  const { content } = useSanityContent()
+  const features = mapFeatures(content.features)
+  
   // Refs for GSAP animations
   const introRef = useRef<HTMLDivElement>(null)
   const introLabelRef = useRef<HTMLSpanElement>(null)
@@ -885,7 +911,7 @@ function DomainWarpPage() {
       <Leva hidden={true} />
       
       {/* Header */}
-      <Header />
+      <Header brandName={content.brandName} />
       
       {/* Hero Section — Full Shader */}
       <section style={styles.hero} className="hero-section">
@@ -908,17 +934,15 @@ function DomainWarpPage() {
       {/* Intro Section */}
       <section ref={introRef} style={styles.intro}>
         <div style={styles.introInner}>
-          <span ref={introLabelRef} style={styles.introLabel}>Let your work breathe</span>
+          <span ref={introLabelRef} style={styles.introLabel}>{content.tagline}</span>
           <h1 ref={introTitleRef} style={styles.introTitle}>
-            Where good work<br />
-            <em style={styles.introItalic}>finds its rhythm</em>
+            {content.headline}<br />
+            <em style={styles.introItalic}>{content.headlineEmphasis}</em>
           </h1>
           <p ref={introSubRef} style={styles.introSub}>
-            Some teams rush. Others flow. Calm is for the ones who know 
-            that the best ideas arrive when you stop chasing them.
+            {content.subheadline}
           </p>
           <div ref={introCtasRef} style={styles.introCtas}>
-            <a href="#" style={styles.primaryCta}>Try it free</a>
             <a href="#features" style={styles.secondaryCta}>See how it works</a>
           </div>
         </div>
@@ -933,10 +957,10 @@ function DomainWarpPage() {
       <section id="features" style={styles.features}>
         <div style={styles.featuresInner}>
           <div ref={featuresHeaderRef} style={styles.featuresHeader}>
-            <span style={styles.featuresLabel}>The gentle way</span>
+            <span style={styles.featuresLabel}>{content.featuresLabel}</span>
             <h2 style={styles.featuresTitle}>
-              Tools that settle,<br />
-              <em>never startle</em>
+              {content.featuresTitle}<br />
+              <em>{content.featuresTitleEmphasis}</em>
             </h2>
           </div>
           
@@ -981,9 +1005,9 @@ function DomainWarpPage() {
         <div style={styles.philosophyInner}>
           <blockquote data-quote style={styles.quote}>
             <p style={styles.quoteText}>
-              "Slow down.<br />
-              <em>The work will wait.</em><br />
-              <span style={styles.quoteHighlight}>You're worth more than your output.</span>"
+              "{content.quote}<br />
+              <em>{content.quoteEmphasis}</em><br />
+              <span style={styles.quoteHighlight}>{content.quoteHighlight}</span>"
             </p>
           </blockquote>
           <div style={styles.quoteAttr}>
@@ -1003,11 +1027,10 @@ function DomainWarpPage() {
           
           {/* Center content */}
           <div data-cta-content style={styles.ctaInner}>
-            <h2 style={styles.ctaTitle}>Ready to slow down?</h2>
+            <h2 style={styles.ctaTitle}>{content.ctaTitle}</h2>
             <p style={styles.ctaSub}>
-              Join teams who've learned that the best work happens when you stop rushing.
+              {content.ctaSubtitle}
             </p>
-            <a href="#" style={styles.ctaButton}>Begin</a>
           </div>
           
           {/* Right sphere */}
@@ -1021,19 +1044,17 @@ function DomainWarpPage() {
       <footer style={styles.footer}>
         <div style={styles.footerContent}>
           <div style={styles.footerMinimal}>
-            <div style={styles.footerLogo}>Calm</div>
+            <div style={styles.footerLogo}>{content.brandName}</div>
             <nav style={styles.footerNav}>
               <a href="#features" style={styles.footerNavLink}>Features</a>
               <a href="#philosophy" style={styles.footerNavLink}>Philosophy</a>
-              <a href="#" style={styles.footerNavLink}>Pricing</a>
-              <a href="#" style={styles.footerNavLink}>Say Hello</a>
             </nav>
           </div>
           
           <div style={styles.footerBottom}>
-            <span>© 2026 Calm</span>
+            <span>© {new Date().getFullYear()} {content.brandName}</span>
             <span style={styles.footerCredit}>
-              Shader by <a href="https://iquilezles.org/" style={styles.footerCreditLink}>Inigo Quilez</a>
+              Shader inspired by <a href="https://iquilezles.org/" target="_blank" rel="noopener noreferrer" style={styles.footerCreditLink}>Inigo Quilez</a>
             </span>
           </div>
         </div>
@@ -1108,13 +1129,8 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'rgba(255, 251, 247, 0.85)',
     backdropFilter: 'blur(12px)',
   },
-  backLink: {
-    color: colors.textMuted,
-    textDecoration: 'none',
-    fontSize: '0.875rem',
-    fontWeight: 400,
+  headerSpacer: {
     justifySelf: 'start',
-    transition: 'color 0.2s',
   },
   logo: {
     fontFamily: "'Fraunces', serif",
