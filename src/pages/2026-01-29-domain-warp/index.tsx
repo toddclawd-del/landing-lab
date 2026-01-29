@@ -1,7 +1,7 @@
 /**
  * Calm — Domain Warp Landing Page
  * BLUEPRINT: Warm organic flow, expensive + friendly
- * Shader: Domain warping with cream/sky blue/amber/earth brown palette
+ * Shader elements throughout, full-bleed only in hero
  */
 
 import { useRef, useMemo } from 'react'
@@ -27,108 +27,7 @@ const colors = {
 }
 
 // ============================================
-// Flowing Icon Components
-// ============================================
-
-const FlowIcon1 = () => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-    <path 
-      d="M8 24c0-8 4-16 16-16s16 8 16 16-4 16-16 16c-6 0-10-2-12-4" 
-      stroke={colors.sky} 
-      strokeWidth="2.5" 
-      strokeLinecap="round"
-      fill="none"
-    />
-    <path 
-      d="M16 24c0-4 2-8 8-8s8 4 8 8-2 8-8 8" 
-      stroke={colors.amber} 
-      strokeWidth="2.5" 
-      strokeLinecap="round"
-      fill="none"
-    />
-    <circle cx="24" cy="24" r="3" fill={colors.earth} />
-  </svg>
-)
-
-const FlowIcon2 = () => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-    <path 
-      d="M6 32c8-4 12-16 18-16s10 12 18 8" 
-      stroke={colors.amber} 
-      strokeWidth="2.5" 
-      strokeLinecap="round"
-      fill="none"
-    />
-    <path 
-      d="M6 24c8-2 14-10 18-10s10 8 18 6" 
-      stroke={colors.sky} 
-      strokeWidth="2.5" 
-      strokeLinecap="round"
-      fill="none"
-    />
-    <path 
-      d="M6 16c8 0 16-4 18-4s10 4 18 2" 
-      stroke={colors.earth} 
-      strokeWidth="2" 
-      strokeLinecap="round"
-      fill="none"
-      opacity="0.5"
-    />
-  </svg>
-)
-
-const FlowIcon3 = () => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-    <ellipse cx="24" cy="24" rx="18" ry="10" stroke={colors.sky} strokeWidth="2.5" fill="none" />
-    <ellipse cx="24" cy="24" rx="12" ry="6" stroke={colors.amber} strokeWidth="2.5" fill="none" />
-    <ellipse cx="24" cy="24" rx="5" ry="2.5" fill={colors.earth} />
-  </svg>
-)
-
-const FlowIcon4 = () => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-    <path 
-      d="M12 36 C16 28, 20 20, 24 12 C28 20, 32 28, 36 36" 
-      stroke={colors.sky} 
-      strokeWidth="2.5" 
-      strokeLinecap="round"
-      fill="none"
-    />
-    <path 
-      d="M18 36 C20 30, 22 24, 24 18 C26 24, 28 30, 30 36" 
-      stroke={colors.amber} 
-      strokeWidth="2.5" 
-      strokeLinecap="round"
-      fill="none"
-    />
-    <circle cx="24" cy="12" r="3" fill={colors.earth} />
-  </svg>
-)
-
-// ============================================
-// Organic Blob SVG
-// ============================================
-
-const BlobDivider = ({ flip = false }: { flip?: boolean }) => (
-  <svg 
-    viewBox="0 0 1440 120" 
-    style={{ 
-      width: '100%', 
-      height: 'auto', 
-      display: 'block',
-      transform: flip ? 'scaleY(-1)' : 'none',
-    }}
-    preserveAspectRatio="none"
-  >
-    <path 
-      d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" 
-      fill={colors.cream}
-    />
-  </svg>
-)
-
-// ============================================
-// Shader Code
+// Shared Shader Code
 // ============================================
 
 const vertexShader = `
@@ -155,12 +54,7 @@ uniform vec3 uColor1;
 uniform vec3 uColor2;
 uniform vec3 uColor3;
 uniform vec3 uColor4;
-
-vec2 hash22(vec2 p) {
-    vec3 a = fract(p.xyx * vec3(234.34, 435.345, 654.165));
-    a += dot(a, a + 34.23);
-    return fract(vec2(a.x * a.y, a.y * a.z));
-}
+uniform float uCircleMask;
 
 float hash21(vec2 p) {
     p = fract(p * vec2(234.34, 435.345));
@@ -223,6 +117,10 @@ void main() {
     vec2 uv = vUv;
     vec2 p = (uv - 0.5) * uScale;
     
+    // Circle mask for mini shaders
+    float dist = length(uv - 0.5);
+    float circleMask = uCircleMask > 0.5 ? smoothstep(0.5, 0.45, dist) : 1.0;
+    
     vec2 q, r;
     float f = pattern(p, q, r, uOctaves);
     
@@ -240,15 +138,15 @@ void main() {
     color = pow(color, vec3(0.95));
     color = clamp(color, 0.0, 1.0);
     
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, circleMask);
 }
 `
 
 // ============================================
-// Shader Mesh Component
+// Hero Shader (Full bleed)
 // ============================================
 
-function ShaderPlane() {
+function HeroShaderPlane() {
   const meshRef = useRef<THREE.Mesh>(null)
   
   const controls = useControls('Shader', {
@@ -283,6 +181,7 @@ function ShaderPlane() {
     uColor2: { value: new THREE.Color(shaderColors.color2) },
     uColor3: { value: new THREE.Color(shaderColors.color3) },
     uColor4: { value: new THREE.Color(shaderColors.color4) },
+    uCircleMask: { value: 0 },
   }), [])
   
   useFrame((state) => {
@@ -317,29 +216,173 @@ function ShaderPlane() {
 }
 
 // ============================================
+// Mini Shader Orb (for feature icons)
+// ============================================
+
+interface MiniShaderProps {
+  size?: number
+  scale?: number
+  speed?: number
+  offset?: number
+  colorShift?: number
+}
+
+function MiniShaderPlane({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  
+  // Shift colors based on colorShift prop
+  const baseColors = [
+    ['#ffffff', '#73b7df', '#eca461', '#352314'],
+    ['#ffffff', '#eca461', '#73b7df', '#352314'],
+    ['#73b7df', '#ffffff', '#352314', '#eca461'],
+    ['#eca461', '#ffffff', '#73b7df', '#352314'],
+  ]
+  const colorSet = baseColors[colorShift % baseColors.length]
+  
+  const uniforms = useMemo(() => ({
+    uTime: { value: offset },
+    uScale: { value: scale },
+    uWarpIntensity1: { value: 4.0 },
+    uWarpIntensity2: { value: 4.0 },
+    uAnimSpeed: { value: speed },
+    uOctaves: { value: 3 },
+    uLacunarity: { value: 2.2 },
+    uGain: { value: 0.5 },
+    uColorVariation: { value: 0.6 },
+    uColor1: { value: new THREE.Color(colorSet[0]) },
+    uColor2: { value: new THREE.Color(colorSet[1]) },
+    uColor3: { value: new THREE.Color(colorSet[2]) },
+    uColor4: { value: new THREE.Color(colorSet[3]) },
+    uCircleMask: { value: 1 },
+  }), [scale, speed, offset, colorSet])
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      const material = meshRef.current.material as THREE.ShaderMaterial
+      material.uniforms.uTime.value = state.clock.elapsedTime + offset
+    }
+  })
+  
+  return (
+    <mesh ref={meshRef}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+        uniforms={uniforms}
+        transparent={true}
+      />
+    </mesh>
+  )
+}
+
+function MiniShaderOrb({ size = 120, scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
+  return (
+    <div style={{ 
+      width: size, 
+      height: size, 
+      borderRadius: '50%', 
+      overflow: 'hidden',
+      boxShadow: '0 8px 40px rgba(53, 35, 20, 0.12)',
+    }}>
+      <Canvas
+        camera={{ position: [0, 0, 1], fov: 50 }}
+        style={{ width: '100%', height: '100%' }}
+        gl={{ alpha: true }}
+      >
+        <MiniShaderPlane scale={scale} speed={speed} offset={offset} colorShift={colorShift} />
+      </Canvas>
+    </div>
+  )
+}
+
+// ============================================
+// Shader Strip (for accents)
+// ============================================
+
+function ShaderStrip({ height = 80, speed = 0.1 }: { height?: number, speed?: number }) {
+  return (
+    <div style={{ 
+      width: '100%', 
+      height,
+      overflow: 'hidden',
+      opacity: 0.6,
+    }}>
+      <Canvas
+        camera={{ position: [0, 0, 1], fov: 50 }}
+        style={{ width: '100%', height: '100%' }}
+      >
+        <MiniShaderPlane scale={8} speed={speed} offset={100} colorShift={2} />
+      </Canvas>
+    </div>
+  )
+}
+
+// ============================================
+// Animated Blob Divider
+// ============================================
+
+const AnimatedBlobDivider = ({ flip = false, color = colors.cream }: { flip?: boolean, color?: string }) => (
+  <div style={{ 
+    width: '100%', 
+    overflow: 'hidden',
+    transform: flip ? 'scaleY(-1)' : 'none',
+    marginTop: flip ? 0 : -1,
+    marginBottom: flip ? -1 : 0,
+  }}>
+    <svg 
+      viewBox="0 0 1440 120" 
+      style={{ 
+        width: '100%', 
+        height: 'auto', 
+        display: 'block',
+        animation: 'blobFloat 8s ease-in-out infinite',
+      }}
+      preserveAspectRatio="none"
+    >
+      <path 
+        d="M0,60 C240,100 480,20 720,60 C960,100 1200,20 1440,60 L1440,120 L0,120 Z" 
+        fill={color}
+      >
+        <animate 
+          attributeName="d" 
+          dur="8s" 
+          repeatCount="indefinite"
+          values="
+            M0,60 C240,100 480,20 720,60 C960,100 1200,20 1440,60 L1440,120 L0,120 Z;
+            M0,60 C240,20 480,100 720,60 C960,20 1200,100 1440,60 L1440,120 L0,120 Z;
+            M0,60 C240,100 480,20 720,60 C960,100 1200,20 1440,60 L1440,120 L0,120 Z
+          "
+        />
+      </path>
+    </svg>
+  </div>
+)
+
+// ============================================
 // Feature Data
 // ============================================
 
 const features = [
   {
-    icon: <FlowIcon1 />,
     title: 'Focused Workspaces',
     desc: 'Distraction-free environments that adapt to how you work. No clutter, no overwhelm — just you and your best thinking.',
+    colorShift: 0,
   },
   {
-    icon: <FlowIcon2 />,
     title: 'Mindful Notifications',
     desc: 'Smart batching and quiet hours built in. Stay informed without being interrupted. Your attention is sacred.',
+    colorShift: 1,
   },
   {
-    icon: <FlowIcon3 />,
     title: 'Team Breathing Room',
     desc: 'Async-first collaboration that respects everyone\'s time and creative flow. Great work happens when people aren\'t rushed.',
+    colorShift: 2,
   },
   {
-    icon: <FlowIcon4 />,
     title: 'Clarity Reports',
     desc: 'Understand where time goes without micromanaging. Insights that illuminate, not surveillance that suffocates.',
+    colorShift: 3,
   },
 ]
 
@@ -369,7 +412,7 @@ function DomainWarpPage() {
           camera={{ position: [0, 0, 1], fov: 50 }}
           style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
         >
-          <ShaderPlane />
+          <HeroShaderPlane />
         </Canvas>
         
         {/* Scroll indicator */}
@@ -399,12 +442,12 @@ function DomainWarpPage() {
         </div>
       </section>
       
-      {/* Blob transition */}
-      <div style={{ background: '#fff', marginTop: -1 }}>
-        <BlobDivider />
+      {/* Animated blob transition */}
+      <div style={{ background: '#fff' }}>
+        <AnimatedBlobDivider />
       </div>
 
-      {/* Features Section — Editorial Layout */}
+      {/* Features Section */}
       <section id="features" style={styles.features}>
         <div style={styles.featuresInner}>
           <div style={styles.featuresHeader}>
@@ -424,8 +467,14 @@ function DomainWarpPage() {
                   flexDirection: i % 2 === 0 ? 'row' : 'row-reverse',
                 }}
               >
-                <div style={styles.featureIcon}>
-                  {feature.icon}
+                <div style={styles.featureIconWrapper}>
+                  <MiniShaderOrb 
+                    size={140} 
+                    scale={3 + i * 0.5} 
+                    speed={0.12 + i * 0.02} 
+                    offset={i * 10} 
+                    colorShift={feature.colorShift}
+                  />
                 </div>
                 <div style={styles.featureContent}>
                   <span style={styles.featureNumber}>0{i + 1}</span>
@@ -438,8 +487,24 @@ function DomainWarpPage() {
         </div>
       </section>
       
+      {/* Blob transition to philosophy */}
+      <div style={{ background: colors.cream }}>
+        <AnimatedBlobDivider color={colors.earth} />
+      </div>
+      
       {/* Philosophy Section */}
       <section id="philosophy" style={styles.philosophy}>
+        {/* Subtle shader accent behind */}
+        <div style={styles.philosophyShaderAccent}>
+          <Canvas
+            camera={{ position: [0, 0, 1], fov: 50 }}
+            style={{ width: '100%', height: '100%' }}
+            gl={{ alpha: true }}
+          >
+            <MiniShaderPlane scale={6} speed={0.08} offset={50} colorShift={2} />
+          </Canvas>
+        </div>
+        
         <div style={styles.philosophyInner}>
           <blockquote style={styles.quote}>
             <p style={styles.quoteText}>
@@ -455,8 +520,18 @@ function DomainWarpPage() {
         </div>
       </section>
       
-      {/* CTA Section */}
+      {/* CTA Section with shader background */}
       <section style={styles.ctaSection}>
+        {/* Shader background */}
+        <div style={styles.ctaShaderBg}>
+          <Canvas
+            camera={{ position: [0, 0, 1], fov: 50 }}
+            style={{ width: '100%', height: '100%' }}
+          >
+            <MiniShaderPlane scale={5} speed={0.06} offset={200} colorShift={0} />
+          </Canvas>
+        </div>
+        
         <div style={styles.ctaInner}>
           <h2 style={styles.ctaTitle}>Ready for calm?</h2>
           <p style={styles.ctaSub}>
@@ -466,41 +541,45 @@ function DomainWarpPage() {
         </div>
       </section>
       
-      {/* Footer */}
+      {/* Footer with shader strip */}
       <footer style={styles.footer}>
-        <div style={styles.footerInner}>
-          <div style={styles.footerBrand}>
-            <div style={styles.footerLogo}>Calm</div>
-            <p style={styles.footerTagline}>Work with intention.</p>
+        <ShaderStrip height={60} speed={0.05} />
+        
+        <div style={styles.footerContent}>
+          <div style={styles.footerInner}>
+            <div style={styles.footerBrand}>
+              <div style={styles.footerLogo}>Calm</div>
+              <p style={styles.footerTagline}>Work with intention.</p>
+            </div>
+            
+            <div style={styles.footerLinks}>
+              <div style={styles.footerCol}>
+                <span style={styles.footerColTitle}>Product</span>
+                <a href="#" style={styles.footerLink}>Features</a>
+                <a href="#" style={styles.footerLink}>Pricing</a>
+                <a href="#" style={styles.footerLink}>Integrations</a>
+              </div>
+              <div style={styles.footerCol}>
+                <span style={styles.footerColTitle}>Company</span>
+                <a href="#" style={styles.footerLink}>Our Story</a>
+                <a href="#" style={styles.footerLink}>Journal</a>
+                <a href="#" style={styles.footerLink}>Careers</a>
+              </div>
+              <div style={styles.footerCol}>
+                <span style={styles.footerColTitle}>Connect</span>
+                <a href="#" style={styles.footerLink}>Twitter</a>
+                <a href="#" style={styles.footerLink}>LinkedIn</a>
+                <a href="#" style={styles.footerLink}>Say Hello</a>
+              </div>
+            </div>
           </div>
           
-          <div style={styles.footerLinks}>
-            <div style={styles.footerCol}>
-              <span style={styles.footerColTitle}>Product</span>
-              <a href="#" style={styles.footerLink}>Features</a>
-              <a href="#" style={styles.footerLink}>Pricing</a>
-              <a href="#" style={styles.footerLink}>Integrations</a>
-            </div>
-            <div style={styles.footerCol}>
-              <span style={styles.footerColTitle}>Company</span>
-              <a href="#" style={styles.footerLink}>Our Story</a>
-              <a href="#" style={styles.footerLink}>Journal</a>
-              <a href="#" style={styles.footerLink}>Careers</a>
-            </div>
-            <div style={styles.footerCol}>
-              <span style={styles.footerColTitle}>Connect</span>
-              <a href="#" style={styles.footerLink}>Twitter</a>
-              <a href="#" style={styles.footerLink}>LinkedIn</a>
-              <a href="#" style={styles.footerLink}>Say Hello</a>
-            </div>
+          <div style={styles.footerBottom}>
+            <span>© 2026 Calm. Made with intention.</span>
+            <span style={styles.footerCredit}>
+              Shader by <a href="https://iquilezles.org/" style={styles.footerCreditLink}>Inigo Quilez</a>
+            </span>
           </div>
-        </div>
-        
-        <div style={styles.footerBottom}>
-          <span>© 2026 Calm. Made with intention.</span>
-          <span style={styles.footerCredit}>
-            Shader by <a href="https://iquilezles.org/" style={styles.footerCreditLink}>Inigo Quilez</a>
-          </span>
         </div>
       </footer>
       
@@ -511,7 +590,12 @@ function DomainWarpPage() {
         
         @keyframes float {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
+          50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 0.8; }
         }
       `}</style>
     </div>
@@ -519,7 +603,7 @@ function DomainWarpPage() {
 }
 
 // ============================================
-// Styles — Warm Organic Flow
+// Styles
 // ============================================
 
 const styles: Record<string, React.CSSProperties> = {
@@ -528,6 +612,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: colors.cream,
     fontFamily: "'Inter', -apple-system, sans-serif",
     color: colors.text,
+    overflow: 'hidden',
   },
   
   // Header
@@ -726,16 +811,9 @@ const styles: Record<string, React.CSSProperties> = {
     flexWrap: 'wrap',
     justifyContent: 'center',
   },
-  featureIcon: {
+  featureIconWrapper: {
     flex: '0 0 auto',
-    width: 120,
-    height: 120,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(255,255,255,0.8)',
-    borderRadius: '50%',
-    boxShadow: '0 8px 40px rgba(53, 35, 20, 0.08)',
+    animation: 'float 6s ease-in-out infinite',
   },
   featureContent: {
     flex: '1 1 400px',
@@ -765,13 +843,28 @@ const styles: Record<string, React.CSSProperties> = {
   
   // Philosophy
   philosophy: {
+    position: 'relative',
     padding: '8rem 2rem',
     background: colors.earth,
+    overflow: 'hidden',
+  },
+  philosophyShaderAccent: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    height: 600,
+    borderRadius: '50%',
+    opacity: 0.15,
+    animation: 'pulse 8s ease-in-out infinite',
   },
   philosophyInner: {
+    position: 'relative',
     maxWidth: 900,
     margin: '0 auto',
     textAlign: 'center',
+    zIndex: 1,
   },
   quote: {
     marginBottom: '3rem',
@@ -803,13 +896,24 @@ const styles: Record<string, React.CSSProperties> = {
   
   // CTA Section
   ctaSection: {
+    position: 'relative',
     padding: '8rem 2rem',
-    background: `linear-gradient(135deg, ${colors.skyLight} 0%, ${colors.amberLight} 100%)`,
     textAlign: 'center',
+    overflow: 'hidden',
+  },
+  ctaShaderBg: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.5,
   },
   ctaInner: {
+    position: 'relative',
     maxWidth: 600,
     margin: '0 auto',
+    zIndex: 1,
   },
   ctaTitle: {
     fontFamily: "'Fraunces', serif",
@@ -840,8 +944,11 @@ const styles: Record<string, React.CSSProperties> = {
   
   // Footer
   footer: {
-    padding: '5rem 2rem 2rem',
     background: colors.warmWhite,
+    overflow: 'hidden',
+  },
+  footerContent: {
+    padding: '3rem 2rem 2rem',
   },
   footerInner: {
     maxWidth: 1100,
