@@ -494,17 +494,6 @@ function DomainWarpPage() {
       
       {/* Philosophy Section */}
       <section id="philosophy" style={styles.philosophy}>
-        {/* Subtle shader accent behind */}
-        <div style={styles.philosophyShaderAccent}>
-          <Canvas
-            camera={{ position: [0, 0, 1], fov: 50 }}
-            style={{ width: '100%', height: '100%' }}
-            gl={{ alpha: true }}
-          >
-            <MiniShaderPlane scale={6} speed={0.08} offset={50} colorShift={2} />
-          </Canvas>
-        </div>
-        
         <div style={styles.philosophyInner}>
           <blockquote style={styles.quote}>
             <p style={styles.quoteText}>
@@ -520,16 +509,11 @@ function DomainWarpPage() {
         </div>
       </section>
       
-      {/* CTA Section with shader background */}
+      {/* CTA Section */}
       <section style={styles.ctaSection}>
-        {/* Shader background */}
-        <div style={styles.ctaShaderBg}>
-          <Canvas
-            camera={{ position: [0, 0, 1], fov: 50 }}
-            style={{ width: '100%', height: '100%' }}
-          >
-            <MiniShaderPlane scale={5} speed={0.06} offset={200} colorShift={0} />
-          </Canvas>
+        {/* Shader strip at top */}
+        <div style={styles.ctaShaderStrip}>
+          <ShaderStrip height={100} speed={0.08} />
         </div>
         
         <div style={styles.ctaInner}>
@@ -848,23 +832,10 @@ const styles: Record<string, React.CSSProperties> = {
     background: colors.earth,
     overflow: 'hidden',
   },
-  philosophyShaderAccent: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    height: 600,
-    borderRadius: '50%',
-    opacity: 0.15,
-    animation: 'pulse 8s ease-in-out infinite',
-  },
   philosophyInner: {
-    position: 'relative',
     maxWidth: 900,
     margin: '0 auto',
     textAlign: 'center',
-    zIndex: 1,
   },
   quote: {
     marginBottom: '3rem',
@@ -897,17 +868,16 @@ const styles: Record<string, React.CSSProperties> = {
   // CTA Section
   ctaSection: {
     position: 'relative',
-    padding: '8rem 2rem',
+    padding: '0 2rem 8rem',
     textAlign: 'center',
     overflow: 'hidden',
+    background: colors.cream,
   },
-  ctaShaderBg: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    opacity: 0.5,
+  ctaShaderStrip: {
+    width: '100%',
+    marginBottom: '4rem',
+    borderRadius: '0 0 50% 50% / 0 0 100% 100%',
+    overflow: 'hidden',
   },
   ctaInner: {
     position: 'relative',
