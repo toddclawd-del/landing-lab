@@ -612,26 +612,26 @@ const features: Array<{
   shape: ShapeType
 }> = [
   {
-    title: 'Focused Workspaces',
-    desc: 'Distraction-free environments that adapt to how you work. No clutter, no overwhelm — just you and your best thinking.',
+    title: 'Space to Think',
+    desc: 'Your workspace clears itself. What remains is just you and the work that matters.',
     colorShift: 0,
     shape: 'sphere',
   },
   {
-    title: 'Mindful Notifications',
-    desc: 'Smart batching and quiet hours built in. Stay informed without being interrupted. Your attention is sacred.',
+    title: 'Quiet When You Need It',
+    desc: 'Notifications wait for you — not the other way around. Your attention is yours to give.',
     colorShift: 1,
     shape: 'torus',
   },
   {
-    title: 'Team Breathing Room',
-    desc: 'Async-first collaboration that respects everyone\'s time and creative flow. Great work happens when people aren\'t rushed.',
+    title: 'Room to Breathe',
+    desc: 'Async by nature. Your team moves at their own pace, together.',
     colorShift: 2,
     shape: 'octahedron',
   },
   {
-    title: 'Clarity Reports',
-    desc: 'Understand where time goes without micromanaging. Insights that illuminate, not surveillance that suffocates.',
+    title: 'Insight Without Intrusion',
+    desc: 'See where time flows. No tracking, no surveillance — just clarity.',
     colorShift: 3,
     shape: 'torusKnot',
   },
@@ -728,19 +728,18 @@ function DomainWarpPage() {
       {/* Intro Section */}
       <section style={styles.intro}>
         <div style={styles.introInner}>
-          <span style={styles.introLabel}>A new way to work</span>
+          <span style={styles.introLabel}>Let your work breathe</span>
           <h1 style={styles.introTitle}>
-            Project management<br />
-            <em style={styles.introItalic}>for mindful teams</em>
+            Where good work<br />
+            <em style={styles.introItalic}>finds its rhythm</em>
           </h1>
           <p style={styles.introSub}>
-            Calm brings clarity to your workflow. Less noise, more focus, 
-            better work — designed for teams who value intentional productivity 
-            and believe great things take time.
+            Some teams rush. Others flow. Calm is for the ones who know 
+            that the best ideas arrive when you stop chasing them.
           </p>
           <div style={styles.introCtas}>
-            <a href="#" style={styles.primaryCta}>Start Free Trial</a>
-            <a href="#features" style={styles.secondaryCta}>Explore Features</a>
+            <a href="#" style={styles.primaryCta}>Try it free</a>
+            <a href="#features" style={styles.secondaryCta}>See how it works</a>
           </div>
         </div>
       </section>
@@ -754,10 +753,10 @@ function DomainWarpPage() {
       <section id="features" style={styles.features}>
         <div style={styles.featuresInner}>
           <div style={styles.featuresHeader}>
-            <span style={styles.featuresLabel}>What we offer</span>
+            <span style={styles.featuresLabel}>The gentle way</span>
             <h2 style={styles.featuresTitle}>
-              Everything you need,<br />
-              <em>nothing you don't</em>
+              Tools that settle,<br />
+              <em>never startle</em>
             </h2>
           </div>
           
@@ -801,14 +800,14 @@ function DomainWarpPage() {
         <div style={styles.philosophyInner}>
           <blockquote style={styles.quote}>
             <p style={styles.quoteText}>
-              "The best work doesn't come from<br />
-              <em>doing more</em> — it comes from<br />
-              <span style={styles.quoteHighlight}>doing what matters.</span>"
+              "Slow down.<br />
+              <em>The work will wait.</em><br />
+              <span style={styles.quoteHighlight}>You're worth more than your output.</span>"
             </p>
           </blockquote>
           <div style={styles.quoteAttr}>
             <div style={styles.quoteAttrLine} />
-            <span>Our founding belief</span>
+            <span>What we believe</span>
           </div>
         </div>
       </section>
@@ -823,11 +822,11 @@ function DomainWarpPage() {
           
           {/* Center content */}
           <div style={styles.ctaInner}>
-            <h2 style={styles.ctaTitle}>Ready for calm?</h2>
+            <h2 style={styles.ctaTitle}>Ready to slow down?</h2>
             <p style={styles.ctaSub}>
-              Join thousands of teams who've found a better way to work together.
+              Join teams who've learned that the best work happens when you stop rushing.
             </p>
-            <a href="#" style={styles.ctaButton}>Begin Your Journey</a>
+            <a href="#" style={styles.ctaButton}>Begin</a>
           </div>
           
           {/* Right sphere */}
@@ -837,39 +836,21 @@ function DomainWarpPage() {
         </div>
       </section>
       
-      {/* Footer */}
+      {/* Footer — Minimal */}
       <footer style={styles.footer}>
         <div style={styles.footerContent}>
-          <div style={styles.footerInner}>
-            <div style={styles.footerBrand}>
-              <div style={styles.footerLogo}>Calm</div>
-              <p style={styles.footerTagline}>Work with intention.</p>
-            </div>
-            
-            <div style={styles.footerLinks}>
-              <div style={styles.footerCol}>
-                <span style={styles.footerColTitle}>Product</span>
-                <a href="#" style={styles.footerLink}>Features</a>
-                <a href="#" style={styles.footerLink}>Pricing</a>
-                <a href="#" style={styles.footerLink}>Integrations</a>
-              </div>
-              <div style={styles.footerCol}>
-                <span style={styles.footerColTitle}>Company</span>
-                <a href="#" style={styles.footerLink}>Our Story</a>
-                <a href="#" style={styles.footerLink}>Journal</a>
-                <a href="#" style={styles.footerLink}>Careers</a>
-              </div>
-              <div style={styles.footerCol}>
-                <span style={styles.footerColTitle}>Connect</span>
-                <a href="#" style={styles.footerLink}>Twitter</a>
-                <a href="#" style={styles.footerLink}>LinkedIn</a>
-                <a href="#" style={styles.footerLink}>Say Hello</a>
-              </div>
-            </div>
+          <div style={styles.footerMinimal}>
+            <div style={styles.footerLogo}>Calm</div>
+            <nav style={styles.footerNav}>
+              <a href="#features" style={styles.footerNavLink}>Features</a>
+              <a href="#philosophy" style={styles.footerNavLink}>Philosophy</a>
+              <a href="#" style={styles.footerNavLink}>Pricing</a>
+              <a href="#" style={styles.footerNavLink}>Say Hello</a>
+            </nav>
           </div>
           
           <div style={styles.footerBottom}>
-            <span>© 2026 Calm. Made with intention.</span>
+            <span>© 2026 Calm</span>
             <span style={styles.footerCredit}>
               Shader by <a href="https://iquilezles.org/" style={styles.footerCreditLink}>Inigo Quilez</a>
             </span>
@@ -878,7 +859,7 @@ function DomainWarpPage() {
       </footer>
       
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         
@@ -927,7 +908,7 @@ const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: '100vh',
     background: colors.cream,
-    fontFamily: "'Inter', -apple-system, sans-serif",
+    fontFamily: "'Lora', Georgia, serif",
     color: colors.text,
     overflow: 'hidden',
   },
@@ -1308,55 +1289,31 @@ const styles: Record<string, React.CSSProperties> = {
   footerContent: {
     padding: '3rem 2rem 2rem',
   },
-  footerInner: {
+  footerMinimal: {
     maxWidth: 1100,
     margin: '0 auto',
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     flexWrap: 'wrap',
-    gap: '4rem',
-    marginBottom: '4rem',
-  },
-  footerBrand: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.75rem',
+    gap: '2rem',
+    marginBottom: '3rem',
   },
   footerLogo: {
     fontFamily: "'Fraunces', serif",
-    fontSize: '1.5rem',
+    fontSize: '1.75rem',
     fontWeight: 500,
     color: colors.earth,
   },
-  footerTagline: {
-    fontSize: '0.95rem',
-    color: colors.textMuted,
-    fontWeight: 300,
-    fontStyle: 'italic',
-  },
-  footerLinks: {
+  footerNav: {
     display: 'flex',
-    gap: '5rem',
+    gap: '2.5rem',
     flexWrap: 'wrap',
   },
-  footerCol: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.75rem',
-  },
-  footerColTitle: {
-    fontFamily: "'Fraunces', serif",
-    fontSize: '0.9rem',
-    fontWeight: 500,
-    color: colors.text,
-    marginBottom: '0.5rem',
-  },
-  footerLink: {
-    fontSize: '0.95rem',
+  footerNavLink: {
     color: colors.textMuted,
     textDecoration: 'none',
-    fontWeight: 300,
+    fontSize: '0.95rem',
     transition: 'color 0.2s',
   },
   footerBottom: {
