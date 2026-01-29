@@ -4,11 +4,16 @@
  * Shader elements throughout, full-bleed only in hero
  */
 
-import { useRef, useMemo, useState } from 'react'
+import { useRef, useMemo, useState, useLayoutEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useControls, Leva } from 'leva'
 import * as THREE from 'three'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger)
 
 // ============================================
 // Brand Colors
@@ -702,6 +707,179 @@ function Header() {
 // ============================================
 
 function DomainWarpPage() {
+  // Refs for GSAP animations
+  const introRef = useRef<HTMLDivElement>(null)
+  const introLabelRef = useRef<HTMLSpanElement>(null)
+  const introTitleRef = useRef<HTMLHeadingElement>(null)
+  const introSubRef = useRef<HTMLParagraphElement>(null)
+  const introCtasRef = useRef<HTMLDivElement>(null)
+  const featuresHeaderRef = useRef<HTMLDivElement>(null)
+  const featuresListRef = useRef<HTMLDivElement>(null)
+  const philosophyRef = useRef<HTMLDivElement>(null)
+  const ctaRef = useRef<HTMLDivElement>(null)
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null)
+  
+  // GSAP Animations
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      // Hero scroll indicator entrance
+      gsap.fromTo(scrollIndicatorRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 1.2, delay: 0.8, ease: 'power2.out' }
+      )
+      
+      // Scroll indicator fade on scroll
+      gsap.to(scrollIndicatorRef.current, {
+        opacity: 0,
+        y: -20,
+        scrollTrigger: {
+          trigger: scrollIndicatorRef.current,
+          start: 'top 80%',
+          end: 'top 50%',
+          scrub: true,
+        }
+      })
+      
+      // Intro section animations
+      const introTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: introRef.current,
+          start: 'top 75%',
+          end: 'top 25%',
+          toggleActions: 'play none none reverse',
+        }
+      })
+      
+      introTl
+        .fromTo(introLabelRef.current,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
+        )
+        .fromTo(introTitleRef.current,
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 1, ease: 'power3.out' },
+          '-=0.4'
+        )
+        .fromTo(introSubRef.current,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+          '-=0.5'
+        )
+        .fromTo(introCtasRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
+          '-=0.3'
+        )
+      
+      // Features header animation
+      gsap.fromTo(featuresHeaderRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: featuresHeaderRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          }
+        }
+      )
+      
+      // Feature items staggered entrance
+      const featureItems = featuresListRef.current?.querySelectorAll('[data-feature]')
+      if (featureItems) {
+        featureItems.forEach((item, i) => {
+          const isEven = i % 2 === 0
+          gsap.fromTo(item,
+            { 
+              opacity: 0, 
+              x: isEven ? -60 : 60,
+              y: 30,
+            },
+            {
+              opacity: 1,
+              x: 0,
+              y: 0,
+              duration: 1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: item,
+                start: 'top 85%',
+                toggleActions: 'play none none reverse',
+              }
+            }
+          )
+        })
+      }
+      
+      // Philosophy quote reveal
+      const quoteText = philosophyRef.current?.querySelector('[data-quote]')
+      if (quoteText) {
+        gsap.fromTo(quoteText,
+          { opacity: 0, y: 40, scale: 0.98 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1.2,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: philosophyRef.current,
+              start: 'top 70%',
+              toggleActions: 'play none none reverse',
+            }
+          }
+        )
+      }
+      
+      // CTA section with orbs floating in
+      const ctaOrbs = ctaRef.current?.querySelectorAll('[data-orb]')
+      const ctaContent = ctaRef.current?.querySelector('[data-cta-content]')
+      
+      if (ctaOrbs && ctaContent) {
+        const ctaTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: ctaRef.current,
+            start: 'top 75%',
+            toggleActions: 'play none none reverse',
+          }
+        })
+        
+        ctaTl
+          .fromTo(ctaOrbs[0],
+            { opacity: 0, x: -100, scale: 0.8, rotation: -15 },
+            { opacity: 1, x: 0, scale: 1, rotation: 0, duration: 1.2, ease: 'power3.out' }
+          )
+          .fromTo(ctaOrbs[1],
+            { opacity: 0, x: 100, scale: 0.8, rotation: 15 },
+            { opacity: 1, x: 0, scale: 1, rotation: 0, duration: 1.2, ease: 'power3.out' },
+            '-=1'
+          )
+          .fromTo(ctaContent,
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+            '-=0.6'
+          )
+      }
+      
+      // Parallax effect on hero shader
+      gsap.to('.hero-shader-container', {
+        yPercent: 30,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.hero-section',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        }
+      })
+    })
+    
+    return () => ctx.revert()
+  }, [])
+  
   return (
     <div style={styles.page}>
       <Leva hidden={true} />
@@ -710,34 +888,36 @@ function DomainWarpPage() {
       <Header />
       
       {/* Hero Section — Full Shader */}
-      <section style={styles.hero}>
-        <Canvas
-          camera={{ position: [0, 0, 1], fov: 50 }}
-          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-        >
-          <HeroShaderPlane />
-        </Canvas>
+      <section style={styles.hero} className="hero-section">
+        <div className="hero-shader-container" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '120%' }}>
+          <Canvas
+            camera={{ position: [0, 0, 1], fov: 50 }}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+          >
+            <HeroShaderPlane />
+          </Canvas>
+        </div>
         
         {/* Scroll indicator */}
-        <div style={styles.scrollIndicator}>
+        <div ref={scrollIndicatorRef} style={styles.scrollIndicator}>
           <div style={styles.scrollLine} />
           <span style={styles.scrollText}>Discover</span>
         </div>
       </section>
       
       {/* Intro Section */}
-      <section style={styles.intro}>
+      <section ref={introRef} style={styles.intro}>
         <div style={styles.introInner}>
-          <span style={styles.introLabel}>Let your work breathe</span>
-          <h1 style={styles.introTitle}>
+          <span ref={introLabelRef} style={styles.introLabel}>Let your work breathe</span>
+          <h1 ref={introTitleRef} style={styles.introTitle}>
             Where good work<br />
             <em style={styles.introItalic}>finds its rhythm</em>
           </h1>
-          <p style={styles.introSub}>
+          <p ref={introSubRef} style={styles.introSub}>
             Some teams rush. Others flow. Calm is for the ones who know 
             that the best ideas arrive when you stop chasing them.
           </p>
-          <div style={styles.introCtas}>
+          <div ref={introCtasRef} style={styles.introCtas}>
             <a href="#" style={styles.primaryCta}>Try it free</a>
             <a href="#features" style={styles.secondaryCta}>See how it works</a>
           </div>
@@ -752,7 +932,7 @@ function DomainWarpPage() {
       {/* Features Section */}
       <section id="features" style={styles.features}>
         <div style={styles.featuresInner}>
-          <div style={styles.featuresHeader}>
+          <div ref={featuresHeaderRef} style={styles.featuresHeader}>
             <span style={styles.featuresLabel}>The gentle way</span>
             <h2 style={styles.featuresTitle}>
               Tools that settle,<br />
@@ -760,10 +940,11 @@ function DomainWarpPage() {
             </h2>
           </div>
           
-          <div style={styles.featuresList}>
+          <div ref={featuresListRef} style={styles.featuresList}>
             {features.map((feature, i) => (
               <div 
-                key={i} 
+                key={i}
+                data-feature
                 style={{
                   ...styles.featureItem,
                   flexDirection: i % 2 === 0 ? 'row' : 'row-reverse',
@@ -796,9 +977,9 @@ function DomainWarpPage() {
       </div>
       
       {/* Philosophy Section */}
-      <section id="philosophy" style={styles.philosophy}>
+      <section ref={philosophyRef} id="philosophy" style={styles.philosophy}>
         <div style={styles.philosophyInner}>
-          <blockquote style={styles.quote}>
+          <blockquote data-quote style={styles.quote}>
             <p style={styles.quoteText}>
               "Slow down.<br />
               <em>The work will wait.</em><br />
@@ -813,15 +994,15 @@ function DomainWarpPage() {
       </section>
       
       {/* CTA Section */}
-      <section style={styles.ctaSection}>
+      <section ref={ctaRef} style={styles.ctaSection}>
         <div style={styles.ctaLayout}>
           {/* Left sphere */}
-          <div style={styles.ctaOrb}>
+          <div data-orb style={styles.ctaOrb}>
             <ShaderSphere size={180} scale={3} speed={0.1} offset={0} colorShift={0} />
           </div>
           
           {/* Center content */}
-          <div style={styles.ctaInner}>
+          <div data-cta-content style={styles.ctaInner}>
             <h2 style={styles.ctaTitle}>Ready to slow down?</h2>
             <p style={styles.ctaSub}>
               Join teams who've learned that the best work happens when you stop rushing.
@@ -830,7 +1011,7 @@ function DomainWarpPage() {
           </div>
           
           {/* Right sphere */}
-          <div style={styles.ctaOrb}>
+          <div data-orb style={styles.ctaOrb}>
             <ShaderSphere size={180} scale={3.5} speed={0.12} offset={20} colorShift={1} />
           </div>
         </div>
