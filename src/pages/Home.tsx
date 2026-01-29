@@ -9,6 +9,12 @@ interface LandingPage {
 
 const pages: LandingPage[] = [
   {
+    slug: 'domain-warp',
+    title: 'Domain Warp',
+    inspiration: 'Scandinavian clean SaaS landing with organic domain warping shader background',
+    date: '2026-01-29'
+  },
+  {
     slug: 'cylinder-text',
     title: 'Cylinder Text',
     inspiration: '3D rotating text cylinder with scroll-driven animation — creative studio showcase',

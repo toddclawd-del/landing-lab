@@ -7,6 +7,7 @@ import SunnySide from './pages/2026-01-28-sunny-side'
 import VoodooBracket from './pages/2026-01-28-voodoo-bracket'
 import BentoGrid from './pages/2026-01-29-bento-grid'
 import CylinderTextPage from './pages/2026-01-29-cylinder-text'
+import DomainWarpPage from './pages/2026-01-29-domain-warp'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/voodoo-bracket" element={<VoodooBracket />} />
         <Route path="/bento-grid" element={<BentoGrid />} />
         <Route path="/cylinder-text" element={<CylinderTextPage />} />
+        <Route path="/domain-warp" element={<DomainWarpPage />} />
       </Routes>
     </HashRouter>
   )
