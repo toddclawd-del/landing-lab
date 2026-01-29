@@ -413,6 +413,7 @@ const styles: Record<string, React.CSSProperties> = {
     height: '100vh',
     minHeight: 600,
     overflow: 'hidden',
+    background: '#000',
   },
   scrollIndicator: {
     position: 'absolute',
