@@ -9,6 +9,12 @@ interface LandingPage {
 
 const pages: LandingPage[] = [
   {
+    slug: 'cylinder-text',
+    title: 'Cylinder Text',
+    inspiration: '3D rotating text cylinder with scroll-driven animation — creative studio showcase',
+    date: '2026-01-29'
+  },
+  {
     slug: 'bento-grid',
     title: 'Bento Grid 2.0',
     inspiration: 'Interactive bento tiles with hover reveals, animated gradients, micro-interactions',
