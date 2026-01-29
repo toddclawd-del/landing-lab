@@ -1,0 +1,139 @@
+/* Mobile-first responsive styles for Bento Grid */
+
+/* Hide nav links on mobile */
+@media (max-width: 768px) {
+  .navLinks {
+    display: none;
+  }
+  
+  .navButton {
+    padding: 0.65rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Hero grid adjustments */
+@media (max-width: 1024px) {
+  .heroGrid {
+    grid-template-columns: 1fr !important;
+    gap: 3rem !important;
+  }
+  
+  .heroText {
+    text-align: center;
+  }
+  
+  .heroCtas {
+    justify-content: center;
+  }
+}
+
+/* Bento grid responsive */
+@media (max-width: 768px) {
+  .bentoGrid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  
+  .bentoTileLarge {
+    grid-column: span 2 !important;
+    grid-row: span 1 !important;
+  }
+  
+  .bentoTileWide {
+    grid-column: span 2 !important;
+  }
+  
+  .bentoTileTall {
+    grid-row: span 1 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .bentoGrid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .bentoTileLarge,
+  .bentoTileWide,
+  .bentoTileTall {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+  }
+}
+
+/* Services grid responsive */
+@media (max-width: 1024px) {
+  .servicesGrid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .servicesGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .servicesGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Work grid responsive */
+@media (max-width: 1024px) {
+  .workGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .workGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Stats responsive */
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Footer responsive */
+@media (max-width: 768px) {
+  .footerGrid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 2rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .footerGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Section padding responsive */
+@media (max-width: 768px) {
+  .section {
+    padding: 4rem 1.5rem !important;
+  }
+}
+
+/* Font size adjustments */
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: clamp(2rem, 8vw, 3rem) !important;
+  }
+  
+  .sectionTitle {
+    font-size: clamp(1.5rem, 6vw, 2rem) !important;
+  }
+}

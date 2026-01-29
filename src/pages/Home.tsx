@@ -9,6 +9,12 @@ interface LandingPage {
 
 const pages: LandingPage[] = [
   {
+    slug: 'bento-grid',
+    title: 'Bento Grid 2.0',
+    inspiration: 'Interactive bento tiles with hover reveals, animated gradients, micro-interactions',
+    date: '2026-01-29'
+  },
+  {
     slug: 'voodoo-bracket',
     title: 'Voodoo Bracket',
     inspiration: 'March Madness bracket picker with Voodoo Ranger beer branding',

@@ -199,6 +199,121 @@ Design techniques and concepts learned from building landing pages.
 
 ---
 
+## 2026-01-29 — Bento Grid 2.0
+
+**Reference:** [Haddington Creative - 2026 Trends](https://www.haddingtoncreative.com/post/the-top-web-design-trends-of-2026) | [Mockuuups Studio - Best Bento Grids](https://mockuuups.studio/blog/post/best-bento-grid-design-examples/) | [WriterDock - Bento Grids & Beyond](https://writerdock.in/blog/bento-grids-and-beyond-7-ui-trends-dominating-web-design-2026)
+
+### 🎓 Concepts & Techniques
+
+**1. The Bento Box Philosophy**
+- Inspired by Japanese lunch boxes where food is organized in modular compartments
+- Each tile is self-contained—functions independently but creates harmony as a whole
+- Allows dense information display without clutter; users "scan" tiles like scanning a menu
+- In 2026, Bento has evolved from static to "Active Grid"—tiles respond, reveal, animate
+
+**2. Variable Aspect Ratios (Breaking the Square)**
+- Traditional grids use uniform squares; modern Bento uses mixed sizes
+- `span: 'large'` (2x2), `span: 'wide'` (2x1), `span: 'tall'` (1x2) create visual hierarchy
+- Large tiles = primary content, small tiles = secondary/accent
+- Tall cards work especially well for mobile-first designs (vertical scroll)
+
+**3. Hover Reveal Patterns**
+- Static tiles are passive; interactive tiles create engagement
+- `AnimatePresence` enables smooth content transitions on hover
+- Reveal patterns: overlay with secondary info, zoom into detail, play video/animation
+- Hover state should provide *new* information, not just visual feedback
+
+**4. Colored Soft Shadows (Glow Effects)**
+- Traditional drop shadows are black/gray; modern shadows match accent colors
+- `box-shadow: 0 20px 60px -15px ${accentColor}30` creates a "glow" effect
+- Colored shadows make elements feel like they're emitting light, not just elevated
+- Pair with dark backgrounds for maximum impact
+
+**5. Animated Gradient Backgrounds (Pseudo-Video)**
+- Rotating conic gradients with heavy blur simulate ambient video
+- Less weight than actual video files; achieves similar "living" feel
+- Use `filter: blur(60px)` on a rotating element for smooth diffusion
+- Lower opacity (0.08-0.15) keeps content readable while adding depth
+
+**6. The "Tile Personality" Concept**
+- Each tile can have its own accent color, creating a diverse but unified palette
+- Hover states intensify that tile's personality (brighter glow, more opacity)
+- This technique guides the eye without explicit visual hierarchy markers
+
+**7. Micro-Interactions Within Tiles**
+- Corner glows that appear on hover
+- Scale transforms (1.02x) that make tiles feel "lifted"
+- Content that shifts/reveals secondary information
+- These small touches make the grid feel tactile and responsive
+
+**8. Staggered Grid Animations**
+- Tiles animate in with `delay: index * 0.1` for cascade effect
+- `useInView` with `once: true` prevents re-triggering on scroll back
+- Animation direction should follow reading pattern (left-to-right, top-to-bottom)
+
+**9. Glassmorphism Integration**
+- Hover overlays use `backdrop-filter: blur(8px)` for frosted glass effect
+- Semi-transparent backgrounds (10-15% opacity) let underlying content show through
+- Works best when there's something interesting beneath (gradients, images)
+
+**10. Responsive Grid Collapse Strategy**
+- Desktop: Full bento with varied spans (4+ columns)
+- Tablet: Reduce to 2-3 columns, `large` becomes `wide`
+- Mobile: Single column, all spans become `normal`
+- Use CSS Grid's `repeat()` with media queries or React hooks for breakpoints
+
+### 📋 Implementation Notes
+
+**Components Built:**
+- `BentoTile` — Core tile component with hover detection, AnimatePresence reveals, colored shadows
+- `AnimatedGradient` — Rotating conic gradient with blur for pseudo-video backgrounds
+- `FloatingOrb` — Animated blur circles for ambient background motion
+- `MagneticWrapper` — Cursor-following wrapper with spring physics
+- `WaveText` — Character-level hover animation with color shift
+- `AnimatedCounter` — Number count-up animation triggered on scroll
+- `GlassButton` — Glassmorphic buttons with hover states
+- `ServiceIcon` — SVG icons for service tiles
+- `Nav` — Fixed nav with scroll-triggered glassmorphism
+- `Hero` — Two-column layout with text + bento grid preview
+- `Services` — 5-column service cards with hover reveals
+- `Work` — Portfolio bento grid with gradient backgrounds
+- `Stats` — Animated counters in grid layout
+- `CTA` — Centered call-to-action with floating orbs
+- `Footer` — Multi-column links layout
+
+**Key Dependencies:**
+- `framer-motion` — AnimatePresence, useInView, useMotionValue, useSpring
+- React hooks — useRef, useEffect, useState, custom `useMediaQuery`
+
+**Animation Techniques Used:**
+- Hover-triggered content reveals with AnimatePresence
+- Rotating conic gradients for "video-like" tile backgrounds
+- Spring physics for magnetic cursor following
+- Staggered scroll-in animations
+- Scale/shadow transitions on hover
+- Character-level wave animations
+- Counter animations with useInView trigger
+
+**Responsive Strategy:**
+- Custom `useMediaQuery` hook for breakpoint detection
+- `useIsMobile()` and `useIsTablet()` convenience hooks
+- Conditional grid column counts, gaps, and padding
+- Nav links hidden on mobile, button simplified
+- Bento spans collapse gracefully on smaller screens
+
+**Score: 90/100**
+
+| Category | Score | Notes |
+|----------|-------|-------|
+| Visual Impact | 23/25 | Stunning hover effects, animated gradients, colored glows |
+| Modern Feel | 19/20 | Nails 2026 Bento 2.0: interactive tiles, variable ratios, micro-interactions |
+| Code Quality | 14/15 | Clean component architecture, TypeScript, custom hooks |
+| Animation/Motion | 14/15 | Hover reveals, AnimatePresence, spring physics, gradient rotation |
+| Responsiveness | 13/15 | Mobile hooks, adaptive grids; could add hamburger menu |
+| Performance | 7/10 | No heavy assets; continuous gradient animations run (could throttle) |
+
+---
+
 ## Template
 
 ### YYYY-MM-DD — [Trend Name]

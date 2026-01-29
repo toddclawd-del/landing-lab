@@ -5,6 +5,7 @@ import VercelMinimal from './pages/2026-01-27-vercel-minimal'
 import KineticTypography from './pages/2026-01-28-kinetic-typography'
 import SunnySide from './pages/2026-01-28-sunny-side'
 import VoodooBracket from './pages/2026-01-28-voodoo-bracket'
+import BentoGrid from './pages/2026-01-29-bento-grid'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/kinetic-typography" element={<KineticTypography />} />
         <Route path="/sunny-side" element={<SunnySide />} />
         <Route path="/voodoo-bracket" element={<VoodooBracket />} />
+        <Route path="/bento-grid" element={<BentoGrid />} />
       </Routes>
     </HashRouter>
   )
