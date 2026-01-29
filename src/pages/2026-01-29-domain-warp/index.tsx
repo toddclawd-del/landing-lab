@@ -300,46 +300,7 @@ function MiniShaderOrb({ size = 120, scale = 3, speed = 0.15, offset = 0, colorS
 // Shader Strip (for accents) - Full bleed, no circle mask
 // ============================================
 
-function ShaderStripPlane({ scale = 8, speed = 0.1, offset = 0 }: { scale?: number, speed?: number, offset?: number }) {
-  const meshRef = useRef<THREE.Mesh>(null)
-  
-  const uniforms = useMemo(() => ({
-    uTime: { value: offset },
-    uScale: { value: scale },
-    uWarpIntensity1: { value: 4.0 },
-    uWarpIntensity2: { value: 4.0 },
-    uAnimSpeed: { value: speed },
-    uOctaves: { value: 3 },
-    uLacunarity: { value: 2.2 },
-    uGain: { value: 0.5 },
-    uColorVariation: { value: 0.6 },
-    uColor1: { value: new THREE.Color('#ffffff') },
-    uColor2: { value: new THREE.Color('#73b7df') },
-    uColor3: { value: new THREE.Color('#eca461') },
-    uColor4: { value: new THREE.Color('#352314') },
-    uCircleMask: { value: 0 }, // No circle mask for strips
-  }), [scale, speed, offset])
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      const material = meshRef.current.material as THREE.ShaderMaterial
-      material.uniforms.uTime.value = state.clock.elapsedTime + offset
-    }
-  })
-  
-  return (
-    <mesh ref={meshRef}>
-      <planeGeometry args={[2, 2]} />
-      <shaderMaterial
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        uniforms={uniforms}
-      />
-    </mesh>
-  )
-}
-
-function ShaderStrip({ height = 80, speed = 0.1 }: { height?: number, speed?: number }) {
+function ShaderStrip({ height = 100, speed = 0.1 }: { height?: number, speed?: number }) {
   return (
     <div style={{ 
       width: '100%', 
@@ -347,13 +308,63 @@ function ShaderStrip({ height = 80, speed = 0.1 }: { height?: number, speed?: nu
       overflow: 'hidden',
     }}>
       <Canvas
-        camera={{ position: [0, 0, 1], fov: 50 }}
-        style={{ width: '100%', height: '100%' }}
+        orthographic
+        camera={{ 
+          zoom: 1,
+          position: [0, 0, 1],
+          left: -1,
+          right: 1,
+          top: 1,
+          bottom: -1,
+        }}
+        style={{ 
+          width: '100%', 
+          height: '100%',
+          display: 'block',
+        }}
+        gl={{ antialias: true }}
       >
-        <ShaderStripPlane scale={12} speed={speed} offset={100} />
+        <mesh scale={[2, 2, 1]}>
+          <planeGeometry args={[1, 1]} />
+          <shaderMaterial
+            vertexShader={vertexShader}
+            fragmentShader={fragmentShader}
+            uniforms={{
+              uTime: { value: 0 },
+              uScale: { value: 10 },
+              uWarpIntensity1: { value: 4.0 },
+              uWarpIntensity2: { value: 4.0 },
+              uAnimSpeed: { value: speed },
+              uOctaves: { value: 3 },
+              uLacunarity: { value: 2.2 },
+              uGain: { value: 0.5 },
+              uColorVariation: { value: 0.6 },
+              uColor1: { value: new THREE.Color('#ffffff') },
+              uColor2: { value: new THREE.Color('#73b7df') },
+              uColor3: { value: new THREE.Color('#eca461') },
+              uColor4: { value: new THREE.Color('#352314') },
+              uCircleMask: { value: 0 },
+            }}
+          />
+        </mesh>
+        <ShaderStripAnimator speed={speed} />
       </Canvas>
     </div>
   )
+}
+
+// Separate component to handle animation
+function ShaderStripAnimator({ speed: _speed }: { speed: number }) {
+  useFrame((state) => {
+    const mesh = state.scene.children[0] as THREE.Mesh
+    if (mesh?.material) {
+      const material = mesh.material as THREE.ShaderMaterial
+      if (material.uniforms?.uTime) {
+        material.uniforms.uTime.value = state.clock.elapsedTime
+      }
+    }
+  })
+  return null
 }
 
 // ============================================
@@ -565,7 +576,7 @@ function DomainWarpPage() {
       
       {/* Footer with shader strip */}
       <footer style={styles.footer}>
-        <ShaderStrip height={60} speed={0.05} />
+        <ShaderStrip height={100} speed={0.05} />
         
         <div style={styles.footerContent}>
           <div style={styles.footerInner}>
