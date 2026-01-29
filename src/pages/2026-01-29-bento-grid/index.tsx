@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, useInView, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, useInView, useMotionValue, useSpring, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 
 // ============================================
 // RESPONSIVE HOOK
@@ -79,11 +79,13 @@ const AnimatedGradient = ({
 const FloatingOrb = ({ 
   color, 
   size = 120, 
-  delay = 0 
+  delay = 0,
+  style = {}
 }: { 
   color: string; 
   size?: number; 
   delay?: number;
+  style?: React.CSSProperties;
 }) => {
   return (
     <motion.div
@@ -94,6 +96,7 @@ const FloatingOrb = ({
         borderRadius: '50%',
         background: `radial-gradient(circle, ${color}80 0%, ${color}00 70%)`,
         filter: 'blur(40px)',
+        ...style
       }}
       animate={{
         x: [0, 30, -20, 10, 0],
@@ -111,7 +114,7 @@ const FloatingOrb = ({
 };
 
 // ============================================
-// MAGNETIC WRAPPER
+// MAGNETIC WRAPPER (Desktop only)
 // ============================================
 const MagneticWrapper = ({ 
   children, 
@@ -123,6 +126,7 @@ const MagneticWrapper = ({
   strength?: number;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   
@@ -131,7 +135,7 @@ const MagneticWrapper = ({
   const springY = useSpring(y, springConfig);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+    if (isMobile || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -150,7 +154,7 @@ const MagneticWrapper = ({
       className={className}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ x: springX, y: springY }}
+      style={{ x: isMobile ? 0 : springX, y: isMobile ? 0 : springY }}
     >
       {children}
     </motion.div>
@@ -169,6 +173,7 @@ interface BentoTileProps {
   style?: React.CSSProperties;
   gradient?: boolean;
   gradientColors?: string[];
+  onClick?: () => void;
 }
 
 const BentoTile = ({ 
@@ -179,11 +184,13 @@ const BentoTile = ({
   hoverContent,
   style = {},
   gradient = false,
-  gradientColors = [colors.accent1, colors.accent2]
+  gradientColors = [colors.accent1, colors.accent2],
+  onClick
 }: BentoTileProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const [isHovered, setIsHovered] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const isMobile = useIsMobile();
 
   const getSpanStyle = (): React.CSSProperties => {
     switch (span) {
@@ -192,6 +199,14 @@ const BentoTile = ({
       case 'large': return { gridColumn: 'span 2', gridRow: 'span 2' };
       default: return {};
     }
+  };
+
+  // Mobile: toggle on tap, Desktop: hover
+  const handleInteraction = () => {
+    if (isMobile && hoverContent) {
+      setIsActive(!isActive);
+    }
+    onClick?.();
   };
 
   return (
@@ -204,21 +219,24 @@ const BentoTile = ({
         delay: delay,
         ease: [0.215, 0.61, 0.355, 1] 
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => !isMobile && setIsActive(true)}
+      onMouseLeave={() => !isMobile && setIsActive(false)}
+      onClick={handleInteraction}
       style={{
         position: 'relative',
         background: colors.bgCard,
         borderRadius: 24,
-        border: `1px solid ${isHovered ? colors.borderHover : colors.border}`,
+        border: `1px solid ${isActive ? colors.borderHover : colors.border}`,
         padding: '1.5rem',
         overflow: 'hidden',
         cursor: 'pointer',
         minHeight: span === 'tall' || span === 'large' ? 340 : 160,
-        boxShadow: isHovered 
+        boxShadow: isActive 
           ? `0 20px 60px -15px ${accentColor}30, 0 0 0 1px ${accentColor}20`
           : '0 4px 20px rgba(0,0,0,0.3)',
         transition: 'box-shadow 0.4s ease, border-color 0.3s ease',
+        WebkitTapHighlightColor: 'transparent',
+        touchAction: 'manipulation',
         ...getSpanStyle(),
         ...style
       }}
@@ -227,13 +245,13 @@ const BentoTile = ({
       {gradient && (
         <AnimatedGradient 
           colors={gradientColors} 
-          style={{ opacity: isHovered ? 0.15 : 0.08 }}
+          style={{ opacity: isActive ? 0.15 : 0.08 }}
         />
       )}
 
-      {/* Hover reveal overlay */}
+      {/* Hover/Tap reveal overlay */}
       <AnimatePresence>
-        {isHovered && hoverContent && (
+        {isActive && hoverContent && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -257,9 +275,9 @@ const BentoTile = ({
         )}
       </AnimatePresence>
 
-      {/* Scale effect on hover */}
+      {/* Scale effect on active */}
       <motion.div
-        animate={{ scale: isHovered ? 1.02 : 1 }}
+        animate={{ scale: isActive ? 1.02 : 1 }}
         transition={{ duration: 0.3 }}
         style={{ position: 'relative', zIndex: 1, height: '100%' }}
       >
@@ -268,7 +286,7 @@ const BentoTile = ({
 
       {/* Corner accent glow */}
       <motion.div
-        animate={{ opacity: isHovered ? 0.5 : 0 }}
+        animate={{ opacity: isActive ? 0.5 : 0 }}
         transition={{ duration: 0.4 }}
         style={{
           position: 'absolute',
@@ -282,18 +300,51 @@ const BentoTile = ({
           pointerEvents: 'none',
         }}
       />
+
+      {/* Mobile tap indicator */}
+      {isMobile && hoverContent && (
+        <div style={{
+          position: 'absolute',
+          bottom: 8,
+          right: 12,
+          fontSize: '0.7rem',
+          color: colors.textDim,
+          opacity: isActive ? 0 : 0.6,
+          transition: 'opacity 0.3s',
+        }}>
+          Tap to explore
+        </div>
+      )}
     </motion.div>
   );
 };
 
 // ============================================
-// WAVE TEXT (Hover animation)
+// WAVE TEXT (Hover animation - desktop only)
 // ============================================
 const WaveText = ({ text, className = '' }: { text: string; className?: string }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <span className={className} style={{ 
+        fontSize: '1.5rem', 
+        fontWeight: 800,
+        letterSpacing: '-0.02em'
+      }}>
+        {text}
+      </span>
+    );
+  }
 
   return (
-    <span className={className} style={{ display: 'inline-flex' }}>
+    <span className={className} style={{ 
+      display: 'inline-flex',
+      fontSize: '1.5rem', 
+      fontWeight: 800,
+      letterSpacing: '-0.02em'
+    }}>
       {text.split('').map((char, i) => (
         <motion.span
           key={i}
@@ -400,6 +451,7 @@ const GlassButton = ({
         boxShadow: isHovered && primary 
           ? `0 10px 40px ${colors.accent1}40`
           : 'none',
+        WebkitTapHighlightColor: 'transparent',
       }}
     >
       {children}
@@ -452,6 +504,48 @@ const ServiceIcon = ({ type }: { type: 'design' | 'dev' | 'brand' | 'motion' | '
 };
 
 // ============================================
+// PARALLAX SECTION (Mobile-friendly)
+// ============================================
+const ParallaxSection = ({ children, offset = 50 }: { children: React.ReactNode; offset?: number }) => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], [offset, -offset]);
+
+  return (
+    <motion.div ref={ref} style={{ y }}>
+      {children}
+    </motion.div>
+  );
+};
+
+// ============================================
+// SCROLL PROGRESS BAR
+// ============================================
+const ScrollProgress = () => {
+  const { scrollYProgress } = useScroll();
+  
+  return (
+    <motion.div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 3,
+        background: `linear-gradient(90deg, ${colors.accent1}, ${colors.accent2})`,
+        transformOrigin: '0%',
+        scaleX: scrollYProgress,
+        zIndex: 9999,
+      }}
+    />
+  );
+};
+
+// ============================================
 // NAVIGATION
 // ============================================
 const Nav = () => {
@@ -460,7 +554,7 @@ const Nav = () => {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -486,10 +580,7 @@ const Nav = () => {
       }}
     >
       <MagneticWrapper>
-        <WaveText 
-          text="PRISM" 
-          className=""
-        />
+        <WaveText text="PRISM" />
       </MagneticWrapper>
 
       <div style={{ 
@@ -499,7 +590,7 @@ const Nav = () => {
         fontSize: '0.9rem',
         fontWeight: 500,
       }}>
-        {!isMobile && ['Work', 'Services', 'About', 'Contact'].map((item, i) => (
+        {!isMobile && ['Work', 'Services', 'Process', 'Contact'].map((item, i) => (
           <motion.a
             key={item}
             href={`#${item.toLowerCase()}`}
@@ -540,9 +631,9 @@ const Hero = () => {
       overflow: 'hidden',
     }}>
       {/* Floating orbs background */}
-      <FloatingOrb color={colors.accent1} size={isMobile ? 120 : 200} delay={0} />
-      <FloatingOrb color={colors.accent2} size={isMobile ? 90 : 150} delay={2} />
-      <FloatingOrb color={colors.accent3} size={isMobile ? 100 : 180} delay={4} />
+      <FloatingOrb color={colors.accent1} size={isMobile ? 120 : 200} delay={0} style={{ top: '10%', left: '10%' }} />
+      <FloatingOrb color={colors.accent2} size={isMobile ? 90 : 150} delay={2} style={{ top: '60%', right: '20%' }} />
+      <FloatingOrb color={colors.accent3} size={isMobile ? 100 : 180} delay={4} style={{ bottom: '20%', left: '30%' }} />
 
       {/* Hero content grid */}
       <div style={{
@@ -579,7 +670,7 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             style={{
-              fontSize: 'clamp(3rem, 6vw, 5rem)',
+              fontSize: 'clamp(2.5rem, 6vw, 5rem)',
               fontWeight: 800,
               lineHeight: 1.05,
               letterSpacing: '-0.03em',
@@ -605,7 +696,7 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
             style={{
-              fontSize: '1.15rem',
+              fontSize: isMobile ? '1rem' : '1.15rem',
               color: colors.textMuted,
               lineHeight: 1.7,
               maxWidth: 480,
@@ -620,7 +711,11 @@ const Hero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            style={{ display: 'flex', gap: '1rem' }}
+            style={{ 
+              display: 'flex', 
+              gap: '1rem',
+              flexWrap: 'wrap'
+            }}
           >
             <GlassButton primary>View Our Work</GlassButton>
             <GlassButton>Learn More</GlassButton>
@@ -631,8 +726,8 @@ const Hero = () => {
         <div style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)',
-          gridTemplateRows: isMobile ? 'repeat(4, 100px)' : 'repeat(3, 120px)',
-          gap: isMobile ? '0.75rem' : '1rem',
+          gridTemplateRows: isMobile ? 'repeat(4, 90px)' : 'repeat(3, 120px)',
+          gap: isMobile ? '0.6rem' : '1rem',
         }}>
           {/* Large feature tile */}
           <BentoTile 
@@ -649,7 +744,7 @@ const Hero = () => {
               height: '100%'
             }}>
               <span style={{ 
-                fontSize: '0.8rem', 
+                fontSize: '0.75rem', 
                 color: colors.textDim,
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em'
@@ -658,14 +753,14 @@ const Hero = () => {
               </span>
               <div>
                 <h3 style={{ 
-                  fontSize: '1.75rem', 
+                  fontSize: isMobile ? '1.25rem' : '1.75rem', 
                   fontWeight: 700,
                   marginBottom: '0.5rem'
                 }}>
                   Nexus AI
                 </h3>
                 <p style={{ 
-                  fontSize: '0.9rem', 
+                  fontSize: '0.85rem', 
                   color: colors.textMuted 
                 }}>
                   Complete brand & web platform
@@ -715,7 +810,7 @@ const Hero = () => {
           <BentoTile delay={0.5} accentColor={colors.accent2}>
             <div style={{ textAlign: 'center' }}>
               <p style={{ 
-                fontSize: '2.5rem', 
+                fontSize: isMobile ? '1.75rem' : '2.5rem', 
                 fontWeight: 800,
                 background: `linear-gradient(135deg, ${colors.accent2}, ${colors.accent3})`,
                 WebkitBackgroundClip: 'text',
@@ -724,7 +819,7 @@ const Hero = () => {
                 <AnimatedCounter value={150} suffix="+" />
               </p>
               <p style={{ 
-                fontSize: '0.75rem', 
+                fontSize: '0.7rem', 
                 color: colors.textDim,
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em'
@@ -737,7 +832,7 @@ const Hero = () => {
           <BentoTile delay={0.6} accentColor={colors.accent4}>
             <div style={{ textAlign: 'center' }}>
               <p style={{ 
-                fontSize: '2.5rem', 
+                fontSize: isMobile ? '1.75rem' : '2.5rem', 
                 fontWeight: 800,
                 background: `linear-gradient(135deg, ${colors.accent4}, ${colors.accent5})`,
                 WebkitBackgroundClip: 'text',
@@ -746,7 +841,7 @@ const Hero = () => {
                 <AnimatedCounter value={98} suffix="%" />
               </p>
               <p style={{ 
-                fontSize: '0.75rem', 
+                fontSize: '0.7rem', 
                 color: colors.textDim,
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em'
@@ -800,6 +895,79 @@ const Hero = () => {
           />
         </motion.div>
       </motion.div>
+    </section>
+  );
+};
+
+// ============================================
+// CLIENTS/PARTNERS BENTO SECTION
+// ============================================
+const Clients = () => {
+  const isMobile = useIsMobile();
+  
+  const clients = [
+    { name: 'Stripe', logo: '💳' },
+    { name: 'Notion', logo: '📝' },
+    { name: 'Linear', logo: '🎯' },
+    { name: 'Vercel', logo: '▲' },
+    { name: 'Figma', logo: '🎨' },
+    { name: 'Framer', logo: '✨' },
+  ];
+
+  return (
+    <section style={{
+      padding: isMobile ? '3rem 1.25rem' : '4rem 4rem',
+      maxWidth: 1400,
+      margin: '0 auto',
+    }}>
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        style={{
+          textAlign: 'center',
+          color: colors.textDim,
+          fontSize: '0.85rem',
+          textTransform: 'uppercase',
+          letterSpacing: '0.15em',
+          marginBottom: '2rem'
+        }}
+      >
+        Trusted by innovative teams
+      </motion.p>
+      
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
+        gap: isMobile ? '0.5rem' : '1rem',
+      }}>
+        {clients.map((client, i) => (
+          <BentoTile
+            key={client.name}
+            delay={i * 0.05}
+            accentColor={colors.accent2}
+            style={{ minHeight: isMobile ? 80 : 100 }}
+          >
+            <div style={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem'
+            }}>
+              <span style={{ fontSize: isMobile ? '1.5rem' : '2rem' }}>{client.logo}</span>
+              <span style={{ 
+                fontSize: '0.75rem', 
+                color: colors.textMuted,
+                fontWeight: 500
+              }}>
+                {client.name}
+              </span>
+            </div>
+          </BentoTile>
+        ))}
+      </div>
     </section>
   );
 };
@@ -871,14 +1039,15 @@ const Services = () => {
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(3, 1fr)' : 'repeat(5, 1fr)',
-        gap: isMobile ? '0.75rem' : '1rem',
+        gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : isTablet ? 'repeat(3, 1fr)' : 'repeat(5, 1fr)',
+        gap: isMobile ? '0.6rem' : '1rem',
       }}>
         {services.map((service, i) => (
           <BentoTile
             key={service.type}
             delay={i * 0.1}
             accentColor={service.color}
+            span={isMobile && i === 4 ? 'wide' : 'normal'}
             hoverContent={
               <div style={{ textAlign: 'center' }}>
                 <motion.div
@@ -903,14 +1072,14 @@ const Services = () => {
               </div>
               <div>
                 <h3 style={{ 
-                  fontSize: '1.1rem', 
+                  fontSize: '1rem', 
                   fontWeight: 600,
                   marginBottom: '0.25rem' 
                 }}>
                   {service.title}
                 </h3>
                 <p style={{ 
-                  fontSize: '0.8rem', 
+                  fontSize: '0.75rem', 
                   color: colors.textMuted 
                 }}>
                   {service.desc}
@@ -919,6 +1088,131 @@ const Services = () => {
             </div>
           </BentoTile>
         ))}
+      </div>
+    </section>
+  );
+};
+
+// ============================================
+// PROCESS SECTION (New Bento Section)
+// ============================================
+const Process = () => {
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
+  
+  const steps = [
+    {
+      num: '01',
+      title: 'Discovery',
+      desc: 'We dive deep into your goals, audience, and market to uncover opportunities.',
+      color: colors.accent1,
+      span: 'wide' as const,
+    },
+    {
+      num: '02',
+      title: 'Strategy',
+      desc: 'Craft a roadmap that aligns creative vision with business objectives.',
+      color: colors.accent2,
+      span: 'normal' as const,
+    },
+    {
+      num: '03',
+      title: 'Design',
+      desc: 'Transform ideas into stunning visuals that resonate.',
+      color: colors.accent3,
+      span: 'tall' as const,
+    },
+    {
+      num: '04',
+      title: 'Build',
+      desc: 'Engineer pixel-perfect, performant solutions.',
+      color: colors.accent4,
+      span: 'wide' as const,
+    },
+    {
+      num: '05',
+      title: 'Launch',
+      desc: 'Deploy with confidence and ongoing support.',
+      color: colors.accent5,
+      span: 'normal' as const,
+    },
+  ];
+
+  return (
+    <section id="process" style={{
+      padding: isMobile ? '4rem 1.25rem' : '6rem 4rem',
+      background: colors.bgLight,
+    }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{ marginBottom: '3rem' }}
+        >
+          <h2 style={{
+            fontSize: 'clamp(2rem, 4vw, 3rem)',
+            fontWeight: 700,
+            marginBottom: '1rem',
+          }}>
+            How we work
+          </h2>
+          <p style={{ color: colors.textMuted, maxWidth: 500 }}>
+            A proven process refined over hundreds of successful projects.
+          </p>
+        </motion.div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : isTablet ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)',
+          gridAutoRows: isMobile ? '140px' : '160px',
+          gap: isMobile ? '0.6rem' : '1.25rem',
+        }}>
+          {steps.map((step, i) => (
+            <BentoTile
+              key={step.num}
+              span={isMobile ? 'normal' : step.span}
+              delay={i * 0.1}
+              accentColor={step.color}
+              gradient
+              gradientColors={[step.color, colors.bgCard]}
+            >
+              <div style={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+                <span style={{
+                  fontSize: '2.5rem',
+                  fontWeight: 800,
+                  color: step.color,
+                  opacity: 0.3,
+                  lineHeight: 1,
+                }}>
+                  {step.num}
+                </span>
+                <div>
+                  <h3 style={{ 
+                    fontSize: '1.1rem', 
+                    fontWeight: 600,
+                    marginBottom: '0.5rem' 
+                  }}>
+                    {step.title}
+                  </h3>
+                  <p style={{ 
+                    fontSize: '0.8rem', 
+                    color: colors.textMuted,
+                    lineHeight: 1.5
+                  }}>
+                    {step.desc}
+                  </p>
+                </div>
+              </div>
+            </BentoTile>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -967,7 +1261,6 @@ const Work = () => {
   return (
     <section id="work" style={{
       padding: isMobile ? '4rem 1.25rem' : '6rem 4rem',
-      background: colors.bgLight,
     }}>
       <div style={{ maxWidth: 1400, margin: '0 auto' }}>
         <motion.div
@@ -978,8 +1271,10 @@ const Work = () => {
           style={{ 
             marginBottom: '3rem',
             display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
             justifyContent: 'space-between',
-            alignItems: 'flex-end'
+            alignItems: isMobile ? 'flex-start' : 'flex-end',
+            gap: '1rem'
           }}
         >
           <div>
@@ -999,20 +1294,20 @@ const Work = () => {
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-          gridAutoRows: isMobile ? '160px' : '180px',
-          gap: isMobile ? '0.75rem' : '1.25rem',
+          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : isTablet ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+          gridAutoRows: isMobile ? '140px' : '180px',
+          gap: isMobile ? '0.6rem' : '1.25rem',
         }}>
           {projects.map((project, i) => (
             <BentoTile
               key={project.title}
-              span={project.span}
+              span={isMobile ? (i === 0 ? 'wide' : 'normal') : project.span}
               delay={i * 0.1}
               gradient
               gradientColors={project.colors}
               accentColor={project.colors[0]}
               style={{
-                minHeight: project.span === 'large' || project.span === 'tall' ? 380 : 180,
+                minHeight: (isMobile && i === 0) || project.span === 'large' || project.span === 'tall' ? 280 : 140,
               }}
               hoverContent={
                 <div style={{ textAlign: 'center' }}>
@@ -1032,7 +1327,7 @@ const Work = () => {
                 justifyContent: 'flex-end',
               }}>
                 <span style={{ 
-                  fontSize: '0.75rem', 
+                  fontSize: '0.7rem', 
                   color: colors.textDim,
                   textTransform: 'uppercase',
                   letterSpacing: '0.1em',
@@ -1041,7 +1336,7 @@ const Work = () => {
                   {project.category}
                 </span>
                 <h3 style={{ 
-                  fontSize: '1.5rem', 
+                  fontSize: isMobile ? '1.1rem' : '1.5rem', 
                   fontWeight: 700 
                 }}>
                   {project.title}
@@ -1056,16 +1351,137 @@ const Work = () => {
 };
 
 // ============================================
-// STATS SECTION
+// TESTIMONIALS BENTO SECTION
+// ============================================
+const Testimonials = () => {
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
+  
+  const testimonials = [
+    {
+      quote: "Prism transformed our entire digital presence. The results exceeded every expectation.",
+      author: "Alex Rivera",
+      role: "CEO, Quantum Labs",
+      color: colors.accent1,
+      span: 'wide' as const,
+    },
+    {
+      quote: "Their attention to detail is unmatched.",
+      author: "Maria Chen",
+      role: "Founder, Solace",
+      color: colors.accent3,
+      span: 'normal' as const,
+    },
+    {
+      quote: "Working with Prism felt like having an extension of our own team. Highly recommend.",
+      author: "James Park",
+      role: "CTO, Vertex",
+      color: colors.accent2,
+      span: 'tall' as const,
+    },
+    {
+      quote: "5 stars. Simply the best agency we've worked with.",
+      author: "Sarah Kim",
+      role: "CMO, Echo",
+      color: colors.accent4,
+      span: 'normal' as const,
+    },
+    {
+      quote: "They don't just build websites — they build experiences that convert.",
+      author: "David Liu",
+      role: "VP Product, Drift",
+      color: colors.accent5,
+      span: 'wide' as const,
+    },
+  ];
+
+  return (
+    <section style={{
+      padding: isMobile ? '4rem 1.25rem' : '6rem 4rem',
+      background: colors.bgLight,
+    }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{ marginBottom: '3rem', textAlign: 'center' }}
+        >
+          <h2 style={{
+            fontSize: 'clamp(2rem, 4vw, 3rem)',
+            fontWeight: 700,
+            marginBottom: '1rem',
+          }}>
+            What clients say
+          </h2>
+          <p style={{ color: colors.textMuted, maxWidth: 500, margin: '0 auto' }}>
+            Don't take our word for it — hear from the teams we've helped succeed.
+          </p>
+        </motion.div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : isTablet ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)',
+          gridAutoRows: isMobile ? '140px' : '160px',
+          gap: isMobile ? '0.6rem' : '1.25rem',
+        }}>
+          {testimonials.map((t, i) => (
+            <BentoTile
+              key={t.author}
+              span={isMobile ? 'normal' : t.span}
+              delay={i * 0.1}
+              accentColor={t.color}
+            >
+              <div style={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+                <p style={{ 
+                  fontSize: isMobile ? '0.8rem' : '0.95rem', 
+                  color: colors.text,
+                  lineHeight: 1.6,
+                  fontStyle: 'italic'
+                }}>
+                  "{t.quote}"
+                </p>
+                <div>
+                  <p style={{ 
+                    fontSize: '0.85rem', 
+                    fontWeight: 600,
+                    marginBottom: '0.1rem'
+                  }}>
+                    {t.author}
+                  </p>
+                  <p style={{ 
+                    fontSize: '0.7rem', 
+                    color: colors.textDim 
+                  }}>
+                    {t.role}
+                  </p>
+                </div>
+              </div>
+            </BentoTile>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ============================================
+// STATS SECTION (Bento style)
 // ============================================
 const Stats = () => {
   const isMobile = useIsMobile();
   
   const stats = [
-    { value: 8, suffix: '+', label: 'Years Experience' },
-    { value: 150, suffix: '+', label: 'Projects Delivered' },
-    { value: 45, suffix: 'M+', label: 'Users Reached' },
-    { value: 12, suffix: '', label: 'Industry Awards' },
+    { value: 8, suffix: '+', label: 'Years Experience', color: colors.accent1 },
+    { value: 150, suffix: '+', label: 'Projects Delivered', color: colors.accent2 },
+    { value: 45, suffix: 'M+', label: 'Users Reached', color: colors.accent3 },
+    { value: 12, suffix: '', label: 'Industry Awards', color: colors.accent4 },
   ];
 
   return (
@@ -1077,39 +1493,46 @@ const Stats = () => {
       <div style={{
         display: 'grid',
         gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-        gap: isMobile ? '1rem' : '2rem',
+        gap: isMobile ? '0.6rem' : '1rem',
       }}>
         {stats.map((stat, i) => (
-          <motion.div
+          <BentoTile
             key={stat.label}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: i * 0.1 }}
-            style={{
-              textAlign: 'center',
-              padding: '2rem',
-            }}
+            delay={i * 0.1}
+            accentColor={stat.color}
+            gradient
+            gradientColors={[stat.color, colors.bgCard]}
+            style={{ minHeight: isMobile ? 120 : 150 }}
           >
-            <p style={{
-              fontSize: 'clamp(3rem, 5vw, 4rem)',
-              fontWeight: 800,
-              background: `linear-gradient(135deg, ${colors.text} 0%, ${colors.textMuted} 100%)`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              marginBottom: '0.5rem',
+            <div style={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              textAlign: 'center',
             }}>
-              <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-            </p>
-            <p style={{
-              fontSize: '0.9rem',
-              color: colors.textDim,
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-            }}>
-              {stat.label}
-            </p>
-          </motion.div>
+              <p style={{
+                fontSize: 'clamp(2rem, 4vw, 3.5rem)',
+                fontWeight: 800,
+                background: `linear-gradient(135deg, ${stat.color} 0%, ${colors.text} 100%)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                marginBottom: '0.25rem',
+                lineHeight: 1,
+              }}>
+                <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+              </p>
+              <p style={{
+                fontSize: '0.75rem',
+                color: colors.textDim,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+              }}>
+                {stat.label}
+              </p>
+            </div>
+          </BentoTile>
         ))}
       </div>
     </section>
@@ -1117,166 +1540,214 @@ const Stats = () => {
 };
 
 // ============================================
-// CTA SECTION
+// CTA SECTION (Bento style)
 // ============================================
 const CTA = () => {
   const isMobile = useIsMobile();
   
   return (
     <section id="contact" style={{
-      padding: isMobile ? '5rem 1.25rem' : '8rem 4rem',
+      padding: isMobile ? '4rem 1.25rem' : '6rem 4rem',
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* Background orbs */}
-      <div style={{ 
-        position: 'absolute', 
-        inset: 0, 
-        pointerEvents: 'none',
-        opacity: 0.5
-      }}>
-        <FloatingOrb color={colors.accent1} size={300} delay={0} />
-        <FloatingOrb color={colors.accent2} size={250} delay={3} />
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        style={{
-          maxWidth: 800,
-          margin: '0 auto',
-          textAlign: 'center',
-          position: 'relative',
-          zIndex: 1,
-        }}
-      >
-        <h2 style={{
-          fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-          fontWeight: 800,
-          lineHeight: 1.1,
-          marginBottom: '1.5rem',
-        }}>
-          Ready to build
-          <br />
-          <span style={{
-            background: `linear-gradient(135deg, ${colors.accent1} 0%, ${colors.accent2} 50%, ${colors.accent3} 100%)`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}>
-            something extraordinary?
-          </span>
-        </h2>
-        <p style={{
-          fontSize: '1.15rem',
-          color: colors.textMuted,
-          marginBottom: '2.5rem',
-          maxWidth: 500,
-          margin: '0 auto 2.5rem',
-        }}>
-          Let's turn your vision into reality. We're ready when you are.
-        </p>
+      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
         <div style={{
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          gap: '1rem',
-          justifyContent: 'center',
-          alignItems: 'center',
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr',
+          gap: isMobile ? '1rem' : '2rem',
         }}>
-          <GlassButton primary>Start a Project</GlassButton>
-          <GlassButton>Schedule a Call</GlassButton>
+          {/* Main CTA tile */}
+          <BentoTile
+            gradient
+            gradientColors={[colors.accent1, colors.accent2, colors.accent3]}
+            accentColor={colors.accent1}
+            style={{ 
+              minHeight: isMobile ? 280 : 350,
+              padding: isMobile ? '2rem 1.5rem' : '3rem'
+            }}
+          >
+            <div style={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}>
+              <h2 style={{
+                fontSize: 'clamp(1.75rem, 4vw, 3rem)',
+                fontWeight: 800,
+                lineHeight: 1.1,
+                marginBottom: '1rem',
+              }}>
+                Ready to build
+                <br />
+                <span style={{
+                  background: `linear-gradient(135deg, ${colors.accent1} 0%, ${colors.accent2} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}>
+                  something extraordinary?
+                </span>
+              </h2>
+              <p style={{
+                fontSize: isMobile ? '0.95rem' : '1.1rem',
+                color: colors.textMuted,
+                marginBottom: '2rem',
+                maxWidth: 400,
+              }}>
+                Let's turn your vision into reality. We're ready when you are.
+              </p>
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '1rem',
+              }}>
+                <GlassButton primary>Start a Project</GlassButton>
+                <GlassButton>Schedule a Call</GlassButton>
+              </div>
+            </div>
+          </BentoTile>
+
+          {/* Side tiles */}
+          <div style={{
+            display: 'grid',
+            gridTemplateRows: '1fr 1fr',
+            gap: isMobile ? '1rem' : '2rem',
+          }}>
+            <BentoTile
+              accentColor={colors.accent4}
+              hoverContent={
+                <div style={{ textAlign: 'center' }}>
+                  <p style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📧</p>
+                  <p style={{ fontSize: '0.9rem' }}>hello@prism.studio</p>
+                </div>
+              }
+            >
+              <div style={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center'
+              }}>
+                <p style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📧</p>
+                <p style={{ fontSize: '0.85rem', color: colors.textMuted }}>
+                  Email Us
+                </p>
+              </div>
+            </BentoTile>
+
+            <BentoTile
+              accentColor={colors.accent5}
+              hoverContent={
+                <div style={{ textAlign: 'center' }}>
+                  <p style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📍</p>
+                  <p style={{ fontSize: '0.9rem' }}>San Francisco, CA</p>
+                </div>
+              }
+            >
+              <div style={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center'
+              }}>
+                <p style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📍</p>
+                <p style={{ fontSize: '0.85rem', color: colors.textMuted }}>
+                  Visit Us
+                </p>
+              </div>
+            </BentoTile>
+          </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };
 
 // ============================================
-// FOOTER
+// FOOTER (Bento style)
 // ============================================
 const Footer = () => {
   const isMobile = useIsMobile();
   
-  const links = [
-    { section: 'Studio', items: ['About', 'Team', 'Careers', 'Contact'] },
-    { section: 'Services', items: ['Design', 'Development', 'Branding', 'Motion'] },
-    { section: 'Social', items: ['Twitter', 'LinkedIn', 'Dribbble', 'Instagram'] },
+  const socialLinks = [
+    { name: 'Twitter', icon: '𝕏' },
+    { name: 'LinkedIn', icon: 'in' },
+    { name: 'Dribbble', icon: '🏀' },
+    { name: 'Instagram', icon: '📷' },
   ];
 
   return (
     <footer style={{
-      padding: isMobile ? '2.5rem 1.25rem' : '4rem',
+      padding: isMobile ? '3rem 1.25rem 2rem' : '4rem',
       borderTop: `1px solid ${colors.border}`,
       background: colors.bgLight,
     }}>
       <div style={{
         maxWidth: 1400,
         margin: '0 auto',
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr 1fr 1fr',
-        gap: isMobile ? '2rem' : '4rem',
       }}>
-        <div>
-          <WaveText text="PRISM" className="" />
-          <p style={{
-            color: colors.textMuted,
-            fontSize: '0.9rem',
-            marginTop: '1rem',
-            maxWidth: 300,
-            lineHeight: 1.6,
-          }}>
-            Crafting digital experiences that inspire and transform. 
-            Based in San Francisco, working worldwide.
-          </p>
+        {/* Social links as mini bento tiles */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: isMobile ? '0.5rem' : '1rem',
+          marginBottom: '3rem'
+        }}>
+          {socialLinks.map((link, i) => (
+            <BentoTile
+              key={link.name}
+              delay={i * 0.05}
+              accentColor={colors.accent1}
+              style={{ minHeight: isMobile ? 60 : 80 }}
+            >
+              <div style={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <span style={{ fontSize: isMobile ? '1.25rem' : '1.5rem' }}>{link.icon}</span>
+              </div>
+            </BentoTile>
+          ))}
         </div>
-        
-        {links.map((group) => (
-          <div key={group.section}>
-            <h4 style={{
-              fontSize: '0.85rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              color: colors.textDim,
-              marginBottom: '1rem',
-            }}>
-              {group.section}
-            </h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {group.items.map((item) => (
-                <li key={item} style={{ marginBottom: '0.5rem' }}>
-                  <motion.a
-                    href="#"
-                    style={{
-                      color: colors.textMuted,
-                      textDecoration: 'none',
-                      fontSize: '0.9rem',
-                      transition: 'color 0.2s ease',
-                    }}
-                    whileHover={{ color: colors.text }}
-                  >
-                    {item}
-                  </motion.a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
 
-      <div style={{
-        maxWidth: 1400,
-        margin: '4rem auto 0',
-        paddingTop: '2rem',
-        borderTop: `1px solid ${colors.border}`,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        fontSize: '0.85rem',
-        color: colors.textDim,
-      }}>
-        <p>© 2026 Studio Prism. All rights reserved.</p>
-        <p>Built with ♥ in San Francisco</p>
+        <div style={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: 'space-between',
+          alignItems: isMobile ? 'center' : 'flex-start',
+          gap: '1.5rem',
+          paddingTop: '2rem',
+          borderTop: `1px solid ${colors.border}`,
+        }}>
+          <div style={{ textAlign: isMobile ? 'center' : 'left' }}>
+            <WaveText text="PRISM" />
+            <p style={{
+              color: colors.textMuted,
+              fontSize: '0.85rem',
+              marginTop: '0.75rem',
+              maxWidth: 280,
+            }}>
+              Crafting digital experiences that inspire and transform.
+            </p>
+          </div>
+          
+          <div style={{ 
+            textAlign: isMobile ? 'center' : 'right',
+            fontSize: '0.8rem',
+            color: colors.textDim
+          }}>
+            <p>© 2026 Studio Prism</p>
+            <p style={{ marginTop: '0.25rem' }}>Built with ♥ in San Francisco</p>
+          </div>
+        </div>
       </div>
     </footer>
   );
@@ -1292,11 +1763,17 @@ const BentoGrid = () => {
       color: colors.text,
       fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
       minHeight: '100vh',
+      overflowX: 'hidden',
+      WebkitOverflowScrolling: 'touch',
     }}>
+      <ScrollProgress />
       <Nav />
       <Hero />
+      <Clients />
       <Services />
+      <Process />
       <Work />
+      <Testimonials />
       <Stats />
       <CTA />
       <Footer />
