@@ -544,7 +544,7 @@ function Shader3DShape({ size = 160, scale = 3, speed = 0.15, offset = 0, colorS
       filter: 'drop-shadow(0 12px 40px rgba(53, 35, 20, 0.2))',
     }}>
       <Canvas
-        camera={{ position: [0, 0, 2.5], fov: 45 }}
+        camera={{ position: [0, 0, 3.2], fov: 45 }}
         style={{ width: '100%', height: '100%' }}
         gl={{ alpha: true, antialias: true }}
       >
