@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, useInView, useMotionValue, useSpring, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, useInView, useMotionValue, useSpring, AnimatePresence, useScroll } from 'framer-motion';
 
 // ============================================
 // RESPONSIVE HOOK
@@ -501,25 +501,6 @@ const ServiceIcon = ({ type }: { type: 'design' | 'dev' | 'brand' | 'motion' | '
     ),
   };
   return <>{icons[type]}</>;
-};
-
-// ============================================
-// PARALLAX SECTION (Mobile-friendly)
-// ============================================
-const ParallaxSection = ({ children, offset = 50 }: { children: React.ReactNode; offset?: number }) => {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], [offset, -offset]);
-
-  return (
-    <motion.div ref={ref} style={{ y }}>
-      {children}
-    </motion.div>
-  );
 };
 
 // ============================================
