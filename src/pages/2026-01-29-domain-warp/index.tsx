@@ -276,25 +276,21 @@ function MiniShaderPlane({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 }
   )
 }
 
-function MiniShaderOrb({ size = 120, scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
-  return (
-    <div style={{ 
-      width: size, 
-      height: size, 
-      borderRadius: '50%', 
-      overflow: 'hidden',
-      boxShadow: '0 8px 40px rgba(53, 35, 20, 0.12)',
-    }}>
-      <Canvas
-        camera={{ position: [0, 0, 1], fov: 50 }}
-        style={{ width: '100%', height: '100%' }}
-        gl={{ alpha: true }}
-      >
-        <MiniShaderPlane scale={scale} speed={speed} offset={offset} colorShift={colorShift} />
-      </Canvas>
-    </div>
-  )
-}
+// Flat shader orb (kept for reference but using 3D shapes now)
+const _MiniShaderOrb = ({ size = 120, scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) => (
+  <div style={{ 
+    width: size, 
+    height: size, 
+    borderRadius: '50%', 
+    overflow: 'hidden',
+    boxShadow: '0 8px 40px rgba(53, 35, 20, 0.12)',
+  }}>
+    <Canvas camera={{ position: [0, 0, 1], fov: 50 }} style={{ width: '100%', height: '100%' }} gl={{ alpha: true }}>
+      <MiniShaderPlane scale={scale} speed={speed} offset={offset} colorShift={colorShift} />
+    </Canvas>
+  </div>
+)
+void _MiniShaderOrb // silence unused warning
 
 // ============================================
 // 3D Shader Sphere (for CTA section)
@@ -412,9 +408,8 @@ void main() {
 }
 `
 
-function ShaderSphereMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
-  const meshRef = useRef<THREE.Mesh>(null)
-  
+// Reusable hook for shader uniforms
+function useShaderUniforms(scale: number, speed: number, offset: number, colorShift: number) {
   const baseColors = [
     ['#ffffff', '#73b7df', '#eca461', '#352314'],
     ['#ffffff', '#eca461', '#73b7df', '#352314'],
@@ -423,7 +418,7 @@ function ShaderSphereMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 
   ]
   const colorSet = baseColors[colorShift % baseColors.length]
   
-  const uniforms = useMemo(() => ({
+  return useMemo(() => ({
     uTime: { value: offset },
     uScale: { value: scale },
     uWarpIntensity1: { value: 4.0 },
@@ -438,12 +433,17 @@ function ShaderSphereMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 
     uColor3: { value: new THREE.Color(colorSet[2]) },
     uColor4: { value: new THREE.Color(colorSet[3]) },
   }), [scale, speed, offset, colorSet])
+}
+
+// Sphere
+function ShaderSphereMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const uniforms = useShaderUniforms(scale, speed, offset, colorShift)
   
   useFrame((state) => {
     if (meshRef.current) {
       const material = meshRef.current.material as THREE.ShaderMaterial
       material.uniforms.uTime.value = state.clock.elapsedTime + offset
-      // Gentle rotation for 3D effect
       meshRef.current.rotation.y = state.clock.elapsedTime * 0.1
       meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.15) * 0.1
     }
@@ -452,16 +452,91 @@ function ShaderSphereMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 
   return (
     <mesh ref={meshRef}>
       <sphereGeometry args={[1, 128, 128]} />
-      <shaderMaterial
-        vertexShader={sphereVertexShader}
-        fragmentShader={sphereFragmentShader}
-        uniforms={uniforms}
-      />
+      <shaderMaterial vertexShader={sphereVertexShader} fragmentShader={sphereFragmentShader} uniforms={uniforms} />
     </mesh>
   )
 }
 
-function ShaderSphere({ size = 160, scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
+// Torus (donut)
+function ShaderTorusMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const uniforms = useShaderUniforms(scale, speed, offset, colorShift)
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      const material = meshRef.current.material as THREE.ShaderMaterial
+      material.uniforms.uTime.value = state.clock.elapsedTime + offset
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.15
+      meshRef.current.rotation.x = state.clock.elapsedTime * 0.1
+    }
+  })
+  
+  return (
+    <mesh ref={meshRef}>
+      <torusGeometry args={[0.7, 0.3, 64, 128]} />
+      <shaderMaterial vertexShader={sphereVertexShader} fragmentShader={sphereFragmentShader} uniforms={uniforms} />
+    </mesh>
+  )
+}
+
+// Octahedron
+function ShaderOctahedronMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const uniforms = useShaderUniforms(scale, speed, offset, colorShift)
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      const material = meshRef.current.material as THREE.ShaderMaterial
+      material.uniforms.uTime.value = state.clock.elapsedTime + offset
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.12
+      meshRef.current.rotation.z = state.clock.elapsedTime * 0.08
+    }
+  })
+  
+  return (
+    <mesh ref={meshRef}>
+      <octahedronGeometry args={[1, 2]} />
+      <shaderMaterial vertexShader={sphereVertexShader} fragmentShader={sphereFragmentShader} uniforms={uniforms} />
+    </mesh>
+  )
+}
+
+// Torus Knot
+function ShaderTorusKnotMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  const uniforms = useShaderUniforms(scale, speed, offset, colorShift)
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      const material = meshRef.current.material as THREE.ShaderMaterial
+      material.uniforms.uTime.value = state.clock.elapsedTime + offset
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.1
+      meshRef.current.rotation.x = state.clock.elapsedTime * 0.05
+    }
+  })
+  
+  return (
+    <mesh ref={meshRef} scale={0.6}>
+      <torusKnotGeometry args={[1, 0.3, 128, 32]} />
+      <shaderMaterial vertexShader={sphereVertexShader} fragmentShader={sphereFragmentShader} uniforms={uniforms} />
+    </mesh>
+  )
+}
+
+type ShapeType = 'sphere' | 'torus' | 'octahedron' | 'torusKnot'
+
+interface Shader3DShapeProps extends MiniShaderProps {
+  shape?: ShapeType
+}
+
+function Shader3DShape({ size = 160, scale = 3, speed = 0.15, offset = 0, colorShift = 0, shape = 'sphere' }: Shader3DShapeProps) {
+  const ShapeMesh = {
+    sphere: ShaderSphereMesh,
+    torus: ShaderTorusMesh,
+    octahedron: ShaderOctahedronMesh,
+    torusKnot: ShaderTorusKnotMesh,
+  }[shape]
+  
   return (
     <div style={{ 
       width: size, 
@@ -474,10 +549,15 @@ function ShaderSphere({ size = 160, scale = 3, speed = 0.15, offset = 0, colorSh
         gl={{ alpha: true, antialias: true }}
       >
         <ambientLight intensity={0.5} />
-        <ShaderSphereMesh scale={scale} speed={speed} offset={offset} colorShift={colorShift} />
+        <ShapeMesh scale={scale} speed={speed} offset={offset} colorShift={colorShift} />
       </Canvas>
     </div>
   )
+}
+
+// Keep ShaderSphere for backwards compatibility (CTA section)
+function ShaderSphere({ size = 160, scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
+  return <Shader3DShape size={size} scale={scale} speed={speed} offset={offset} colorShift={colorShift} shape="sphere" />
 }
 
 // ============================================
@@ -525,26 +605,35 @@ const AnimatedBlobDivider = ({ flip = false, color = colors.cream }: { flip?: bo
 // Feature Data
 // ============================================
 
-const features = [
+const features: Array<{
+  title: string
+  desc: string
+  colorShift: number
+  shape: ShapeType
+}> = [
   {
     title: 'Focused Workspaces',
     desc: 'Distraction-free environments that adapt to how you work. No clutter, no overwhelm — just you and your best thinking.',
     colorShift: 0,
+    shape: 'sphere',
   },
   {
     title: 'Mindful Notifications',
     desc: 'Smart batching and quiet hours built in. Stay informed without being interrupted. Your attention is sacred.',
     colorShift: 1,
+    shape: 'torus',
   },
   {
     title: 'Team Breathing Room',
     desc: 'Async-first collaboration that respects everyone\'s time and creative flow. Great work happens when people aren\'t rushed.',
     colorShift: 2,
+    shape: 'octahedron',
   },
   {
     title: 'Clarity Reports',
     desc: 'Understand where time goes without micromanaging. Insights that illuminate, not surveillance that suffocates.',
     colorShift: 3,
+    shape: 'torusKnot',
   },
 ]
 
@@ -630,12 +719,13 @@ function DomainWarpPage() {
                 }}
               >
                 <div style={styles.featureIconWrapper}>
-                  <MiniShaderOrb 
-                    size={140} 
-                    scale={3 + i * 0.5} 
+                  <Shader3DShape 
+                    size={160} 
+                    scale={3 + i * 0.3} 
                     speed={0.12 + i * 0.02} 
                     offset={i * 10} 
                     colorShift={feature.colorShift}
+                    shape={feature.shape}
                   />
                 </div>
                 <div style={styles.featureContent}>
