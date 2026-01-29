@@ -297,6 +297,79 @@ function MiniShaderOrb({ size = 120, scale = 3, speed = 0.15, offset = 0, colorS
 }
 
 // ============================================
+// 3D Shader Sphere (for CTA section)
+// ============================================
+
+function ShaderSphereMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  
+  const baseColors = [
+    ['#ffffff', '#73b7df', '#eca461', '#352314'],
+    ['#ffffff', '#eca461', '#73b7df', '#352314'],
+    ['#73b7df', '#ffffff', '#352314', '#eca461'],
+    ['#eca461', '#ffffff', '#73b7df', '#352314'],
+  ]
+  const colorSet = baseColors[colorShift % baseColors.length]
+  
+  const uniforms = useMemo(() => ({
+    uTime: { value: offset },
+    uScale: { value: scale },
+    uWarpIntensity1: { value: 4.0 },
+    uWarpIntensity2: { value: 4.0 },
+    uAnimSpeed: { value: speed },
+    uOctaves: { value: 3 },
+    uLacunarity: { value: 2.2 },
+    uGain: { value: 0.5 },
+    uColorVariation: { value: 0.6 },
+    uColor1: { value: new THREE.Color(colorSet[0]) },
+    uColor2: { value: new THREE.Color(colorSet[1]) },
+    uColor3: { value: new THREE.Color(colorSet[2]) },
+    uColor4: { value: new THREE.Color(colorSet[3]) },
+    uCircleMask: { value: 0 }, // No mask needed for sphere
+  }), [scale, speed, offset, colorSet])
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      const material = meshRef.current.material as THREE.ShaderMaterial
+      material.uniforms.uTime.value = state.clock.elapsedTime + offset
+      // Gentle rotation for 3D effect
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.1
+      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.15) * 0.1
+    }
+  })
+  
+  return (
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[1, 64, 64]} />
+      <shaderMaterial
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+        uniforms={uniforms}
+      />
+    </mesh>
+  )
+}
+
+function ShaderSphere({ size = 160, scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
+  return (
+    <div style={{ 
+      width: size, 
+      height: size,
+      filter: 'drop-shadow(0 12px 40px rgba(53, 35, 20, 0.2))',
+    }}>
+      <Canvas
+        camera={{ position: [0, 0, 2.5], fov: 45 }}
+        style={{ width: '100%', height: '100%' }}
+        gl={{ alpha: true, antialias: true }}
+      >
+        <ambientLight intensity={0.5} />
+        <ShaderSphereMesh scale={scale} speed={speed} offset={offset} colorShift={colorShift} />
+      </Canvas>
+    </div>
+  )
+}
+
+// ============================================
 // Animated Blob Divider
 // ============================================
 
@@ -490,9 +563,9 @@ function DomainWarpPage() {
       {/* CTA Section */}
       <section style={styles.ctaSection}>
         <div style={styles.ctaLayout}>
-          {/* Left orb */}
+          {/* Left sphere */}
           <div style={styles.ctaOrb}>
-            <MiniShaderOrb size={160} scale={3} speed={0.1} offset={0} colorShift={0} />
+            <ShaderSphere size={180} scale={3} speed={0.1} offset={0} colorShift={0} />
           </div>
           
           {/* Center content */}
@@ -504,9 +577,9 @@ function DomainWarpPage() {
             <a href="#" style={styles.ctaButton}>Begin Your Journey</a>
           </div>
           
-          {/* Right orb */}
+          {/* Right sphere */}
           <div style={styles.ctaOrb}>
-            <MiniShaderOrb size={160} scale={3.5} speed={0.12} offset={20} colorShift={1} />
+            <ShaderSphere size={180} scale={3.5} speed={0.12} offset={20} colorShift={1} />
           </div>
         </div>
       </section>
