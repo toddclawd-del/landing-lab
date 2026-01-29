@@ -135,21 +135,21 @@ function ShaderPlane() {
   const meshRef = useRef<THREE.Mesh>(null)
   
   const controls = useControls('Shader', {
-    scale: { value: 3.0, min: 0.5, max: 10, step: 0.1 },
-    warpIntensity1: { value: 4.0, min: 0, max: 10, step: 0.1 },
-    warpIntensity2: { value: 4.0, min: 0, max: 10, step: 0.1 },
-    animSpeed: { value: 0.08, min: 0, max: 0.5, step: 0.01 },
-    octaves: { value: 5, min: 1, max: 8, step: 1 },
-    lacunarity: { value: 2.0, min: 1, max: 4, step: 0.1 },
-    gain: { value: 0.5, min: 0.1, max: 0.9, step: 0.05 },
-    colorVariation: { value: 0.85, min: 0, max: 1, step: 0.05 },
+    scale: { value: 4.9, min: 0.5, max: 10, step: 0.1 },
+    warpIntensity1: { value: 6.3, min: 0, max: 10, step: 0.1 },
+    warpIntensity2: { value: 6.6, min: 0, max: 10, step: 0.1 },
+    animSpeed: { value: 0.34, min: 0, max: 0.5, step: 0.01 },
+    octaves: { value: 4, min: 1, max: 8, step: 1 },
+    lacunarity: { value: 2.6, min: 1, max: 4, step: 0.1 },
+    gain: { value: 0.45, min: 0.1, max: 0.9, step: 0.05 },
+    colorVariation: { value: 0.55, min: 0, max: 1, step: 0.05 },
   })
   
   const colors = useControls('Colors', {
-    color1: '#f8f9fa',      // Clean white
-    color2: '#4a90b8',      // Saturated blue
-    color3: '#8b5a2b',      // Rich brown
-    color4: '#d4e5f7',      // Sky blue
+    color1: '#ffffff',
+    color2: '#73b7df',
+    color3: '#eca461',
+    color4: '#352314',
   })
   
   const uniforms = useMemo(() => ({
@@ -206,7 +206,7 @@ function ShaderPlane() {
 function DomainWarpPage() {
   return (
     <div style={styles.page}>
-      <Leva collapsed={false} />
+      <Leva hidden={true} />
       
       {/* Header */}
       <header style={styles.header}>
