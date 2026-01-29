@@ -297,8 +297,47 @@ function MiniShaderOrb({ size = 120, scale = 3, speed = 0.15, offset = 0, colorS
 }
 
 // ============================================
-// Shader Strip (for accents)
+// Shader Strip (for accents) - Full bleed, no circle mask
 // ============================================
+
+function ShaderStripPlane({ scale = 8, speed = 0.1, offset = 0 }: { scale?: number, speed?: number, offset?: number }) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  
+  const uniforms = useMemo(() => ({
+    uTime: { value: offset },
+    uScale: { value: scale },
+    uWarpIntensity1: { value: 4.0 },
+    uWarpIntensity2: { value: 4.0 },
+    uAnimSpeed: { value: speed },
+    uOctaves: { value: 3 },
+    uLacunarity: { value: 2.2 },
+    uGain: { value: 0.5 },
+    uColorVariation: { value: 0.6 },
+    uColor1: { value: new THREE.Color('#ffffff') },
+    uColor2: { value: new THREE.Color('#73b7df') },
+    uColor3: { value: new THREE.Color('#eca461') },
+    uColor4: { value: new THREE.Color('#352314') },
+    uCircleMask: { value: 0 }, // No circle mask for strips
+  }), [scale, speed, offset])
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      const material = meshRef.current.material as THREE.ShaderMaterial
+      material.uniforms.uTime.value = state.clock.elapsedTime + offset
+    }
+  })
+  
+  return (
+    <mesh ref={meshRef}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
+        uniforms={uniforms}
+      />
+    </mesh>
+  )
+}
 
 function ShaderStrip({ height = 80, speed = 0.1 }: { height?: number, speed?: number }) {
   return (
@@ -306,13 +345,12 @@ function ShaderStrip({ height = 80, speed = 0.1 }: { height?: number, speed?: nu
       width: '100%', 
       height,
       overflow: 'hidden',
-      opacity: 0.6,
     }}>
       <Canvas
         camera={{ position: [0, 0, 1], fov: 50 }}
         style={{ width: '100%', height: '100%' }}
       >
-        <MiniShaderPlane scale={8} speed={speed} offset={100} colorShift={2} />
+        <ShaderStripPlane scale={12} speed={speed} offset={100} />
       </Canvas>
     </div>
   )
@@ -876,8 +914,6 @@ const styles: Record<string, React.CSSProperties> = {
   ctaShaderStrip: {
     width: '100%',
     marginBottom: '4rem',
-    borderRadius: '0 0 50% 50% / 0 0 100% 100%',
-    overflow: 'hidden',
   },
   ctaInner: {
     position: 'relative',
