@@ -142,14 +142,14 @@ function ShaderPlane() {
     octaves: { value: 5, min: 1, max: 8, step: 1 },
     lacunarity: { value: 2.0, min: 1, max: 4, step: 0.1 },
     gain: { value: 0.5, min: 0.1, max: 0.9, step: 0.05 },
-    colorVariation: { value: 0.6, min: 0, max: 1, step: 0.05 },
+    colorVariation: { value: 0.85, min: 0, max: 1, step: 0.05 },
   })
   
   const colors = useControls('Colors', {
-    color1: '#ffffff',      // White
-    color2: '#a8c5d9',      // Light blue
-    color3: '#c4a882',      // Brown/tan
-    color4: '#e8e4df',      // Warm white
+    color1: '#f8f9fa',      // Clean white
+    color2: '#4a90b8',      // Saturated blue
+    color3: '#8b5a2b',      // Rich brown
+    color4: '#d4e5f7',      // Sky blue
   })
   
   const uniforms = useMemo(() => ({
