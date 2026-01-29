@@ -120,14 +120,21 @@ function CylinderTextPage() {
 
   return (
     <div style={styles.container}>
-      {/* Back button */}
-      <Link to="/" style={styles.backButton}>
-        ← Back
-      </Link>
+      {/* Header */}
+      <header style={styles.header}>
+        <Link to="/" style={styles.logo}>
+          <span style={styles.logoIcon}>◆</span>
+          <span style={styles.logoText}>STUDIO</span>
+        </Link>
+        <nav style={styles.nav}>
+          <a href="#work" style={styles.navLink}>Work</a>
+          <a href="#about" style={styles.navLink}>About</a>
+          <a href="#contact" style={styles.navLink}>Contact</a>
+        </nav>
+      </header>
 
       {/* Hero Section */}
       <section style={styles.hero}>
-        <div style={styles.wordmark}>STUDIO</div>
         <h1 style={styles.heroTitle}>We create.</h1>
         <div style={styles.scrollIndicator}>
           <span style={styles.scrollText}>Scroll</span>
@@ -153,7 +160,7 @@ function CylinderTextPage() {
       </section>
 
       {/* Projects Section */}
-      <section style={styles.projectsSection}>
+      <section id="work" style={styles.projectsSection}>
         <h2 style={styles.projectsTitle}>Selected Work</h2>
         
         <div style={styles.projectsList}>
@@ -177,8 +184,35 @@ function CylinderTextPage() {
       </section>
 
       {/* Footer */}
-      <footer style={styles.footer}>
-        <span style={styles.footerText}>© 2026 Studio</span>
+      <footer id="contact" style={styles.footer}>
+        <div style={styles.footerTop}>
+          <div style={styles.footerCta}>
+            <h3 style={styles.footerHeading}>Let's work together</h3>
+            <a href="mailto:hello@studio.co" style={styles.footerEmail}>hello@studio.co</a>
+          </div>
+          
+          <div style={styles.footerLinks}>
+            <div style={styles.footerCol}>
+              <span style={styles.footerLabel}>Social</span>
+              <a href="#" style={styles.footerLink}>Instagram</a>
+              <a href="#" style={styles.footerLink}>Twitter</a>
+              <a href="#" style={styles.footerLink}>LinkedIn</a>
+            </div>
+            <div style={styles.footerCol}>
+              <span style={styles.footerLabel}>Menu</span>
+              <a href="#work" style={styles.footerLink}>Work</a>
+              <a href="#about" style={styles.footerLink}>About</a>
+              <a href="#contact" style={styles.footerLink}>Contact</a>
+            </div>
+          </div>
+        </div>
+        
+        <div style={styles.footerBottom}>
+          <span style={styles.footerCopy}>© 2026 Studio. All rights reserved.</span>
+          <span style={styles.footerCredit}>
+            Design by <a href="https://tympanus.net/codrops/" style={styles.footerCreditLink}>Codrops</a>
+          </span>
+        </div>
       </footer>
 
       <style>{`
@@ -197,15 +231,47 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: "'Space Grotesk', system-ui, sans-serif",
     minHeight: '100vh',
   },
-  backButton: {
+  
+  // Header
+  header: {
     position: 'fixed',
-    top: 24,
-    left: 24,
+    top: 0,
+    left: 0,
+    right: 0,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1.5rem 2rem',
+    zIndex: 100,
+  },
+  logo: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    textDecoration: 'none',
+    color: '#ffffff',
+  },
+  logoIcon: {
+    fontSize: '1.25rem',
+    opacity: 0.8,
+  },
+  logoText: {
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    letterSpacing: '0.2em',
+  },
+  nav: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '2rem',
+  },
+  navLink: {
     color: 'rgba(255, 255, 255, 0.6)',
     textDecoration: 'none',
-    fontSize: 14,
+    fontSize: '0.875rem',
     fontWeight: 500,
-    zIndex: 100,
+    letterSpacing: '0.05em',
+    transition: 'color 0.2s ease',
   },
   
   // Hero
@@ -216,15 +282,6 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-  },
-  wordmark: {
-    position: 'absolute',
-    top: 28,
-    right: 24,
-    color: 'rgba(255, 255, 255, 0.3)',
-    fontSize: 10,
-    fontWeight: 500,
-    letterSpacing: '0.2em',
   },
   heroTitle: {
     color: '#ffffff',
@@ -347,12 +404,80 @@ const styles: Record<string, React.CSSProperties> = {
 
   // Footer
   footer: {
-    padding: '4rem 8vw',
+    padding: '8vh 8vw 4vh',
     borderTop: '1px solid rgba(255, 255, 255, 0.1)',
   },
-  footerText: {
+  footerTop: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    flexWrap: 'wrap',
+    gap: '4rem',
+    marginBottom: '6vh',
+  },
+  footerCta: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  },
+  footerHeading: {
+    color: '#ffffff',
+    fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+    fontWeight: 700,
+    fontStyle: 'italic',
+    letterSpacing: '-0.02em',
+    margin: 0,
+  },
+  footerEmail: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+    textDecoration: 'none',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
+    paddingBottom: '0.25rem',
+    width: 'fit-content',
+  },
+  footerLinks: {
+    display: 'flex',
+    gap: '4rem',
+  },
+  footerCol: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+  },
+  footerLabel: {
+    color: 'rgba(255, 255, 255, 0.4)',
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    letterSpacing: '0.15em',
+    textTransform: 'uppercase',
+    marginBottom: '0.5rem',
+  },
+  footerLink: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    textDecoration: 'none',
+    fontSize: '0.9375rem',
+  },
+  footerBottom: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: '1rem',
+    paddingTop: '2rem',
+    borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+  },
+  footerCopy: {
     color: 'rgba(255, 255, 255, 0.3)',
-    fontSize: '0.875rem',
+    fontSize: '0.8125rem',
+  },
+  footerCredit: {
+    color: 'rgba(255, 255, 255, 0.3)',
+    fontSize: '0.8125rem',
+  },
+  footerCreditLink: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    textDecoration: 'none',
   },
 }
 
