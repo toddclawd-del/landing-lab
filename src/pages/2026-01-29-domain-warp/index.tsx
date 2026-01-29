@@ -300,6 +300,118 @@ function MiniShaderOrb({ size = 120, scale = 3, speed = 0.15, offset = 0, colorS
 // 3D Shader Sphere (for CTA section)
 // ============================================
 
+// Sphere-specific shaders with lighting
+const sphereVertexShader = `
+varying vec2 vUv;
+varying vec3 vNormal;
+varying vec3 vViewPosition;
+
+void main() {
+  vUv = uv;
+  vNormal = normalize(normalMatrix * normal);
+  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+  vViewPosition = -mvPosition.xyz;
+  gl_Position = projectionMatrix * mvPosition;
+}
+`
+
+const sphereFragmentShader = `
+varying vec2 vUv;
+varying vec3 vNormal;
+varying vec3 vViewPosition;
+
+uniform float uTime;
+uniform float uScale;
+uniform float uWarpIntensity1;
+uniform float uWarpIntensity2;
+uniform float uAnimSpeed;
+uniform float uOctaves;
+uniform float uLacunarity;
+uniform float uGain;
+uniform float uColorVariation;
+uniform vec3 uColor1;
+uniform vec3 uColor2;
+uniform vec3 uColor3;
+uniform vec3 uColor4;
+
+float hash21(vec2 p) {
+    p = fract(p * vec2(234.34, 435.345));
+    p += dot(p, p + 34.23);
+    return fract(p.x * p.y);
+}
+
+vec2 quintic(vec2 t) {
+    return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
+}
+
+float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    float a = hash21(i);
+    float b = hash21(i + vec2(1.0, 0.0));
+    float c = hash21(i + vec2(0.0, 1.0));
+    float d = hash21(i + vec2(1.0, 1.0));
+    vec2 u = quintic(f);
+    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+}
+
+float fbm(vec2 p, float octaves) {
+    float value = 0.0;
+    float amplitude = 0.5;
+    float frequency = 1.0;
+    float maxValue = 0.0;
+    for (int i = 0; i < 8; i++) {
+        if (float(i) >= octaves) break;
+        value += amplitude * noise(p * frequency);
+        maxValue += amplitude;
+        frequency *= uLacunarity;
+        amplitude *= uGain;
+    }
+    return value / maxValue;
+}
+
+float pattern(vec2 p, out vec2 q, out vec2 r, float octaves) {
+    float t = uTime * uAnimSpeed;
+    q = vec2(fbm(p + vec2(0.0, 0.0) + 0.1 * t, octaves), fbm(p + vec2(5.2, 1.3) - 0.12 * t, octaves));
+    r = vec2(fbm(p + uWarpIntensity1 * q + vec2(1.7, 9.2) + 0.15 * t, octaves), fbm(p + uWarpIntensity1 * q + vec2(8.3, 2.8) - 0.13 * t, octaves));
+    return fbm(p + uWarpIntensity2 * r, octaves);
+}
+
+void main() {
+    vec2 uv = vUv;
+    vec2 p = (uv - 0.5) * uScale;
+    
+    vec2 q, r;
+    float f = pattern(p, q, r, uOctaves);
+    
+    vec3 baseColor = mix(uColor1, uColor2, f);
+    float qMag = length(q);
+    baseColor = mix(baseColor, uColor3, qMag * uColorVariation);
+    float rComponent = clamp(r.y + 0.5, 0.0, 1.0);
+    baseColor = mix(baseColor, uColor4, rComponent * uColorVariation * 0.7);
+    
+    // Lighting
+    vec3 normal = normalize(vNormal);
+    vec3 viewDir = normalize(vViewPosition);
+    
+    // Fresnel rim lighting
+    float fresnel = pow(1.0 - abs(dot(viewDir, normal)), 3.0);
+    
+    // Soft directional light from top-right
+    vec3 lightDir = normalize(vec3(0.5, 1.0, 0.5));
+    float diffuse = max(dot(normal, lightDir), 0.0) * 0.3 + 0.7;
+    
+    // Combine
+    vec3 color = baseColor * diffuse;
+    color += vec3(1.0, 0.98, 0.95) * fresnel * 0.4; // Warm rim light
+    
+    color = pow(color, vec3(0.95));
+    color = clamp(color, 0.0, 1.0);
+    
+    gl_FragColor = vec4(color, 1.0);
+}
+`
+
 function ShaderSphereMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 }: MiniShaderProps) {
   const meshRef = useRef<THREE.Mesh>(null)
   
@@ -325,7 +437,6 @@ function ShaderSphereMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 
     uColor2: { value: new THREE.Color(colorSet[1]) },
     uColor3: { value: new THREE.Color(colorSet[2]) },
     uColor4: { value: new THREE.Color(colorSet[3]) },
-    uCircleMask: { value: 0 }, // No mask needed for sphere
   }), [scale, speed, offset, colorSet])
   
   useFrame((state) => {
@@ -340,10 +451,10 @@ function ShaderSphereMesh({ scale = 3, speed = 0.15, offset = 0, colorShift = 0 
   
   return (
     <mesh ref={meshRef}>
-      <sphereGeometry args={[1, 64, 64]} />
+      <sphereGeometry args={[1, 128, 128]} />
       <shaderMaterial
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
+        vertexShader={sphereVertexShader}
+        fragmentShader={sphereFragmentShader}
         uniforms={uniforms}
       />
     </mesh>
