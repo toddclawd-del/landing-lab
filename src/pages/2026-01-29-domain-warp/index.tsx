@@ -297,77 +297,6 @@ function MiniShaderOrb({ size = 120, scale = 3, speed = 0.15, offset = 0, colorS
 }
 
 // ============================================
-// Shader Strip (for accents) - Full bleed, no circle mask
-// ============================================
-
-function ShaderStrip({ height = 180, speed = 0.1 }: { height?: number, speed?: number }) {
-  return (
-    <div style={{ 
-      width: '100%', 
-      height,
-      overflow: 'hidden',
-    }}>
-      <Canvas
-        orthographic
-        camera={{ 
-          zoom: 1,
-          position: [0, 0, 1],
-          left: -1,
-          right: 1,
-          top: 1,
-          bottom: -1,
-        }}
-        style={{ 
-          width: '100%', 
-          height: '100%',
-          display: 'block',
-        }}
-        gl={{ antialias: true }}
-      >
-        <mesh scale={[2, 2, 1]}>
-          <planeGeometry args={[1, 1]} />
-          <shaderMaterial
-            vertexShader={vertexShader}
-            fragmentShader={fragmentShader}
-            uniforms={{
-              uTime: { value: 0 },
-              uScale: { value: 10 },
-              uWarpIntensity1: { value: 4.0 },
-              uWarpIntensity2: { value: 4.0 },
-              uAnimSpeed: { value: speed },
-              uOctaves: { value: 3 },
-              uLacunarity: { value: 2.2 },
-              uGain: { value: 0.5 },
-              uColorVariation: { value: 0.6 },
-              uColor1: { value: new THREE.Color('#ffffff') },
-              uColor2: { value: new THREE.Color('#73b7df') },
-              uColor3: { value: new THREE.Color('#eca461') },
-              uColor4: { value: new THREE.Color('#352314') },
-              uCircleMask: { value: 0 },
-            }}
-          />
-        </mesh>
-        <ShaderStripAnimator speed={speed} />
-      </Canvas>
-    </div>
-  )
-}
-
-// Separate component to handle animation
-function ShaderStripAnimator({ speed: _speed }: { speed: number }) {
-  useFrame((state) => {
-    const mesh = state.scene.children[0] as THREE.Mesh
-    if (mesh?.material) {
-      const material = mesh.material as THREE.ShaderMaterial
-      if (material.uniforms?.uTime) {
-        material.uniforms.uTime.value = state.clock.elapsedTime
-      }
-    }
-  })
-  return null
-}
-
-// ============================================
 // Animated Blob Divider
 // ============================================
 
@@ -560,24 +489,30 @@ function DomainWarpPage() {
       
       {/* CTA Section */}
       <section style={styles.ctaSection}>
-        {/* Shader strip at top */}
-        <div style={styles.ctaShaderStrip}>
-          <ShaderStrip height={180} speed={0.08} />
-        </div>
-        
-        <div style={styles.ctaInner}>
-          <h2 style={styles.ctaTitle}>Ready for calm?</h2>
-          <p style={styles.ctaSub}>
-            Join thousands of teams who've found a better way to work together.
-          </p>
-          <a href="#" style={styles.ctaButton}>Begin Your Journey</a>
+        <div style={styles.ctaLayout}>
+          {/* Left orb */}
+          <div style={styles.ctaOrb}>
+            <MiniShaderOrb size={160} scale={3} speed={0.1} offset={0} colorShift={0} />
+          </div>
+          
+          {/* Center content */}
+          <div style={styles.ctaInner}>
+            <h2 style={styles.ctaTitle}>Ready for calm?</h2>
+            <p style={styles.ctaSub}>
+              Join thousands of teams who've found a better way to work together.
+            </p>
+            <a href="#" style={styles.ctaButton}>Begin Your Journey</a>
+          </div>
+          
+          {/* Right orb */}
+          <div style={styles.ctaOrb}>
+            <MiniShaderOrb size={160} scale={3.5} speed={0.12} offset={20} colorShift={1} />
+          </div>
         </div>
       </section>
       
-      {/* Footer with shader strip */}
+      {/* Footer */}
       <footer style={styles.footer}>
-        <ShaderStrip height={180} speed={0.05} />
-        
         <div style={styles.footerContent}>
           <div style={styles.footerInner}>
             <div style={styles.footerBrand}>
@@ -917,20 +852,27 @@ const styles: Record<string, React.CSSProperties> = {
   // CTA Section
   ctaSection: {
     position: 'relative',
-    padding: '0 2rem 8rem',
-    textAlign: 'center',
+    padding: '6rem 2rem',
     overflow: 'hidden',
     background: colors.cream,
   },
-  ctaShaderStrip: {
-    width: '100%',
-    marginBottom: '4rem',
+  ctaLayout: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '4rem',
+    maxWidth: 1100,
+    margin: '0 auto',
+    flexWrap: 'wrap',
+  },
+  ctaOrb: {
+    flex: '0 0 auto',
+    animation: 'float 6s ease-in-out infinite',
   },
   ctaInner: {
-    position: 'relative',
-    maxWidth: 600,
-    margin: '0 auto',
-    zIndex: 1,
+    flex: '1 1 400px',
+    maxWidth: 500,
+    textAlign: 'center',
   },
   ctaTitle: {
     fontFamily: "'Fraunces', serif",
