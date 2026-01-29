@@ -261,7 +261,7 @@ function DomainWarpPage() {
           
           <div style={styles.features}>
             <div style={styles.feature}>
-              <div style={styles.featureIcon}>○</div>
+              <div style={{...styles.featureIcon, color: '#73b7df'}}>○</div>
               <h3 style={styles.featureTitle}>Focused Workspaces</h3>
               <p style={styles.featureDesc}>
                 Distraction-free environments that adapt to how you work. 
@@ -270,7 +270,7 @@ function DomainWarpPage() {
             </div>
             
             <div style={styles.feature}>
-              <div style={styles.featureIcon}>◇</div>
+              <div style={{...styles.featureIcon, color: '#eca461'}}>◇</div>
               <h3 style={styles.featureTitle}>Mindful Notifications</h3>
               <p style={styles.featureDesc}>
                 Smart batching and quiet hours built in. 
@@ -279,7 +279,7 @@ function DomainWarpPage() {
             </div>
             
             <div style={styles.feature}>
-              <div style={styles.featureIcon}>□</div>
+              <div style={{...styles.featureIcon, color: '#352314'}}>□</div>
               <h3 style={styles.featureTitle}>Team Breathing Room</h3>
               <p style={styles.featureDesc}>
                 Async-first collaboration that respects everyone's time 
@@ -288,7 +288,7 @@ function DomainWarpPage() {
             </div>
             
             <div style={styles.feature}>
-              <div style={styles.featureIcon}>△</div>
+              <div style={{...styles.featureIcon, color: '#73b7df'}}>△</div>
               <h3 style={styles.featureTitle}>Clarity Reports</h3>
               <p style={styles.featureDesc}>
                 Understand where time goes without micromanaging. 
@@ -364,8 +364,8 @@ const styles: Record<string, React.CSSProperties> = {
     top: 0,
     left: 0,
     right: 0,
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: 'grid',
+    gridTemplateColumns: '1fr auto 1fr',
     alignItems: 'center',
     padding: '1.25rem 3rem',
     zIndex: 100,
@@ -378,17 +378,20 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: 'none',
     fontSize: '0.875rem',
     fontWeight: 400,
+    justifySelf: 'start',
   },
   logo: {
     fontSize: '1.25rem',
     fontWeight: 600,
     letterSpacing: '-0.02em',
     color: '#1a1a1a',
+    justifySelf: 'center',
   },
   nav: {
     display: 'flex',
     alignItems: 'center',
     gap: '2rem',
+    justifySelf: 'end',
   },
   navLink: {
     color: '#666',
@@ -397,13 +400,13 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 400,
   },
   navCta: {
-    color: '#1a1a1a',
+    color: '#fff',
     textDecoration: 'none',
     fontSize: '0.9rem',
     fontWeight: 500,
     padding: '0.6rem 1.25rem',
-    background: '#fff',
-    border: '1px solid #e0e0e0',
+    background: '#352314',
+    border: '1px solid #352314',
     borderRadius: 8,
   },
   
@@ -457,6 +460,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   introAccent: {
     fontWeight: 500,
+    color: '#73b7df',
   },
   introSub: {
     fontSize: 'clamp(1rem, 2vw, 1.2rem)',
@@ -476,7 +480,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   primaryCta: {
     padding: '0.9rem 2rem',
-    background: '#1a1a1a',
+    background: '#352314',
     color: '#fff',
     textDecoration: 'none',
     fontSize: '0.95rem',
@@ -486,10 +490,10 @@ const styles: Record<string, React.CSSProperties> = {
   secondaryCta: {
     padding: '0.9rem 2rem',
     background: 'transparent',
-    color: '#1a1a1a',
+    color: '#73b7df',
     textDecoration: 'none',
     fontSize: '0.95rem',
-    fontWeight: 400,
+    fontWeight: 500,
   },
   
   // Product
@@ -507,7 +511,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 500,
     letterSpacing: '0.1em',
     textTransform: 'uppercase',
-    color: '#888',
+    color: '#eca461',
     marginBottom: '1rem',
   },
   productTitle: {
@@ -527,10 +531,15 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     flexDirection: 'column',
     gap: '0.75rem',
+    padding: '1.5rem',
+    borderRadius: 12,
+    background: '#fff',
+    border: '1px solid #f0f0f0',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
   },
   featureIcon: {
     fontSize: '1.5rem',
-    color: '#a8c5d9',
+    color: '#73b7df',
     marginBottom: '0.5rem',
   },
   featureTitle: {
@@ -570,6 +579,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '1.25rem',
     fontWeight: 600,
     letterSpacing: '-0.02em',
+    color: '#352314',
   },
   footerTagline: {
     fontSize: '0.9rem',
@@ -617,7 +627,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#aaa',
   },
   footerCreditLink: {
-    color: '#888',
+    color: '#73b7df',
     textDecoration: 'none',
   },
 }
