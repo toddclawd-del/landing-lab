@@ -1,7 +1,7 @@
 /**
  * Calm — Domain Warp Landing Page
- * BLUEPRINT: Scandinavian clean, light & elegant
- * Shader: Domain warping with white/light blue/brown palette
+ * BLUEPRINT: Warm organic flow, expensive + friendly
+ * Shader: Domain warping with cream/sky blue/amber/earth brown palette
  */
 
 import { useRef, useMemo } from 'react'
@@ -9,6 +9,123 @@ import { Link } from 'react-router-dom'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useControls, Leva } from 'leva'
 import * as THREE from 'three'
+
+// ============================================
+// Brand Colors
+// ============================================
+const colors = {
+  cream: '#fffbf7',
+  warmWhite: '#faf8f5',
+  sky: '#73b7df',
+  skyLight: '#a8d4ef',
+  amber: '#eca461',
+  amberLight: '#f5d4a8',
+  earth: '#352314',
+  earthMid: '#5c4033',
+  text: '#2a2522',
+  textMuted: '#6b635c',
+}
+
+// ============================================
+// Flowing Icon Components
+// ============================================
+
+const FlowIcon1 = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path 
+      d="M8 24c0-8 4-16 16-16s16 8 16 16-4 16-16 16c-6 0-10-2-12-4" 
+      stroke={colors.sky} 
+      strokeWidth="2.5" 
+      strokeLinecap="round"
+      fill="none"
+    />
+    <path 
+      d="M16 24c0-4 2-8 8-8s8 4 8 8-2 8-8 8" 
+      stroke={colors.amber} 
+      strokeWidth="2.5" 
+      strokeLinecap="round"
+      fill="none"
+    />
+    <circle cx="24" cy="24" r="3" fill={colors.earth} />
+  </svg>
+)
+
+const FlowIcon2 = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path 
+      d="M6 32c8-4 12-16 18-16s10 12 18 8" 
+      stroke={colors.amber} 
+      strokeWidth="2.5" 
+      strokeLinecap="round"
+      fill="none"
+    />
+    <path 
+      d="M6 24c8-2 14-10 18-10s10 8 18 6" 
+      stroke={colors.sky} 
+      strokeWidth="2.5" 
+      strokeLinecap="round"
+      fill="none"
+    />
+    <path 
+      d="M6 16c8 0 16-4 18-4s10 4 18 2" 
+      stroke={colors.earth} 
+      strokeWidth="2" 
+      strokeLinecap="round"
+      fill="none"
+      opacity="0.5"
+    />
+  </svg>
+)
+
+const FlowIcon3 = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <ellipse cx="24" cy="24" rx="18" ry="10" stroke={colors.sky} strokeWidth="2.5" fill="none" />
+    <ellipse cx="24" cy="24" rx="12" ry="6" stroke={colors.amber} strokeWidth="2.5" fill="none" />
+    <ellipse cx="24" cy="24" rx="5" ry="2.5" fill={colors.earth} />
+  </svg>
+)
+
+const FlowIcon4 = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <path 
+      d="M12 36 C16 28, 20 20, 24 12 C28 20, 32 28, 36 36" 
+      stroke={colors.sky} 
+      strokeWidth="2.5" 
+      strokeLinecap="round"
+      fill="none"
+    />
+    <path 
+      d="M18 36 C20 30, 22 24, 24 18 C26 24, 28 30, 30 36" 
+      stroke={colors.amber} 
+      strokeWidth="2.5" 
+      strokeLinecap="round"
+      fill="none"
+    />
+    <circle cx="24" cy="12" r="3" fill={colors.earth} />
+  </svg>
+)
+
+// ============================================
+// Organic Blob SVG
+// ============================================
+
+const BlobDivider = ({ flip = false }: { flip?: boolean }) => (
+  <svg 
+    viewBox="0 0 1440 120" 
+    style={{ 
+      width: '100%', 
+      height: 'auto', 
+      display: 'block',
+      transform: flip ? 'scaleY(-1)' : 'none',
+    }}
+    preserveAspectRatio="none"
+  >
+    <path 
+      d="M0,60 C240,120 480,0 720,60 C960,120 1200,0 1440,60 L1440,120 L0,120 Z" 
+      fill={colors.cream}
+    />
+  </svg>
+)
 
 // ============================================
 // Shader Code
@@ -145,7 +262,7 @@ function ShaderPlane() {
     colorVariation: { value: 0.55, min: 0, max: 1, step: 0.05 },
   })
   
-  const colors = useControls('Colors', {
+  const shaderColors = useControls('Colors', {
     color1: '#ffffff',
     color2: '#73b7df',
     color3: '#eca461',
@@ -162,10 +279,10 @@ function ShaderPlane() {
     uLacunarity: { value: controls.lacunarity },
     uGain: { value: controls.gain },
     uColorVariation: { value: controls.colorVariation },
-    uColor1: { value: new THREE.Color(colors.color1) },
-    uColor2: { value: new THREE.Color(colors.color2) },
-    uColor3: { value: new THREE.Color(colors.color3) },
-    uColor4: { value: new THREE.Color(colors.color4) },
+    uColor1: { value: new THREE.Color(shaderColors.color1) },
+    uColor2: { value: new THREE.Color(shaderColors.color2) },
+    uColor3: { value: new THREE.Color(shaderColors.color3) },
+    uColor4: { value: new THREE.Color(shaderColors.color4) },
   }), [])
   
   useFrame((state) => {
@@ -180,10 +297,10 @@ function ShaderPlane() {
       material.uniforms.uLacunarity.value = controls.lacunarity
       material.uniforms.uGain.value = controls.gain
       material.uniforms.uColorVariation.value = controls.colorVariation
-      material.uniforms.uColor1.value.set(colors.color1)
-      material.uniforms.uColor2.value.set(colors.color2)
-      material.uniforms.uColor3.value.set(colors.color3)
-      material.uniforms.uColor4.value.set(colors.color4)
+      material.uniforms.uColor1.value.set(shaderColors.color1)
+      material.uniforms.uColor2.value.set(shaderColors.color2)
+      material.uniforms.uColor3.value.set(shaderColors.color3)
+      material.uniforms.uColor4.value.set(shaderColors.color4)
     }
   })
   
@@ -200,6 +317,33 @@ function ShaderPlane() {
 }
 
 // ============================================
+// Feature Data
+// ============================================
+
+const features = [
+  {
+    icon: <FlowIcon1 />,
+    title: 'Focused Workspaces',
+    desc: 'Distraction-free environments that adapt to how you work. No clutter, no overwhelm — just you and your best thinking.',
+  },
+  {
+    icon: <FlowIcon2 />,
+    title: 'Mindful Notifications',
+    desc: 'Smart batching and quiet hours built in. Stay informed without being interrupted. Your attention is sacred.',
+  },
+  {
+    icon: <FlowIcon3 />,
+    title: 'Team Breathing Room',
+    desc: 'Async-first collaboration that respects everyone\'s time and creative flow. Great work happens when people aren\'t rushed.',
+  },
+  {
+    icon: <FlowIcon4 />,
+    title: 'Clarity Reports',
+    desc: 'Understand where time goes without micromanaging. Insights that illuminate, not surveillance that suffocates.',
+  },
+]
+
+// ============================================
 // Main Page Component
 // ============================================
 
@@ -214,8 +358,8 @@ function DomainWarpPage() {
         <div style={styles.logo}>Calm</div>
         <nav style={styles.nav}>
           <a href="#features" style={styles.navLink}>Features</a>
-          <a href="#pricing" style={styles.navLink}>Pricing</a>
-          <a href="#" style={styles.navCta}>Get Started</a>
+          <a href="#philosophy" style={styles.navLink}>Philosophy</a>
+          <a href="#" style={styles.navCta}>Begin Your Journey</a>
         </nav>
       </header>
       
@@ -230,72 +374,95 @@ function DomainWarpPage() {
         
         {/* Scroll indicator */}
         <div style={styles.scrollIndicator}>
-          <span style={styles.scrollText}>Scroll</span>
-          <span style={styles.scrollArrow}>↓</span>
+          <div style={styles.scrollLine} />
+          <span style={styles.scrollText}>Discover</span>
         </div>
       </section>
       
       {/* Intro Section */}
       <section style={styles.intro}>
         <div style={styles.introInner}>
+          <span style={styles.introLabel}>A new way to work</span>
           <h1 style={styles.introTitle}>
             Project management<br />
-            <span style={styles.introAccent}>for mindful teams</span>
+            <em style={styles.introItalic}>for mindful teams</em>
           </h1>
           <p style={styles.introSub}>
             Calm brings clarity to your workflow. Less noise, more focus, 
-            better work — designed for teams who value intentional productivity.
+            better work — designed for teams who value intentional productivity 
+            and believe great things take time.
           </p>
           <div style={styles.introCtas}>
             <a href="#" style={styles.primaryCta}>Start Free Trial</a>
-            <a href="#features" style={styles.secondaryCta}>Learn More →</a>
+            <a href="#features" style={styles.secondaryCta}>Explore Features</a>
           </div>
         </div>
       </section>
+      
+      {/* Blob transition */}
+      <div style={{ background: '#fff', marginTop: -1 }}>
+        <BlobDivider />
+      </div>
 
-      {/* Product Section */}
-      <section id="features" style={styles.product}>
-        <div style={styles.productInner}>
-          <span style={styles.productLabel}>Features</span>
-          <h2 style={styles.productTitle}>Everything you need,<br />nothing you don't</h2>
-          
-          <div style={styles.features}>
-            <div style={styles.feature}>
-              <div style={{...styles.featureIcon, color: '#73b7df'}}>○</div>
-              <h3 style={styles.featureTitle}>Focused Workspaces</h3>
-              <p style={styles.featureDesc}>
-                Distraction-free environments that adapt to how you work. 
-                No clutter, no overwhelm.
-              </p>
-            </div>
-            
-            <div style={styles.feature}>
-              <div style={{...styles.featureIcon, color: '#eca461'}}>◇</div>
-              <h3 style={styles.featureTitle}>Mindful Notifications</h3>
-              <p style={styles.featureDesc}>
-                Smart batching and quiet hours built in. 
-                Stay informed without being interrupted.
-              </p>
-            </div>
-            
-            <div style={styles.feature}>
-              <div style={{...styles.featureIcon, color: '#352314'}}>□</div>
-              <h3 style={styles.featureTitle}>Team Breathing Room</h3>
-              <p style={styles.featureDesc}>
-                Async-first collaboration that respects everyone's time 
-                and creative flow.
-              </p>
-            </div>
-            
-            <div style={styles.feature}>
-              <div style={{...styles.featureIcon, color: '#73b7df'}}>△</div>
-              <h3 style={styles.featureTitle}>Clarity Reports</h3>
-              <p style={styles.featureDesc}>
-                Understand where time goes without micromanaging. 
-                Insights, not surveillance.
-              </p>
-            </div>
+      {/* Features Section — Editorial Layout */}
+      <section id="features" style={styles.features}>
+        <div style={styles.featuresInner}>
+          <div style={styles.featuresHeader}>
+            <span style={styles.featuresLabel}>What we offer</span>
+            <h2 style={styles.featuresTitle}>
+              Everything you need,<br />
+              <em>nothing you don't</em>
+            </h2>
           </div>
+          
+          <div style={styles.featuresList}>
+            {features.map((feature, i) => (
+              <div 
+                key={i} 
+                style={{
+                  ...styles.featureItem,
+                  flexDirection: i % 2 === 0 ? 'row' : 'row-reverse',
+                }}
+              >
+                <div style={styles.featureIcon}>
+                  {feature.icon}
+                </div>
+                <div style={styles.featureContent}>
+                  <span style={styles.featureNumber}>0{i + 1}</span>
+                  <h3 style={styles.featureTitle}>{feature.title}</h3>
+                  <p style={styles.featureDesc}>{feature.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Philosophy Section */}
+      <section id="philosophy" style={styles.philosophy}>
+        <div style={styles.philosophyInner}>
+          <blockquote style={styles.quote}>
+            <p style={styles.quoteText}>
+              "The best work doesn't come from<br />
+              <em>doing more</em> — it comes from<br />
+              <span style={styles.quoteHighlight}>doing what matters.</span>"
+            </p>
+          </blockquote>
+          <div style={styles.quoteAttr}>
+            <div style={styles.quoteAttrLine} />
+            <span>Our founding belief</span>
+          </div>
+        </div>
+      </section>
+      
+      {/* CTA Section */}
+      <section style={styles.ctaSection}>
+        <div style={styles.ctaInner}>
+          <h2 style={styles.ctaTitle}>Ready for calm?</h2>
+          <p style={styles.ctaSub}>
+            Join thousands of teams who've found a better way to work together.
+          </p>
+          <a href="#" style={styles.ctaButton}>Begin Your Journey</a>
         </div>
       </section>
       
@@ -316,21 +483,21 @@ function DomainWarpPage() {
             </div>
             <div style={styles.footerCol}>
               <span style={styles.footerColTitle}>Company</span>
-              <a href="#" style={styles.footerLink}>About</a>
-              <a href="#" style={styles.footerLink}>Blog</a>
+              <a href="#" style={styles.footerLink}>Our Story</a>
+              <a href="#" style={styles.footerLink}>Journal</a>
               <a href="#" style={styles.footerLink}>Careers</a>
             </div>
             <div style={styles.footerCol}>
               <span style={styles.footerColTitle}>Connect</span>
               <a href="#" style={styles.footerLink}>Twitter</a>
               <a href="#" style={styles.footerLink}>LinkedIn</a>
-              <a href="#" style={styles.footerLink}>Contact</a>
+              <a href="#" style={styles.footerLink}>Say Hello</a>
             </div>
           </div>
         </div>
         
         <div style={styles.footerBottom}>
-          <span>© 2026 Calm. All rights reserved.</span>
+          <span>© 2026 Calm. Made with intention.</span>
           <span style={styles.footerCredit}>
             Shader by <a href="https://iquilezles.org/" style={styles.footerCreditLink}>Inigo Quilez</a>
           </span>
@@ -338,24 +505,29 @@ function DomainWarpPage() {
       </footer>
       
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
       `}</style>
     </div>
   )
 }
 
 // ============================================
-// Styles — Scandinavian Clean
+// Styles — Warm Organic Flow
 // ============================================
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: '100vh',
-    background: '#fafafa',
+    background: colors.cream,
     fontFamily: "'Inter', -apple-system, sans-serif",
-    color: '#1a1a1a',
+    color: colors.text,
   },
   
   // Header
@@ -367,267 +539,379 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'grid',
     gridTemplateColumns: '1fr auto 1fr',
     alignItems: 'center',
-    padding: '1.25rem 3rem',
+    padding: '1.5rem 4rem',
     zIndex: 100,
-    background: 'rgba(250, 250, 250, 0.9)',
-    backdropFilter: 'blur(10px)',
-    borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+    background: 'rgba(255, 251, 247, 0.85)',
+    backdropFilter: 'blur(12px)',
   },
   backLink: {
-    color: '#666',
+    color: colors.textMuted,
     textDecoration: 'none',
     fontSize: '0.875rem',
     fontWeight: 400,
     justifySelf: 'start',
+    transition: 'color 0.2s',
   },
   logo: {
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    letterSpacing: '-0.02em',
-    color: '#1a1a1a',
+    fontFamily: "'Fraunces', serif",
+    fontSize: '1.5rem',
+    fontWeight: 500,
+    color: colors.earth,
     justifySelf: 'center',
   },
   nav: {
     display: 'flex',
     alignItems: 'center',
-    gap: '2rem',
+    gap: '2.5rem',
     justifySelf: 'end',
   },
   navLink: {
-    color: '#666',
+    color: colors.textMuted,
     textDecoration: 'none',
     fontSize: '0.9rem',
     fontWeight: 400,
+    transition: 'color 0.2s',
   },
   navCta: {
-    color: '#fff',
+    color: colors.cream,
     textDecoration: 'none',
     fontSize: '0.9rem',
     fontWeight: 500,
-    padding: '0.6rem 1.25rem',
-    background: '#352314',
-    border: '1px solid #352314',
-    borderRadius: 8,
+    padding: '0.75rem 1.5rem',
+    background: colors.earth,
+    borderRadius: 100,
+    transition: 'transform 0.2s, box-shadow 0.2s',
   },
   
-  // Hero — Full shader
+  // Hero
   hero: {
     position: 'relative',
     height: '100vh',
-    minHeight: 600,
+    minHeight: 700,
     overflow: 'hidden',
-    background: '#000',
   },
   scrollIndicator: {
     position: 'absolute',
-    bottom: 40,
+    bottom: 60,
     left: '50%',
     transform: 'translateX(-50%)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: 8,
-    color: 'rgba(0, 0, 0, 0.4)',
+    gap: 12,
     zIndex: 10,
   },
-  scrollText: {
-    fontSize: 12,
-    fontWeight: 500,
-    letterSpacing: '0.15em',
-    textTransform: 'uppercase',
+  scrollLine: {
+    width: 1,
+    height: 40,
+    background: `linear-gradient(to bottom, transparent, ${colors.earth})`,
   },
-  scrollArrow: {
-    fontSize: 18,
+  scrollText: {
+    fontFamily: "'Fraunces', serif",
+    fontSize: 13,
+    fontWeight: 400,
+    fontStyle: 'italic',
+    color: colors.earth,
+    letterSpacing: '0.05em',
   },
   
   // Intro
   intro: {
-    padding: '8rem 2rem',
+    padding: '10rem 2rem 8rem',
     background: '#fff',
     textAlign: 'center',
   },
   introInner: {
-    maxWidth: 700,
+    maxWidth: 800,
     margin: '0 auto',
   },
-  introTitle: {
-    fontSize: 'clamp(2.5rem, 6vw, 4rem)',
-    fontWeight: 300,
-    lineHeight: 1.15,
-    letterSpacing: '-0.03em',
-    marginBottom: '1.5rem',
-    color: '#1a1a1a',
+  introLabel: {
+    display: 'inline-block',
+    fontFamily: "'Fraunces', serif",
+    fontSize: '0.9rem',
+    fontWeight: 400,
+    fontStyle: 'italic',
+    color: colors.amber,
+    marginBottom: '2rem',
   },
-  introAccent: {
-    fontWeight: 500,
-    color: '#73b7df',
+  introTitle: {
+    fontFamily: "'Fraunces', serif",
+    fontSize: 'clamp(2.75rem, 7vw, 4.5rem)',
+    fontWeight: 300,
+    lineHeight: 1.1,
+    letterSpacing: '-0.02em',
+    marginBottom: '2rem',
+    color: colors.text,
+  },
+  introItalic: {
+    fontStyle: 'italic',
+    color: colors.sky,
   },
   introSub: {
-    fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+    fontSize: 'clamp(1.05rem, 2vw, 1.25rem)',
     fontWeight: 300,
-    lineHeight: 1.6,
-    color: '#555',
-    marginBottom: '2.5rem',
-    maxWidth: 520,
+    lineHeight: 1.7,
+    color: colors.textMuted,
+    marginBottom: '3rem',
+    maxWidth: 560,
     marginLeft: 'auto',
     marginRight: 'auto',
   },
   introCtas: {
     display: 'flex',
-    gap: '1rem',
+    gap: '1.5rem',
     justifyContent: 'center',
     flexWrap: 'wrap',
   },
   primaryCta: {
-    padding: '0.9rem 2rem',
-    background: '#352314',
-    color: '#fff',
+    padding: '1rem 2.5rem',
+    background: colors.earth,
+    color: colors.cream,
     textDecoration: 'none',
-    fontSize: '0.95rem',
+    fontSize: '1rem',
     fontWeight: 500,
-    borderRadius: 8,
+    borderRadius: 100,
+    transition: 'transform 0.2s, box-shadow 0.2s',
   },
   secondaryCta: {
-    padding: '0.9rem 2rem',
+    padding: '1rem 2.5rem',
     background: 'transparent',
-    color: '#73b7df',
+    color: colors.earth,
     textDecoration: 'none',
-    fontSize: '0.95rem',
-    fontWeight: 500,
+    fontSize: '1rem',
+    fontWeight: 400,
+    borderRadius: 100,
+    border: `1.5px solid ${colors.earth}`,
+    transition: 'background 0.2s',
   },
   
-  // Product
-  product: {
-    padding: '8rem 2rem',
-    background: '#fff',
+  // Features
+  features: {
+    padding: '6rem 2rem 8rem',
+    background: colors.cream,
   },
-  productInner: {
-    maxWidth: 1000,
+  featuresInner: {
+    maxWidth: 1100,
     margin: '0 auto',
   },
-  productLabel: {
-    display: 'inline-block',
-    fontSize: '0.75rem',
-    fontWeight: 500,
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
-    color: '#eca461',
-    marginBottom: '1rem',
+  featuresHeader: {
+    textAlign: 'center',
+    marginBottom: '6rem',
   },
-  productTitle: {
-    fontSize: 'clamp(2rem, 4vw, 3rem)',
+  featuresLabel: {
+    display: 'inline-block',
+    fontFamily: "'Fraunces', serif",
+    fontSize: '0.9rem',
+    fontWeight: 400,
+    fontStyle: 'italic',
+    color: colors.amber,
+    marginBottom: '1.5rem',
+  },
+  featuresTitle: {
+    fontFamily: "'Fraunces', serif",
+    fontSize: 'clamp(2rem, 5vw, 3.25rem)',
     fontWeight: 300,
     lineHeight: 1.2,
-    letterSpacing: '-0.02em',
-    marginBottom: '4rem',
-    color: '#1a1a1a',
+    color: colors.text,
   },
-  features: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-    gap: '3rem',
-  },
-  feature: {
+  featuresList: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.75rem',
-    padding: '1.5rem',
-    borderRadius: 12,
-    background: '#fff',
-    border: '1px solid #f0f0f0',
-    transition: 'border-color 0.2s, box-shadow 0.2s',
+    gap: '5rem',
+  },
+  featureItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4rem',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
   featureIcon: {
-    fontSize: '1.5rem',
-    color: '#73b7df',
-    marginBottom: '0.5rem',
+    flex: '0 0 auto',
+    width: 120,
+    height: 120,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(255,255,255,0.8)',
+    borderRadius: '50%',
+    boxShadow: '0 8px 40px rgba(53, 35, 20, 0.08)',
+  },
+  featureContent: {
+    flex: '1 1 400px',
+    maxWidth: 500,
+  },
+  featureNumber: {
+    display: 'block',
+    fontFamily: "'Fraunces', serif",
+    fontSize: '0.85rem',
+    fontWeight: 400,
+    color: colors.amber,
+    marginBottom: '0.75rem',
   },
   featureTitle: {
-    fontSize: '1.1rem',
-    fontWeight: 500,
-    color: '#1a1a1a',
+    fontFamily: "'Fraunces', serif",
+    fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+    fontWeight: 400,
+    color: colors.text,
+    marginBottom: '1rem',
   },
   featureDesc: {
-    fontSize: '0.95rem',
+    fontSize: '1.05rem',
     fontWeight: 300,
+    lineHeight: 1.7,
+    color: colors.textMuted,
+  },
+  
+  // Philosophy
+  philosophy: {
+    padding: '8rem 2rem',
+    background: colors.earth,
+  },
+  philosophyInner: {
+    maxWidth: 900,
+    margin: '0 auto',
+    textAlign: 'center',
+  },
+  quote: {
+    marginBottom: '3rem',
+  },
+  quoteText: {
+    fontFamily: "'Fraunces', serif",
+    fontSize: 'clamp(1.75rem, 4vw, 2.75rem)',
+    fontWeight: 300,
+    lineHeight: 1.4,
+    color: colors.cream,
+  },
+  quoteHighlight: {
+    color: colors.amber,
+  },
+  quoteAttr: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '1rem',
+    color: 'rgba(255, 251, 247, 0.6)',
+    fontSize: '0.9rem',
+    fontStyle: 'italic',
+  },
+  quoteAttrLine: {
+    width: 40,
+    height: 1,
+    background: 'rgba(255, 251, 247, 0.3)',
+  },
+  
+  // CTA Section
+  ctaSection: {
+    padding: '8rem 2rem',
+    background: `linear-gradient(135deg, ${colors.skyLight} 0%, ${colors.amberLight} 100%)`,
+    textAlign: 'center',
+  },
+  ctaInner: {
+    maxWidth: 600,
+    margin: '0 auto',
+  },
+  ctaTitle: {
+    fontFamily: "'Fraunces', serif",
+    fontSize: 'clamp(2rem, 5vw, 3rem)',
+    fontWeight: 400,
+    color: colors.earth,
+    marginBottom: '1rem',
+  },
+  ctaSub: {
+    fontSize: '1.1rem',
+    fontWeight: 300,
+    color: colors.earthMid,
+    marginBottom: '2.5rem',
     lineHeight: 1.6,
-    color: '#666',
+  },
+  ctaButton: {
+    display: 'inline-block',
+    padding: '1.1rem 3rem',
+    background: colors.earth,
+    color: colors.cream,
+    textDecoration: 'none',
+    fontSize: '1.05rem',
+    fontWeight: 500,
+    borderRadius: 100,
+    boxShadow: '0 4px 20px rgba(53, 35, 20, 0.25)',
+    transition: 'transform 0.2s',
   },
   
   // Footer
   footer: {
-    padding: '4rem 2rem 2rem',
-    background: '#fafafa',
-    borderTop: '1px solid #eee',
+    padding: '5rem 2rem 2rem',
+    background: colors.warmWhite,
   },
   footerInner: {
-    maxWidth: 1000,
+    maxWidth: 1100,
     margin: '0 auto',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     flexWrap: 'wrap',
-    gap: '3rem',
-    marginBottom: '3rem',
+    gap: '4rem',
+    marginBottom: '4rem',
   },
   footerBrand: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.5rem',
+    gap: '0.75rem',
   },
   footerLogo: {
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    letterSpacing: '-0.02em',
-    color: '#352314',
+    fontFamily: "'Fraunces', serif",
+    fontSize: '1.5rem',
+    fontWeight: 500,
+    color: colors.earth,
   },
   footerTagline: {
-    fontSize: '0.9rem',
-    color: '#888',
+    fontSize: '0.95rem',
+    color: colors.textMuted,
     fontWeight: 300,
+    fontStyle: 'italic',
   },
   footerLinks: {
     display: 'flex',
-    gap: '4rem',
+    gap: '5rem',
     flexWrap: 'wrap',
   },
   footerCol: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.6rem',
+    gap: '0.75rem',
   },
   footerColTitle: {
-    fontSize: '0.75rem',
+    fontFamily: "'Fraunces', serif",
+    fontSize: '0.9rem',
     fontWeight: 500,
-    letterSpacing: '0.08em',
-    textTransform: 'uppercase',
-    color: '#888',
+    color: colors.text,
     marginBottom: '0.5rem',
   },
   footerLink: {
-    fontSize: '0.9rem',
-    color: '#555',
+    fontSize: '0.95rem',
+    color: colors.textMuted,
     textDecoration: 'none',
     fontWeight: 300,
+    transition: 'color 0.2s',
   },
   footerBottom: {
-    maxWidth: 1000,
+    maxWidth: 1100,
     margin: '0 auto',
     paddingTop: '2rem',
-    borderTop: '1px solid #eee',
+    borderTop: `1px solid rgba(53, 35, 20, 0.1)`,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: '1rem',
-    fontSize: '0.8rem',
-    color: '#aaa',
+    fontSize: '0.85rem',
+    color: colors.textMuted,
   },
   footerCredit: {
-    color: '#aaa',
+    color: colors.textMuted,
   },
   footerCreditLink: {
-    color: '#73b7df',
+    color: colors.sky,
     textDecoration: 'none',
   },
 }
