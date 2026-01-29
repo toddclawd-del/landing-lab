@@ -1,6 +1,6 @@
 /**
  * Cylinder Text Landing Page
- * Clean, minimal design with hero + cylinder text
+ * Clean, minimal design with hero + cylinder text + projects
  */
 
 import { useEffect, useRef } from 'react'
@@ -25,20 +25,31 @@ const ITEMS = [
   'Strategy',
 ]
 
+const PROJECTS = [
+  { number: '01', title: 'Nike', category: 'Brand Identity' },
+  { number: '02', title: 'Spotify', category: 'Web Experience' },
+  { number: '03', title: 'Apple', category: 'Campaign' },
+  { number: '04', title: 'Airbnb', category: 'Product Design' },
+  { number: '05', title: 'Stripe', category: 'Visual Identity' },
+]
+
 function CylinderTextPage() {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const textWrapperRef = useRef<HTMLUListElement>(null)
   const triggerRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<(HTMLLIElement | null)[]>([])
+  const projectRefs = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
     const wrapper = wrapperRef.current
     const textWrapper = textWrapperRef.current
     const trigger = triggerRef.current
     const items = itemRefs.current.filter(Boolean) as HTMLLIElement[]
+    const projects = projectRefs.current.filter(Boolean) as HTMLDivElement[]
 
     if (!wrapper || !textWrapper || !trigger || items.length === 0) return
 
+    // Calculate cylinder positions
     const calculatePositions = () => {
       const offset = 0.4
       const radius = Math.min(window.innerWidth, window.innerHeight) * offset
@@ -58,6 +69,7 @@ function CylinderTextPage() {
 
     calculatePositions()
 
+    // Cylinder scroll animation
     const scrollTrigger = ScrollTrigger.create({
       trigger: trigger,
       start: 'top top',
@@ -71,11 +83,37 @@ function CylinderTextPage() {
       ),
     })
 
+    // Project slide-in animations
+    projects.forEach((project, index) => {
+      const fromLeft = index % 2 === 0
+      
+      gsap.fromTo(
+        project,
+        { 
+          x: fromLeft ? -200 : 200, 
+          opacity: 0 
+        },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: project,
+            start: 'top 85%',
+            end: 'top 50%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
+    })
+
     const handleResize = () => calculatePositions()
     window.addEventListener('resize', handleResize)
 
     return () => {
       scrollTrigger.kill()
+      ScrollTrigger.getAll().forEach(t => t.kill())
       window.removeEventListener('resize', handleResize)
     }
   }, [])
@@ -89,13 +127,8 @@ function CylinderTextPage() {
 
       {/* Hero Section */}
       <section style={styles.hero}>
-        {/* Wordmark */}
         <div style={styles.wordmark}>STUDIO</div>
-        
-        {/* Main statement */}
         <h1 style={styles.heroTitle}>We create.</h1>
-        
-        {/* Scroll indicator */}
         <div style={styles.scrollIndicator}>
           <span style={styles.scrollText}>Scroll</span>
           <span style={styles.scrollArrow}>↓</span>
@@ -119,8 +152,34 @@ function CylinderTextPage() {
         </div>
       </section>
 
-      {/* Spacer for scroll */}
-      <div style={styles.spacer} />
+      {/* Projects Section */}
+      <section style={styles.projectsSection}>
+        <h2 style={styles.projectsTitle}>Selected Work</h2>
+        
+        <div style={styles.projectsList}>
+          {PROJECTS.map((project, index) => (
+            <div
+              key={project.number}
+              ref={(el) => { projectRefs.current[index] = el }}
+              style={{
+                ...styles.projectItem,
+                textAlign: index % 2 === 0 ? 'left' : 'right',
+              }}
+            >
+              <span style={styles.projectNumber}>{project.number}</span>
+              <div style={styles.projectInfo}>
+                <span style={styles.projectCategory}>{project.category}</span>
+                <h3 style={styles.projectName}>{project.title}</h3>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer style={styles.footer}>
+        <span style={styles.footerText}>© 2026 Studio</span>
+      </footer>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
@@ -184,7 +243,6 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: 8,
     color: 'rgba(255, 255, 255, 0.5)',
-    animation: 'bounce 2s ease-in-out infinite',
   },
   scrollText: {
     fontSize: 12,
@@ -237,9 +295,64 @@ const styles: Record<string, React.CSSProperties> = {
     fontStyle: 'italic',
   },
   
-  // Spacer
-  spacer: {
-    height: '100vh',
+  // Projects section
+  projectsSection: {
+    padding: '15vh 8vw',
+    minHeight: '100vh',
+  },
+  projectsTitle: {
+    color: 'rgba(255, 255, 255, 0.4)',
+    fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)',
+    fontWeight: 500,
+    letterSpacing: '0.2em',
+    textTransform: 'uppercase',
+    marginBottom: '10vh',
+  },
+  projectsList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8vh',
+  },
+  projectItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
+    opacity: 0,
+  },
+  projectNumber: {
+    color: 'rgba(255, 255, 255, 0.3)',
+    fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
+    fontWeight: 500,
+    letterSpacing: '0.1em',
+  },
+  projectInfo: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.25rem',
+  },
+  projectCategory: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 'clamp(0.875rem, 1.5vw, 1rem)',
+    fontWeight: 400,
+  },
+  projectName: {
+    color: '#ffffff',
+    fontSize: 'clamp(3rem, 10vw, 8rem)',
+    fontWeight: 700,
+    fontStyle: 'italic',
+    letterSpacing: '-0.03em',
+    margin: 0,
+    lineHeight: 1,
+  },
+
+  // Footer
+  footer: {
+    padding: '4rem 8vw',
+    borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+  },
+  footerText: {
+    color: 'rgba(255, 255, 255, 0.3)',
+    fontSize: '0.875rem',
   },
 }
 
