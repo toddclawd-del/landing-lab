@@ -127,7 +127,8 @@ function MagneticButton({
   return (
     <button
       ref={buttonRef}
-      className={`relative ${className}`}
+      className={`relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 ${className}`}
+      aria-label={typeof children === 'string' ? children : undefined}
     >
       <span ref={textRef} className="relative z-10 block">
         {children}

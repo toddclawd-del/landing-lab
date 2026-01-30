@@ -86,16 +86,18 @@ function CascadeReveal() {
         </p>
         
         {/* Pattern selector */}
-        <div className="flex justify-center gap-4 mb-12">
+        <div className="flex justify-center gap-4 mb-12" role="group" aria-label="Stagger pattern selection">
           {(['start', 'center', 'edges', 'random'] as const).map((p) => (
             <button
               key={p}
               onClick={() => setPattern(p)}
-              className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 ${
                 pattern === p 
                   ? 'bg-amber-500 text-black' 
                   : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
               }`}
+              aria-pressed={pattern === p}
+              aria-label={`Stagger from ${p}`}
             >
               {p.charAt(0).toUpperCase() + p.slice(1)}
             </button>
@@ -274,7 +276,8 @@ function ShuffleGrid() {
         
         <button
           onClick={shuffle}
-          className="block mx-auto mb-12 px-8 py-3 bg-amber-500 text-black font-bold rounded-xl hover:bg-amber-400 transition-colors"
+          className="block mx-auto mb-12 px-8 py-3 bg-amber-500 text-black font-bold rounded-xl hover:bg-amber-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
+          aria-label="Shuffle grid items with animation"
         >
           Shuffle Grid
         </button>

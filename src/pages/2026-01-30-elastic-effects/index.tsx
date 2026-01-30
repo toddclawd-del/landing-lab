@@ -98,12 +98,13 @@ function ElasticButtons() {
             <button
               key={i}
               ref={(el) => { buttonsRef.current[i] = el }}
-              className="px-12 py-6 rounded-2xl font-bold text-xl text-white shadow-xl"
+              className="px-12 py-6 rounded-2xl font-bold text-xl text-white shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
               style={{ backgroundColor: button.color }}
               onMouseEnter={() => handleMouseEnter(i)}
               onMouseLeave={() => handleMouseLeave(i)}
               onMouseDown={() => handleMouseDown(i)}
               onMouseUp={() => handleMouseUp(i)}
+              aria-label={`${button.text} button with elastic effect`}
             >
               {button.text}
             </button>
@@ -165,15 +166,16 @@ function BouncyCards() {
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {cards.map((card, i) => (
-            <div
+            <button
               key={i}
-              ref={(el) => { cardsRef.current[i] = el }}
-              className="w-36 h-44 md:w-44 md:h-52 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-2xl flex flex-col items-center justify-center cursor-pointer border border-pink-500/20 hover:border-pink-500/50 transition-colors"
+              ref={(el) => { cardsRef.current[i] = el as HTMLDivElement }}
+              className="w-36 h-44 md:w-44 md:h-52 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-2xl flex flex-col items-center justify-center cursor-pointer border border-pink-500/20 hover:border-pink-500/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
               onClick={() => handleClick(i)}
+              aria-label={`${card.title} - Click to see bounce effect`}
             >
-              <span className="text-4xl mb-3">{card.icon}</span>
+              <span className="text-4xl mb-3" aria-hidden="true">{card.icon}</span>
               <span className="font-bold text-white">{card.title}</span>
-            </div>
+            </button>
           ))}
         </div>
         
@@ -512,7 +514,8 @@ function ElasticModal() {
         
         <button
           onClick={openModal}
-          className="px-8 py-4 bg-pink-500 text-white font-bold text-xl rounded-xl hover:bg-pink-400 transition-colors"
+          className="px-8 py-4 bg-pink-500 text-white font-bold text-xl rounded-xl hover:bg-pink-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+          aria-label="Open elastic modal"
         >
           Open Modal
         </button>
@@ -528,14 +531,18 @@ function ElasticModal() {
             <div
               ref={modalRef}
               className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md bg-neutral-800 rounded-3xl p-8 z-50 shadow-2xl"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="elastic-modal-title"
             >
-              <h3 className="text-2xl font-bold mb-4">Elastic Modal</h3>
+              <h3 id="elastic-modal-title" className="text-2xl font-bold mb-4">Elastic Modal</h3>
               <p className="text-neutral-400 mb-6">
                 This modal opens with a bouncy elastic animation and closes smoothly.
               </p>
               <button
                 onClick={closeModal}
-                className="px-6 py-3 bg-pink-500 text-white font-bold rounded-xl hover:bg-pink-400 transition-colors"
+                className="px-6 py-3 bg-pink-500 text-white font-bold rounded-xl hover:bg-pink-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-800"
+                aria-label="Close modal"
               >
                 Close
               </button>
