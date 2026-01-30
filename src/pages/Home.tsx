@@ -9,6 +9,12 @@ interface LandingPage {
 
 const pages: LandingPage[] = [
   {
+    slug: 'neo-brutalism',
+    title: 'Neo-Brutalism',
+    inspiration: 'Bold, unapologetic design with hard shadows, clashing colors, and chunky typography',
+    date: '2026-01-30'
+  },
+  {
     slug: 'domain-warp',
     title: 'Domain Warp',
     inspiration: 'Scandinavian clean SaaS landing with organic domain warping shader background',

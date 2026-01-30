@@ -8,6 +8,123 @@ Design techniques and concepts learned from building landing pages.
 
 ---
 
+## 2026-01-30 — Neo-Brutalism
+
+**Reference:** [Bejamas - Neubrutalism Trend](https://bejamas.com/blog/neubrutalism-web-design-trend) | [HubSpot - Neo Brutalism Guide](https://blog.hubspot.com/website/neo-brutalism) | [Figma](https://figma.com) & [Gumroad](https://gumroad.com) (canonical examples)
+
+### 🎓 Concepts & Techniques
+
+**1. The Anti-Design Philosophy**
+- Neo-brutalism emerged as a rebellion against the "safe" aesthetic of neumorphism and glassmorphism
+- It draws from brutalist architecture: raw, honest, function-first
+- The goal is to create designs that are MEMORABLE, not necessarily "pretty"
+- It's anti-bland — refuses to blend into the sea of soft gradients and subtle shadows
+
+**2. Hard Offset Shadows (The Signature Look)**
+- Instead of soft CSS box-shadows, neo-brutalism uses solid color offset rectangles
+- `box-shadow: 8px 8px 0 #000` — no blur, no spread, pure offset
+- Creates a "sticker" or "cut-out" effect where elements feel lifted off the page
+- On hover, increase the offset to simulate the element "lifting" further
+- Isometric feel at 45° angles is common (equal x and y offset)
+
+**3. Clashing Color Theory**
+- Traditional color harmony (complementary, analogous) is intentionally violated
+- High-saturation primaries sit next to each other: electric yellow, hot pink, bright blue
+- The clashing creates ENERGY and TENSION — your eye can't rest
+- Pure black is embraced (avoided in most modern UI) as the grounding element
+- Warm off-white backgrounds soften the intensity while maintaining contrast
+
+**4. Thick Black Outlines**
+- 2-4px solid black borders on EVERYTHING: buttons, cards, badges, shapes
+- Creates visual definition and separates elements clearly
+- Reminiscent of comic books, pop art, and 90s web design
+- The weight should be consistent across the design system
+
+**5. Typography as Decoration**
+- Chunky display fonts (Space Grotesk, Space Mono, Archivo Black) dominate
+- Text is often THE visual element, not just content
+- Uppercase headlines with tight letter-spacing create impact
+- Highlighted words with background color + border = "sticker" text effect
+- Rotation on text blocks (-2° to 2°) adds playful energy
+
+**6. Geometric Floating Shapes**
+- Simple shapes (squares, circles) float in the background
+- They're purely decorative — reinforcing the "playful chaos" aesthetic
+- Animated with subtle bobbing motion (translateY, rotate)
+- Each shape gets its own accent color from the palette
+
+**7. Function Over Form (But Make It Fun)**
+- Despite the chaos, neo-brutalism prioritizes readability and UX
+- Generous whitespace between elements aids scanning
+- Clear visual hierarchy through size and weight, not subtlety
+- Navigation is straightforward; only the aesthetics are "loud"
+
+**8. Hover States That Transform**
+- Buttons "lift" on hover: decrease x/y position while increasing shadow offset
+- This creates a physical, tactile feeling — like pressing a rubber stamp backwards
+- Spring animations (stiffness: 300-400, damping: 20-25) feel responsive but not jittery
+- Scale rarely changes; it's about POSITION and SHADOW
+
+**9. The Marquee Pattern**
+- Infinite scrolling text strips are a neo-brutalist staple
+- Creates movement without requiring user interaction
+- Bold typography + high-contrast colors = attention without being annoying
+- Borders top and bottom anchor the strip in the layout
+
+**10. When Neo-Brutalism Works**
+- Creative agencies, design studios, art/culture sites, indie brands
+- Products targeting younger, design-savvy audiences
+- Brands that want to stand out and have personality
+- NOT recommended for: healthcare, finance, enterprise B2B, accessibility-focused sites
+
+### 📋 Implementation Notes
+
+**Components Built:**
+- `BrutalButton` — Hard shadow buttons with hover lift animation (spring physics)
+- `BrutalCard` — Offset shadow cards with scroll-triggered reveal + hover transform
+- `MarqueeStrip` — Infinite scrolling text with configurable direction/colors
+- `Nav` — Fixed nav with scroll-triggered background + border appearance
+- `Hero` — Floating geometric shapes, sticker text highlights, staggered reveals
+- `Services` — Grid of colored cards with emoji icons
+- `Work` — Project portfolio with hover overlay reveals (AnimatePresence)
+- `Testimonials` — Quote cards with brutal styling
+- `CTA` — Bold split-text headline with rotating background shapes
+- `Footer` — Multi-column links with brand consistency
+
+**Key Dependencies:**
+- `framer-motion` — Spring physics, AnimatePresence, useInView, whileHover/whileTap
+- Google Fonts: Space Grotesk (display) + Inter (body)
+
+**Color Palette:**
+- Background: `#FFFEF5` (warm off-white)
+- Black: `#1a1a1a`
+- Yellow: `#FFE600` (electric)
+- Pink: `#FF5CAA` (hot)
+- Blue: `#3B82F6` (bright)
+- Green: `#22C55E` (lime)
+- Purple: `#A855F7` (vivid)
+- Orange: `#FF6B35` (burnt)
+
+**Animation Techniques Used:**
+- Spring physics for hover transforms (`stiffness: 400, damping: 25`)
+- Staggered scroll reveals with `useInView` + `delay: index * 0.1`
+- Floating background shapes with infinite `y` and `rotate` animations
+- AnimatePresence for project card hover overlays
+- Infinite marquee with CSS animation
+
+**Score: 91/100**
+
+| Category | Score | Notes |
+|----------|-------|-------|
+| Visual Impact | 24/25 | Immediately distinctive; hard shadows and clashing colors demand attention |
+| Modern Feel | 19/20 | Peak 2026 trend; Figma/Gumroad DNA with fresh creative agency execution |
+| Code Quality | 14/15 | Clean component architecture; reusable BrutalButton/BrutalCard patterns |
+| Animation/Motion | 14/15 | Spring hover physics, floating shapes, scroll reveals, marquee strips |
+| Responsiveness | 13/15 | Mobile-first padding; nav simplified on mobile; grid collapses well |
+| Performance | 7/10 | No heavy assets; floating shape animations run continuously |
+
+---
+
 ## 2026-01-27 — Aurora Mesh Gradients
 
 **Reference:** [Deposit Photos - Web Design Trends 2025](https://blog.depositphotos.com/web-design-trends-2025.html) | [Paddle Creative - Glassmorphism](https://www.paddlecreative.co.uk/blog/the-best-web-design-trends-of-2025)
