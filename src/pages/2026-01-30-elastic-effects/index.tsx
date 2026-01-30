@@ -125,7 +125,7 @@ function ElasticButtons() {
 // ═══════════════════════════════════════════════════════════
 
 function BouncyCards() {
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([])
+  const cardsRef = useRef<(HTMLButtonElement | null)[]>([])
   
   const cards = [
     { title: 'Design', icon: '🎨' },
@@ -168,7 +168,7 @@ function BouncyCards() {
           {cards.map((card, i) => (
             <button
               key={i}
-              ref={(el) => { cardsRef.current[i] = el as HTMLDivElement }}
+              ref={(el) => { cardsRef.current[i] = el }}
               className="w-36 h-44 md:w-44 md:h-52 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-2xl flex flex-col items-center justify-center cursor-pointer border border-pink-500/20 hover:border-pink-500/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
               onClick={() => handleClick(i)}
               aria-label={`${card.title} - Click to see bounce effect`}

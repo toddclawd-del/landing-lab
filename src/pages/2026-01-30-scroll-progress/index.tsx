@@ -35,7 +35,6 @@ const CONFIG = {
 
 function HorizontalProgressBar() {
   const [progress, setProgress] = useState(0)
-  const containerRef = useRef<HTMLDivElement>(null)
   
   useEffect(() => {
     const ctx = gsap.context(() => {
