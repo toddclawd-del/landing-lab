@@ -35,17 +35,18 @@ const CONFIG = {
 
 function HorizontalProgressBar() {
   const [progress, setProgress] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
   
   useEffect(() => {
-    ScrollTrigger.create({
-      start: 'top top',
-      end: 'bottom bottom',
-      onUpdate: (self) => setProgress(self.progress),
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        start: 'top top',
+        end: 'bottom bottom',
+        onUpdate: (self) => setProgress(self.progress),
+      })
     })
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -68,15 +69,15 @@ function CircularProgress() {
   const circumference = 2 * Math.PI * 40 // radius = 40
   
   useEffect(() => {
-    ScrollTrigger.create({
-      start: 'top top',
-      end: 'bottom bottom',
-      onUpdate: (self) => setProgress(self.progress),
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        start: 'top top',
+        end: 'bottom bottom',
+        onUpdate: (self) => setProgress(self.progress),
+      })
     })
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -131,24 +132,24 @@ function SectionDots() {
   const [sectionProgress, setSectionProgress] = useState(0)
   
   useEffect(() => {
-    CONFIG.sections.forEach((section, i) => {
-      ScrollTrigger.create({
-        trigger: `#${section.id}`,
-        start: 'top center',
-        end: 'bottom center',
-        onEnter: () => setActiveSection(i),
-        onEnterBack: () => setActiveSection(i),
-        onUpdate: (self) => {
-          if (i === activeSection) {
-            setSectionProgress(self.progress)
-          }
-        },
+    const ctx = gsap.context(() => {
+      CONFIG.sections.forEach((section, i) => {
+        ScrollTrigger.create({
+          trigger: `#${section.id}`,
+          start: 'top center',
+          end: 'bottom center',
+          onEnter: () => setActiveSection(i),
+          onEnterBack: () => setActiveSection(i),
+          onUpdate: (self) => {
+            if (i === activeSection) {
+              setSectionProgress(self.progress)
+            }
+          },
+        })
       })
     })
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [activeSection])
   
   return (
@@ -231,40 +232,40 @@ function TimelineSection() {
     
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     
-    // Animate the timeline progress line
-    gsap.to(progressRef.current, {
-      height: '100%',
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top center',
-        end: 'bottom center',
-        scrub: prefersReducedMotion ? 0 : 1,
-      },
-    })
-    
-    // Animate each step
-    stepsRef.current.forEach((step) => {
-      if (!step) return
+    const ctx = gsap.context(() => {
+      // Animate the timeline progress line
+      gsap.to(progressRef.current, {
+        height: '100%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top center',
+          end: 'bottom center',
+          scrub: prefersReducedMotion ? 0 : 1,
+        },
+      })
       
-      gsap.fromTo(step,
-        { opacity: 0.3, x: -20 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.5,
-          scrollTrigger: {
-            trigger: step,
-            start: 'top 70%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      )
-    })
+      // Animate each step
+      stepsRef.current.forEach((step) => {
+        if (!step) return
+        
+        gsap.fromTo(step,
+          { opacity: 0.3, x: -20 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.5,
+            scrollTrigger: {
+              trigger: step,
+              start: 'top 70%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      })
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -328,24 +329,24 @@ export function ChapterMarkers() {
   ]
   
   useEffect(() => {
-    chapters.forEach((chapter, i) => {
-      ScrollTrigger.create({
-        trigger: `#chapter-${chapter.num}`,
-        start: 'top 60%',
-        end: 'bottom 40%',
-        onEnter: () => setCurrentChapter(i),
-        onEnterBack: () => setCurrentChapter(i),
-        onUpdate: (self) => {
-          if (i === currentChapter) {
-            setChapterProgress(self.progress)
-          }
-        },
+    const ctx = gsap.context(() => {
+      chapters.forEach((chapter, i) => {
+        ScrollTrigger.create({
+          trigger: `#chapter-${chapter.num}`,
+          start: 'top 60%',
+          end: 'bottom 40%',
+          onEnter: () => setCurrentChapter(i),
+          onEnterBack: () => setCurrentChapter(i),
+          onUpdate: (self) => {
+            if (i === currentChapter) {
+              setChapterProgress(self.progress)
+            }
+          },
+        })
       })
     })
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [currentChapter])
   
   return (

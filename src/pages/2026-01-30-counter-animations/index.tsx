@@ -367,23 +367,23 @@ function ScrollLinkedCounter() {
     
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     
-    const counter = { value: 0 }
+    const ctx = gsap.context(() => {
+      const counter = { value: 0 }
+      
+      gsap.to(counter, {
+        value: 100,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top center',
+          end: 'bottom center',
+          scrub: prefersReducedMotion ? 0 : 1,
+          onUpdate: () => setValue(Math.round(counter.value)),
+        },
+      })
+    }, containerRef)
     
-    gsap.to(counter, {
-      value: 100,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top center',
-        end: 'bottom center',
-        scrub: prefersReducedMotion ? 0 : 1,
-        onUpdate: () => setValue(Math.round(counter.value)),
-      },
-    })
-    
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (

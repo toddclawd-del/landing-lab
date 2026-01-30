@@ -51,31 +51,31 @@ function CascadeReveal() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    // Reset items
-    gsap.set(itemsRef.current, { opacity: 0, scale: 0.5, rotation: -10 })
+    const ctx = gsap.context(() => {
+      // Reset items
+      gsap.set(itemsRef.current, { opacity: 0, scale: 0.5, rotation: -10 })
+      
+      // Animate with selected pattern
+      gsap.to(itemsRef.current, {
+        opacity: 1,
+        scale: 1,
+        rotation: 0,
+        duration: CONFIG.itemDuration,
+        ease: 'back.out(1.7)',
+        stagger: {
+          each: CONFIG.staggerEach,
+          from: pattern,
+          grid: [4, 6],
+        },
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      })
+    }, containerRef)
     
-    // Animate with selected pattern
-    gsap.to(itemsRef.current, {
-      opacity: 1,
-      scale: 1,
-      rotation: 0,
-      duration: CONFIG.itemDuration,
-      ease: 'back.out(1.7)',
-      stagger: {
-        each: CONFIG.staggerEach,
-        from: pattern,
-        grid: [4, 6],
-      },
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 80%',
-        toggleActions: 'play none none reverse',
-      },
-    })
-    
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [pattern])
   
   return (
@@ -332,33 +332,33 @@ function MasonryReveal() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    gsap.fromTo(itemsRef.current,
-      {
-        opacity: 0,
-        y: 60,
-        scale: 0.9,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.7,
-        ease: 'power3.out',
-        stagger: {
-          each: 0.1,
-          from: 'start',
+    const ctx = gsap.context(() => {
+      gsap.fromTo(itemsRef.current,
+        {
+          opacity: 0,
+          y: 60,
+          scale: 0.9,
         },
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 75%',
-          toggleActions: 'play none none reverse',
-        },
-      }
-    )
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.7,
+          ease: 'power3.out',
+          stagger: {
+            each: 0.1,
+            from: 'start',
+          },
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 75%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -411,30 +411,28 @@ function WaveAnimation() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    // Create continuous wave animation
-    itemsRef.current.forEach((item, i) => {
-      if (!item) return
-      
-      const col = i % cols
-      const row = Math.floor(i / cols)
-      
-      gsap.to(item, {
-        y: -10,
-        scale: 1.1,
-        backgroundColor: '#f59e0b',
-        duration: 0.3,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        delay: (col + row) * 0.1,
+    const ctx = gsap.context(() => {
+      // Create continuous wave animation
+      itemsRef.current.forEach((item, i) => {
+        if (!item) return
+        
+        const col = i % cols
+        const row = Math.floor(i / cols)
+        
+        gsap.to(item, {
+          y: -10,
+          scale: 1.1,
+          backgroundColor: '#f59e0b',
+          duration: 0.3,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          delay: (col + row) * 0.1,
+        })
       })
-    })
+    }, containerRef)
     
-    return () => {
-      itemsRef.current.forEach(item => {
-        if (item) gsap.killTweensOf(item)
-      })
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
