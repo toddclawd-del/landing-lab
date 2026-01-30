@@ -37,8 +37,6 @@ function HorizontalProgressBar() {
   const [progress, setProgress] = useState(0)
   
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    
     ScrollTrigger.create({
       start: 'top top',
       end: 'bottom bottom',
@@ -246,7 +244,7 @@ function TimelineSection() {
     })
     
     // Animate each step
-    stepsRef.current.forEach((step, i) => {
+    stepsRef.current.forEach((step) => {
       if (!step) return
       
       gsap.fromTo(step,
@@ -317,7 +315,8 @@ function TimelineSection() {
 // Book-like chapter indicators
 // ═══════════════════════════════════════════════════════════
 
-function ChapterMarkers() {
+// Optional: Chapter Markers component (not used in main export but available for integration)
+export function ChapterMarkers() {
   const [currentChapter, setCurrentChapter] = useState(0)
   const [chapterProgress, setChapterProgress] = useState(0)
   

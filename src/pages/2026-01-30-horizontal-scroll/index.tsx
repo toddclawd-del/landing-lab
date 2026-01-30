@@ -82,7 +82,7 @@ function HorizontalGallery() {
     
     // Card animations as they enter/exit viewport
     if (!prefersReducedMotion) {
-      cardsRef.current.forEach((card, i) => {
+      cardsRef.current.forEach((card) => {
         if (!card) return
         
         gsap.fromTo(card, 

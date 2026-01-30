@@ -202,6 +202,7 @@ function SlotMachineCounter() {
             const totalSpins = CONFIG.slotSpins + i * 2 // Stagger spins
             
             function spin() {
+              if (!digit) return
               if (currentSpin < totalSpins) {
                 digit.textContent = String(Math.floor(Math.random() * 10))
                 currentSpin++

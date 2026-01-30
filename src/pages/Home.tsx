@@ -8,6 +8,74 @@ interface LandingPage {
 }
 
 const pages: LandingPage[] = [
+  // GSAP Interaction Modules
+  {
+    slug: 'text-reveal',
+    title: 'Text Reveal',
+    inspiration: 'GSAP Module: 6 text animation techniques — character, word, line reveals, scramble, clip-path',
+    date: '2026-01-30'
+  },
+  {
+    slug: 'scroll-velocity',
+    title: 'Scroll Velocity',
+    inspiration: 'GSAP Module: Velocity-based effects — text skew, responsive marquee, stretch/squash, momentum',
+    date: '2026-01-30'
+  },
+  {
+    slug: 'magnetic-buttons',
+    title: 'Magnetic Buttons',
+    inspiration: 'GSAP Module: Magnetic cursor interactions — buttons, nav, elastic snap-back, fleeing particles',
+    date: '2026-01-30'
+  },
+  {
+    slug: 'horizontal-scroll',
+    title: 'Horizontal Scroll',
+    inspiration: 'GSAP Module: Pinned horizontal galleries — filmstrip, stacking cards, progress indicators',
+    date: '2026-01-30'
+  },
+  {
+    slug: 'image-reveal',
+    title: 'Image Reveal',
+    inspiration: 'GSAP Module: Image reveal effects — clip-path wipes, blur, parallax zoom, before/after',
+    date: '2026-01-30'
+  },
+  {
+    slug: 'counter-animations',
+    title: 'Counter Animations',
+    inspiration: 'GSAP Module: Number animations — slot machine, odometer, scroll-linked, staggered stats',
+    date: '2026-01-30'
+  },
+  {
+    slug: 'stagger-grids',
+    title: 'Stagger Grids',
+    inspiration: 'GSAP Module: Grid animations — cascade reveals, ripple hover, shuffle, wave patterns',
+    date: '2026-01-30'
+  },
+  {
+    slug: 'scroll-progress',
+    title: 'Scroll Progress',
+    inspiration: 'GSAP Module: Progress indicators — horizontal bar, circular, section dots, timeline',
+    date: '2026-01-30'
+  },
+  {
+    slug: 'parallax-layers',
+    title: 'Parallax Layers',
+    inspiration: 'GSAP Module: Advanced parallax — multi-layer depth, mouse parallax, 3D perspective',
+    date: '2026-01-30'
+  },
+  {
+    slug: 'pinned-sections',
+    title: 'Pinned Sections',
+    inspiration: 'GSAP Module: ScrollTrigger pinning — content swap, card stacking, step-by-step reveal',
+    date: '2026-01-30'
+  },
+  {
+    slug: 'elastic-effects',
+    title: 'Elastic Effects',
+    inspiration: 'GSAP Module: Bouncy physics — elastic buttons, jelly text, spring nav, rubber band',
+    date: '2026-01-30'
+  },
+  // Landing Page Templates
   {
     slug: 'neo-brutalism',
     title: 'Neo-Brutalism',

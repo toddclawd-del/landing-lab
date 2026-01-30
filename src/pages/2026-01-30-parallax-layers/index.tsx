@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -223,7 +223,6 @@ function CombinedParallax() {
   const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const bgRef = useRef<HTMLDivElement>(null)
-  const mouseRef = useRef({ x: 0, y: 0 })
   
   useEffect(() => {
     if (!containerRef.current || !contentRef.current || !bgRef.current) return

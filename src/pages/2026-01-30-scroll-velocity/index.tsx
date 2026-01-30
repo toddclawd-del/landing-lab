@@ -154,7 +154,6 @@ function VelocityMarquee() {
       // Base speed + velocity boost
       const baseSpeed = CONFIG.baseMarqueeSpeed * dt
       const velocityBoost = Math.abs(velocityRef.current) * CONFIG.velocityBoost * dt
-      const direction = velocityRef.current > 0 ? 1 : -1
       
       // Update positions
       positionRef.current.track1 -= (baseSpeed + velocityBoost)
@@ -251,7 +250,6 @@ function StretchEffect() {
       
       // Calculate stretch
       const stretch = gsap.utils.clamp(1, CONFIG.maxStretch, 1 + Math.abs(velocityRef.current) * 0.01)
-      const direction = velocityRef.current > 0 ? 1 : -1
       
       elementsRef.current.forEach((el, i) => {
         if (!el) return

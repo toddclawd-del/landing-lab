@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect, useState, useCallback } from 'react'
+import { useRef, useEffect } from 'react'
 import { gsap } from 'gsap'
 
 // ════════════════════════════════════════════
@@ -198,7 +198,7 @@ function MagneticNavSection() {
         </p>
         
         <nav className="flex flex-col md:flex-row gap-8 md:gap-16 justify-center">
-          {navItems.map((item, i) => (
+          {navItems.map((item) => (
             <MagneticButton
               key={item}
               className="text-4xl md:text-6xl font-bold text-neutral-300 hover:text-orange-400 transition-colors"
@@ -461,7 +461,7 @@ function FleeingParticles() {
     }
     
     function animate() {
-      particlesRef.current.forEach((particle, i) => {
+      particlesRef.current.forEach((particle) => {
         if (!particle) return
         
         const rect = particle.getBoundingClientRect()
