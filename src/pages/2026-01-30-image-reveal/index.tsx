@@ -83,27 +83,27 @@ function ClipPathReveals() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    imagesRef.current.forEach((img, i) => {
-      if (!img) return
-      
-      gsap.fromTo(img, 
-        { clipPath: reveals[i].from },
-        {
-          clipPath: reveals[i].to,
-          duration: CONFIG.revealDuration,
-          ease: 'power3.inOut',
-          scrollTrigger: {
-            trigger: img,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      )
-    })
+    const ctx = gsap.context(() => {
+      imagesRef.current.forEach((img, i) => {
+        if (!img) return
+        
+        gsap.fromTo(img, 
+          { clipPath: reveals[i].from },
+          {
+            clipPath: reveals[i].to,
+            duration: CONFIG.revealDuration,
+            ease: 'power3.inOut',
+            scrollTrigger: {
+              trigger: img,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      })
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -146,38 +146,38 @@ function ScaleBlurReveal() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 80%',
-        end: 'top 20%',
-        scrub: 1,
-      },
-    })
-    
-    tl.fromTo(imageRef.current, 
-      { 
-        scale: 1.5, 
-        filter: 'blur(20px) saturate(0)',
-      },
-      { 
-        scale: 1, 
-        filter: 'blur(0px) saturate(1)',
-        ease: 'power2.out',
-      }
-    )
-    
-    if (overlayRef.current) {
-      tl.fromTo(overlayRef.current,
-        { opacity: 1 },
-        { opacity: 0 },
-        0
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 80%',
+          end: 'top 20%',
+          scrub: 1,
+        },
+      })
+      
+      tl.fromTo(imageRef.current, 
+        { 
+          scale: 1.5, 
+          filter: 'blur(20px) saturate(0)',
+        },
+        { 
+          scale: 1, 
+          filter: 'blur(0px) saturate(1)',
+          ease: 'power2.out',
+        }
       )
-    }
+      
+      if (overlayRef.current) {
+        tl.fromTo(overlayRef.current,
+          { opacity: 1 },
+          { opacity: 0 },
+          0
+        )
+      }
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -225,27 +225,27 @@ function ParallaxZoom() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    gsap.fromTo(imageRef.current,
-      {
-        scale: 1.3,
-        y: -CONFIG.parallaxIntensity,
-      },
-      {
-        scale: 1,
-        y: CONFIG.parallaxIntensity,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
+    const ctx = gsap.context(() => {
+      gsap.fromTo(imageRef.current,
+        {
+          scale: 1.3,
+          y: -CONFIG.parallaxIntensity,
         },
-      }
-    )
+        {
+          scale: 1,
+          y: CONFIG.parallaxIntensity,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        }
+      )
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -290,28 +290,28 @@ function SplitMaskReveal() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 70%',
-        toggleActions: 'play none none reverse',
-      },
-    })
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 70%',
+          toggleActions: 'play none none reverse',
+        },
+      })
+      
+      tl.to(leftMaskRef.current, {
+        x: '-100%',
+        duration: 1,
+        ease: 'power3.inOut',
+      })
+      .to(rightMaskRef.current, {
+        x: '100%',
+        duration: 1,
+        ease: 'power3.inOut',
+      }, 0)
+    }, containerRef)
     
-    tl.to(leftMaskRef.current, {
-      x: '-100%',
-      duration: 1,
-      ease: 'power3.inOut',
-    })
-    .to(rightMaskRef.current, {
-      x: '100%',
-      duration: 1,
-      ease: 'power3.inOut',
-    }, 0)
-    
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -488,31 +488,31 @@ function StaggeredGridReveal() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    gsap.fromTo(imagesRef.current,
-      {
-        clipPath: 'inset(100% 0 0 0)',
-        scale: 1.2,
-      },
-      {
-        clipPath: 'inset(0% 0 0 0)',
-        scale: 1,
-        duration: 1,
-        stagger: {
-          each: 0.15,
-          from: 'random',
+    const ctx = gsap.context(() => {
+      gsap.fromTo(imagesRef.current,
+        {
+          clipPath: 'inset(100% 0 0 0)',
+          scale: 1.2,
         },
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 70%',
-          toggleActions: 'play none none reverse',
-        },
-      }
-    )
+        {
+          clipPath: 'inset(0% 0 0 0)',
+          scale: 1,
+          duration: 1,
+          stagger: {
+            each: 0.15,
+            from: 'random',
+          },
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 70%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (

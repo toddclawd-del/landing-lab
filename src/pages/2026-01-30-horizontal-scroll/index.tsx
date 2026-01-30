@@ -62,69 +62,69 @@ function HorizontalGallery() {
     const track = trackRef.current
     const totalWidth = track.scrollWidth - window.innerWidth
     
-    // Main horizontal scroll animation
-    const scrollTween = gsap.to(track, {
-      x: -totalWidth,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top top',
-        end: () => `+=${totalWidth}`,
-        pin: true,
-        scrub: prefersReducedMotion ? 0 : 1,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          setProgress(self.progress)
-          setActiveIndex(Math.round(self.progress * (PROJECTS.length - 1)))
-        },
-      },
-    })
-    
-    // Card animations as they enter/exit viewport
-    if (!prefersReducedMotion) {
-      cardsRef.current.forEach((card) => {
-        if (!card) return
-        
-        gsap.fromTo(card, 
-          {
-            scale: CONFIG.enterScale,
-            rotateY: CONFIG.enterRotation,
-            opacity: 0.5,
+    const ctx = gsap.context(() => {
+      // Main horizontal scroll animation
+      const scrollTween = gsap.to(track, {
+        x: -totalWidth,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: () => `+=${totalWidth}`,
+          pin: true,
+          scrub: prefersReducedMotion ? 0 : 1,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            setProgress(self.progress)
+            setActiveIndex(Math.round(self.progress * (PROJECTS.length - 1)))
           },
-          {
-            scale: 1,
-            rotateY: 0,
-            opacity: 1,
-            ease: 'power2.out',
+        },
+      })
+      
+      // Card animations as they enter/exit viewport
+      if (!prefersReducedMotion) {
+        cardsRef.current.forEach((card) => {
+          if (!card) return
+          
+          gsap.fromTo(card, 
+            {
+              scale: CONFIG.enterScale,
+              rotateY: CONFIG.enterRotation,
+              opacity: 0.5,
+            },
+            {
+              scale: 1,
+              rotateY: 0,
+              opacity: 1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                containerAnimation: scrollTween,
+                start: 'left 80%',
+                end: 'left 50%',
+                scrub: true,
+              },
+            }
+          )
+          
+          gsap.to(card, {
+            scale: CONFIG.exitScale,
+            rotateY: CONFIG.exitRotation,
+            opacity: 0.5,
+            ease: 'power2.in',
             scrollTrigger: {
               trigger: card,
               containerAnimation: scrollTween,
-              start: 'left 80%',
-              end: 'left 50%',
+              start: 'right 50%',
+              end: 'right 20%',
               scrub: true,
             },
-          }
-        )
-        
-        gsap.to(card, {
-          scale: CONFIG.exitScale,
-          rotateY: CONFIG.exitRotation,
-          opacity: 0.5,
-          ease: 'power2.in',
-          scrollTrigger: {
-            trigger: card,
-            containerAnimation: scrollTween,
-            start: 'right 50%',
-            end: 'right 20%',
-            scrub: true,
-          },
+          })
         })
-      })
-    }
+      }
+    }, sectionRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -238,21 +238,21 @@ function FilmstripGallery() {
     
     const totalScroll = filmRef.current.scrollWidth - window.innerWidth
     
-    gsap.to(filmRef.current, {
-      x: -totalScroll,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top top',
-        end: () => `+=${totalScroll}`,
-        pin: true,
-        scrub: prefersReducedMotion ? 0 : 0.5,
-      },
-    })
+    const ctx = gsap.context(() => {
+      gsap.to(filmRef.current, {
+        x: -totalScroll,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: () => `+=${totalScroll}`,
+          pin: true,
+          scrub: prefersReducedMotion ? 0 : 0.5,
+        },
+      })
+    }, sectionRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -328,24 +328,24 @@ function StackingCards() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    cardsRef.current.forEach((card, i) => {
-      if (!card) return
-      
-      gsap.to(card, {
-        y: () => -window.innerHeight * 0.7 * i,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: () => `top+=${window.innerHeight * 0.2 * i} top`,
-          end: () => `top+=${window.innerHeight * (0.2 * i + 0.6)} top`,
-          scrub: 1,
-        },
+    const ctx = gsap.context(() => {
+      cardsRef.current.forEach((card, i) => {
+        if (!card) return
+        
+        gsap.to(card, {
+          y: () => -window.innerHeight * 0.7 * i,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: () => `top+=${window.innerHeight * 0.2 * i} top`,
+            end: () => `top+=${window.innerHeight * (0.2 * i + 0.6)} top`,
+            scrub: 1,
+          },
+        })
       })
-    })
+    }, sectionRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
