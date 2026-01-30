@@ -98,34 +98,34 @@ function CharacterReveal() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    const chars = splitTextIntoSpans(textRef.current, 'chars')
+    const ctx = gsap.context(() => {
+      const chars = splitTextIntoSpans(textRef.current!, 'chars')
+      
+      // Initial state: characters below and rotated
+      gsap.set(chars, {
+        y: 100,
+        opacity: 0,
+        rotateX: -90,
+        transformOrigin: 'bottom center',
+      })
+      
+      // Animate on scroll
+      gsap.to(chars, {
+        y: 0,
+        opacity: 1,
+        rotateX: 0,
+        duration: CONFIG.charDuration,
+        stagger: CONFIG.charStagger,
+        ease: CONFIG.charEase,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse',
+        },
+      })
+    }, containerRef)
     
-    // Initial state: characters below and rotated
-    gsap.set(chars, {
-      y: 100,
-      opacity: 0,
-      rotateX: -90,
-      transformOrigin: 'bottom center',
-    })
-    
-    // Animate on scroll
-    gsap.to(chars, {
-      y: 0,
-      opacity: 1,
-      rotateX: 0,
-      duration: CONFIG.charDuration,
-      stagger: CONFIG.charStagger,
-      ease: CONFIG.charEase,
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 80%',
-        toggleActions: 'play none none reverse',
-      },
-    })
-    
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -161,31 +161,31 @@ function WordReveal() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    const words = splitTextIntoSpans(textRef.current, 'words')
+    const ctx = gsap.context(() => {
+      const words = splitTextIntoSpans(textRef.current!, 'words')
+      
+      gsap.set(words, {
+        opacity: 0,
+        y: 40,
+        filter: 'blur(10px)',
+      })
+      
+      gsap.to(words, {
+        opacity: 1,
+        y: 0,
+        filter: 'blur(0px)',
+        duration: CONFIG.wordDuration,
+        stagger: CONFIG.wordStagger,
+        ease: CONFIG.wordEase,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 75%',
+          toggleActions: 'play none none reverse',
+        },
+      })
+    }, containerRef)
     
-    gsap.set(words, {
-      opacity: 0,
-      y: 40,
-      filter: 'blur(10px)',
-    })
-    
-    gsap.to(words, {
-      opacity: 1,
-      y: 0,
-      filter: 'blur(0px)',
-      duration: CONFIG.wordDuration,
-      stagger: CONFIG.wordStagger,
-      ease: CONFIG.wordEase,
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 75%',
-        toggleActions: 'play none none reverse',
-      },
-    })
-    
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -226,29 +226,29 @@ function LineReveal() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    linesRef.current.forEach((line, i) => {
-      if (!line) return
-      const inner = line.querySelector('span')
-      if (!inner) return
-      
-      gsap.set(inner, { y: '100%' })
-      
-      gsap.to(inner, {
-        y: '0%',
-        duration: CONFIG.lineDuration,
-        ease: CONFIG.lineEase,
-        delay: i * CONFIG.lineStagger,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 70%',
-          toggleActions: 'play none none reverse',
-        },
+    const ctx = gsap.context(() => {
+      linesRef.current.forEach((line, i) => {
+        if (!line) return
+        const inner = line.querySelector('span')
+        if (!inner) return
+        
+        gsap.set(inner, { y: '100%' })
+        
+        gsap.to(inner, {
+          y: '0%',
+          duration: CONFIG.lineDuration,
+          ease: CONFIG.lineEase,
+          delay: i * CONFIG.lineStagger,
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 70%',
+            toggleActions: 'play none none reverse',
+          },
+        })
       })
-    })
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -371,24 +371,24 @@ function GradientReveal() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    gsap.set(textRef.current, {
-      clipPath: 'inset(0 100% 0 0)',
-    })
+    const ctx = gsap.context(() => {
+      gsap.set(textRef.current, {
+        clipPath: 'inset(0 100% 0 0)',
+      })
+      
+      gsap.to(textRef.current, {
+        clipPath: 'inset(0 0% 0 0)',
+        duration: 1.5,
+        ease: 'power4.inOut',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 70%',
+          toggleActions: 'play none none reverse',
+        },
+      })
+    }, containerRef)
     
-    gsap.to(textRef.current, {
-      clipPath: 'inset(0 0% 0 0)',
-      duration: 1.5,
-      ease: 'power4.inOut',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 70%',
-        toggleActions: 'play none none reverse',
-      },
-    })
-    
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -423,31 +423,31 @@ function FlipReveal() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    const chars = splitTextIntoSpans(textRef.current, 'chars')
+    const ctx = gsap.context(() => {
+      const chars = splitTextIntoSpans(textRef.current!, 'chars')
+      
+      gsap.set(chars, {
+        rotateY: -90,
+        opacity: 0,
+        transformOrigin: 'left center',
+        transformStyle: 'preserve-3d',
+      })
+      
+      gsap.to(chars, {
+        rotateY: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.04,
+        ease: 'back.out(1.7)',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 70%',
+          toggleActions: 'play none none reverse',
+        },
+      })
+    }, containerRef)
     
-    gsap.set(chars, {
-      rotateY: -90,
-      opacity: 0,
-      transformOrigin: 'left center',
-      transformStyle: 'preserve-3d',
-    })
-    
-    gsap.to(chars, {
-      rotateY: 0,
-      opacity: 1,
-      duration: 0.8,
-      stagger: 0.04,
-      ease: 'back.out(1.7)',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 70%',
-        toggleActions: 'play none none reverse',
-      },
-    })
-    
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (

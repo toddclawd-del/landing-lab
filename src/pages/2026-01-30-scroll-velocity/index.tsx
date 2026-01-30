@@ -58,37 +58,40 @@ function VelocityText() {
     let lastScroll = window.scrollY
     let rafId: number
     
-    // Track scroll velocity
-    function updateVelocity() {
-      const currentScroll = window.scrollY
-      const delta = currentScroll - lastScroll
-      
-      // Smooth velocity
-      velocityRef.current += (delta - velocityRef.current) * CONFIG.smoothingFactor
-      
-      // Apply skew to text based on velocity
-      textRefs.current.forEach((text, i) => {
-        if (!text) return
-        const skew = gsap.utils.clamp(
-          -CONFIG.maxVelocitySkew,
-          CONFIG.maxVelocitySkew,
-          velocityRef.current * CONFIG.velocityMultiplier * (i % 2 === 0 ? 1 : -1)
-        )
-        gsap.to(text, {
-          skewX: skew,
-          duration: 0.3,
-          ease: 'power2.out',
+    const ctx = gsap.context(() => {
+      // Track scroll velocity
+      function updateVelocity() {
+        const currentScroll = window.scrollY
+        const delta = currentScroll - lastScroll
+        
+        // Smooth velocity
+        velocityRef.current += (delta - velocityRef.current) * CONFIG.smoothingFactor
+        
+        // Apply skew to text based on velocity
+        textRefs.current.forEach((text, i) => {
+          if (!text) return
+          const skew = gsap.utils.clamp(
+            -CONFIG.maxVelocitySkew,
+            CONFIG.maxVelocitySkew,
+            velocityRef.current * CONFIG.velocityMultiplier * (i % 2 === 0 ? 1 : -1)
+          )
+          gsap.to(text, {
+            skewX: skew,
+            duration: 0.3,
+            ease: 'power2.out',
+          })
         })
-      })
+        
+        lastScroll = currentScroll
+        rafId = requestAnimationFrame(updateVelocity)
+      }
       
-      lastScroll = currentScroll
       rafId = requestAnimationFrame(updateVelocity)
-    }
-    
-    rafId = requestAnimationFrame(updateVelocity)
+    }, containerRef)
     
     return () => {
       cancelAnimationFrame(rafId)
+      ctx.revert()
     }
   }, [])
   
@@ -141,51 +144,58 @@ function VelocityMarquee() {
     let rafId: number
     
     const trackWidth = track1Ref.current.scrollWidth / 2
+    const track1 = track1Ref.current
+    const track2 = track2Ref.current
     
-    function animate() {
-      const currentTime = performance.now()
-      const currentScroll = window.scrollY
-      const delta = currentScroll - lastScroll
-      const dt = (currentTime - lastTime) / 1000
-      
-      // Smooth velocity calculation
-      velocityRef.current += (delta * 10 - velocityRef.current) * 0.1
-      
-      // Base speed + velocity boost
-      const baseSpeed = CONFIG.baseMarqueeSpeed * dt
-      const velocityBoost = Math.abs(velocityRef.current) * CONFIG.velocityBoost * dt
-      
-      // Update positions
-      positionRef.current.track1 -= (baseSpeed + velocityBoost)
-      positionRef.current.track2 += (baseSpeed + velocityBoost)
-      
-      // Loop the tracks
-      if (positionRef.current.track1 <= -trackWidth) {
-        positionRef.current.track1 += trackWidth
+    const ctx = gsap.context(() => {
+      function animate() {
+        const currentTime = performance.now()
+        const currentScroll = window.scrollY
+        const delta = currentScroll - lastScroll
+        const dt = (currentTime - lastTime) / 1000
+        
+        // Smooth velocity calculation
+        velocityRef.current += (delta * 10 - velocityRef.current) * 0.1
+        
+        // Base speed + velocity boost
+        const baseSpeed = CONFIG.baseMarqueeSpeed * dt
+        const velocityBoost = Math.abs(velocityRef.current) * CONFIG.velocityBoost * dt
+        
+        // Update positions
+        positionRef.current.track1 -= (baseSpeed + velocityBoost)
+        positionRef.current.track2 += (baseSpeed + velocityBoost)
+        
+        // Loop the tracks
+        if (positionRef.current.track1 <= -trackWidth) {
+          positionRef.current.track1 += trackWidth
+        }
+        if (positionRef.current.track2 >= 0) {
+          positionRef.current.track2 -= trackWidth
+        }
+        
+        // Apply transforms
+        gsap.set(track1, { x: positionRef.current.track1 })
+        gsap.set(track2, { x: positionRef.current.track2 })
+        
+        // Apply skew based on velocity
+        const skew = gsap.utils.clamp(-15, 15, velocityRef.current * 0.3)
+        gsap.to([track1, track2], {
+          skewX: skew,
+          duration: 0.2,
+        })
+        
+        lastScroll = currentScroll
+        lastTime = currentTime
+        rafId = requestAnimationFrame(animate)
       }
-      if (positionRef.current.track2 >= 0) {
-        positionRef.current.track2 -= trackWidth
-      }
       
-      // Apply transforms
-      gsap.set(track1Ref.current, { x: positionRef.current.track1 })
-      gsap.set(track2Ref.current, { x: positionRef.current.track2 })
-      
-      // Apply skew based on velocity
-      const skew = gsap.utils.clamp(-15, 15, velocityRef.current * 0.3)
-      gsap.to([track1Ref.current, track2Ref.current], {
-        skewX: skew,
-        duration: 0.2,
-      })
-      
-      lastScroll = currentScroll
-      lastTime = currentTime
       rafId = requestAnimationFrame(animate)
+    }, containerRef)
+    
+    return () => {
+      cancelAnimationFrame(rafId)
+      ctx.revert()
     }
-    
-    rafId = requestAnimationFrame(animate)
-    
-    return () => cancelAnimationFrame(rafId)
   }, [])
   
   return (
@@ -241,35 +251,40 @@ function StretchEffect() {
     let lastScroll = window.scrollY
     let rafId: number
     
-    function update() {
-      const currentScroll = window.scrollY
-      const delta = currentScroll - lastScroll
-      
-      // Smooth velocity
-      velocityRef.current += (delta - velocityRef.current) * CONFIG.stretchRecovery
-      
-      // Calculate stretch
-      const stretch = gsap.utils.clamp(1, CONFIG.maxStretch, 1 + Math.abs(velocityRef.current) * 0.01)
-      
-      elementsRef.current.forEach((el, i) => {
-        if (!el) return
+    const ctx = gsap.context(() => {
+      function update() {
+        const currentScroll = window.scrollY
+        const delta = currentScroll - lastScroll
         
-        gsap.to(el, {
-          scaleY: stretch,
-          scaleX: 2 - stretch, // Inverse - squash horizontally when stretching vertically
-          y: velocityRef.current * 0.2 * (i % 2 === 0 ? 1 : -1),
-          duration: 0.1,
-          ease: 'power1.out',
+        // Smooth velocity
+        velocityRef.current += (delta - velocityRef.current) * CONFIG.stretchRecovery
+        
+        // Calculate stretch
+        const stretch = gsap.utils.clamp(1, CONFIG.maxStretch, 1 + Math.abs(velocityRef.current) * 0.01)
+        
+        elementsRef.current.forEach((el, i) => {
+          if (!el) return
+          
+          gsap.to(el, {
+            scaleY: stretch,
+            scaleX: 2 - stretch, // Inverse - squash horizontally when stretching vertically
+            y: velocityRef.current * 0.2 * (i % 2 === 0 ? 1 : -1),
+            duration: 0.1,
+            ease: 'power1.out',
+          })
         })
-      })
+        
+        lastScroll = currentScroll
+        rafId = requestAnimationFrame(update)
+      }
       
-      lastScroll = currentScroll
       rafId = requestAnimationFrame(update)
+    }, containerRef)
+    
+    return () => {
+      cancelAnimationFrame(rafId)
+      ctx.revert()
     }
-    
-    rafId = requestAnimationFrame(update)
-    
-    return () => cancelAnimationFrame(rafId)
   }, [])
   
   return (
@@ -324,34 +339,39 @@ function MomentumParallax() {
     let lastScroll = window.scrollY
     let rafId: number
     
-    function update() {
-      const currentScroll = window.scrollY
-      const delta = currentScroll - lastScroll
-      
-      layersRef.current.forEach((layer, i) => {
-        if (!layer) return
+    const ctx = gsap.context(() => {
+      function update() {
+        const currentScroll = window.scrollY
+        const delta = currentScroll - lastScroll
         
-        // Add velocity based on scroll
-        velocitiesRef.current[i] += delta * layers[i].speed
-        
-        // Apply friction (momentum decay)
-        velocitiesRef.current[i] *= 0.95
-        
-        gsap.to(layer, {
-          y: velocitiesRef.current[i],
-          rotation: velocitiesRef.current[i] * 0.1,
-          duration: 0.5,
-          ease: 'power2.out',
+        layersRef.current.forEach((layer, i) => {
+          if (!layer) return
+          
+          // Add velocity based on scroll
+          velocitiesRef.current[i] += delta * layers[i].speed
+          
+          // Apply friction (momentum decay)
+          velocitiesRef.current[i] *= 0.95
+          
+          gsap.to(layer, {
+            y: velocitiesRef.current[i],
+            rotation: velocitiesRef.current[i] * 0.1,
+            duration: 0.5,
+            ease: 'power2.out',
+          })
         })
-      })
+        
+        lastScroll = currentScroll
+        rafId = requestAnimationFrame(update)
+      }
       
-      lastScroll = currentScroll
       rafId = requestAnimationFrame(update)
+    }, containerRef)
+    
+    return () => {
+      cancelAnimationFrame(rafId)
+      ctx.revert()
     }
-    
-    rafId = requestAnimationFrame(update)
-    
-    return () => cancelAnimationFrame(rafId)
   }, [])
   
   return (
