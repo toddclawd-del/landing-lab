@@ -574,6 +574,7 @@ uniform vec3 uColor1;
 uniform vec3 uColor2;
 uniform vec3 uColor3;
 uniform vec3 uBackgroundColor;
+uniform float uAspect;
 
 #define PI 3.14159265359
 
@@ -610,6 +611,8 @@ vec3 palette(float t) {
 
 void main() {
   vec2 uv = vUv;
+  // Correct for aspect ratio - scale X so tiles stay square
+  uv.x *= uAspect;
   vec2 p = uv * uScale;
   vec2 cellId = floor(p);
   vec2 cellUv = fract(p);
@@ -657,12 +660,16 @@ function TruchetPlane() {
     uColor2: { value: new THREE.Color('#ff0080') },
     uColor3: { value: new THREE.Color('#ffcc00') },
     uBackgroundColor: { value: new THREE.Color('#171731') },
+    uAspect: { value: 1.0 },
   }), [])
   
   useFrame((state) => {
     if (meshRef.current) {
       const material = meshRef.current.material as THREE.ShaderMaterial
       material.uniforms.uTime.value = state.clock.elapsedTime
+      // Update aspect ratio based on viewport
+      const aspect = state.viewport.width / state.viewport.height
+      material.uniforms.uAspect.value = aspect
     }
   })
   
