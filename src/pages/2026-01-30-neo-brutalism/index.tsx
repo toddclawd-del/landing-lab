@@ -1,5 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { Canvas, useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
 
 // ═══════════════════════════════════════════════════════════════
 // NEO-BRUTALISM LANDING PAGE
@@ -546,6 +548,156 @@ function Services() {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// TRUCHET TILES SHADER BACKGROUND
+// Animated procedural pattern for visual interest
+// ─────────────────────────────────────────────────────────────────
+
+const truchetVertex = `
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`
+
+const truchetFragment = `
+varying vec2 vUv;
+uniform float uTime;
+uniform float uScale;
+uniform float uLineWidth;
+uniform float uAnimSpeed;
+uniform float uColorSpeed;
+uniform float uTileStyle;
+uniform float uAntiAlias;
+uniform float uAnimateTiles;
+uniform vec3 uColor1;
+uniform vec3 uColor2;
+uniform vec3 uColor3;
+uniform vec3 uBackgroundColor;
+
+#define PI 3.14159265359
+
+float hash21(vec2 p) {
+  p = fract(p * vec2(234.34, 435.345));
+  p += dot(p, p + 34.23);
+  return fract(p.x * p.y);
+}
+
+float sdRing(vec2 p, vec2 c, float r, float w) {
+  return abs(length(p - c) - r) - w;
+}
+
+float truchetDoubleArcs(vec2 p, float flip, float w) {
+  vec2 corner1 = flip > 0.5 ? vec2(0.0, 0.0) : vec2(1.0, 0.0);
+  vec2 corner2 = flip > 0.5 ? vec2(1.0, 1.0) : vec2(0.0, 1.0);
+  float d1 = sdRing(p, corner1, 0.5, w);
+  float d2 = sdRing(p, corner2, 0.5, w);
+  float d3 = sdRing(p, corner1, 0.25, w * 0.7);
+  float d4 = sdRing(p, corner2, 0.25, w * 0.7);
+  return min(min(d1, d2), min(d3, d4));
+}
+
+vec3 palette(float t) {
+  t = fract(t);
+  if (t < 0.33) {
+    return mix(uColor1, uColor2, t * 3.0);
+  } else if (t < 0.66) {
+    return mix(uColor2, uColor3, (t - 0.33) * 3.0);
+  } else {
+    return mix(uColor3, uColor1, (t - 0.66) * 3.0);
+  }
+}
+
+void main() {
+  vec2 uv = vUv;
+  vec2 p = uv * uScale;
+  vec2 cellId = floor(p);
+  vec2 cellUv = fract(p);
+  float time = uTime * uAnimSpeed;
+  float hash = hash21(cellId);
+  float flip = hash;
+  if (uAnimateTiles > 0.5) {
+    float flipPeriod = 4.0 + hash * 4.0;
+    float flipPhase = floor(time / flipPeriod);
+    flip = fract(hash + flipPhase * 0.5);
+  }
+  flip = step(0.5, flip);
+  float w = uLineWidth / uScale;
+  float d = truchetDoubleArcs(cellUv, flip, w);
+  float aa = uAntiAlias / uScale;
+  float mask = 1.0 - smoothstep(-aa, aa, d);
+  float pathColor = length(uv) + time * uColorSpeed;
+  float cellColor = hash21(cellId + vec2(127.1, 311.7));
+  vec2 nearestCorner = flip > 0.5 ? 
+    (length(cellUv) < length(cellUv - vec2(1.0, 1.0)) ? vec2(0.0) : vec2(1.0)) :
+    (length(cellUv - vec2(1.0, 0.0)) < length(cellUv - vec2(0.0, 1.0)) ? vec2(1.0, 0.0) : vec2(0.0, 1.0));
+  float arcProgress = atan(cellUv.y - nearestCorner.y, cellUv.x - nearestCorner.x) / PI;
+  float colorIndex = pathColor * 0.3 + cellColor * 0.3 + arcProgress * 0.4;
+  vec3 lineColor = palette(colorIndex);
+  lineColor += vec3(0.15) * smoothstep(w * 0.8, w * 0.3, abs(d));
+  vec3 color = mix(uBackgroundColor, lineColor, mask);
+  color *= 1.0 - 0.3 * length(uv - 0.5);
+  gl_FragColor = vec4(color, 1.0);
+}
+`
+
+function TruchetPlane() {
+  const meshRef = useRef<THREE.Mesh>(null)
+  
+  const uniforms = useMemo(() => ({
+    uTime: { value: 0 },
+    uScale: { value: 18.0 },
+    uLineWidth: { value: 0.28 },
+    uAnimSpeed: { value: 0.90 },
+    uColorSpeed: { value: 0.55 },
+    uTileStyle: { value: 3.0 },
+    uAntiAlias: { value: 1.5 },
+    uAnimateTiles: { value: 1.0 },
+    uColor1: { value: new THREE.Color('#00d4ff') },
+    uColor2: { value: new THREE.Color('#ff0080') },
+    uColor3: { value: new THREE.Color('#ffcc00') },
+    uBackgroundColor: { value: new THREE.Color('#171731') },
+  }), [])
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      const material = meshRef.current.material as THREE.ShaderMaterial
+      material.uniforms.uTime.value = state.clock.elapsedTime
+    }
+  })
+  
+  return (
+    <mesh ref={meshRef}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        vertexShader={truchetVertex}
+        fragmentShader={truchetFragment}
+        uniforms={uniforms}
+      />
+    </mesh>
+  )
+}
+
+function TruchetBackground() {
+  return (
+    <div style={{
+      position: 'absolute',
+      inset: 0,
+      zIndex: 0,
+      opacity: 0.85,
+    }}>
+      <Canvas
+        camera={{ position: [0, 0, 1], fov: 90 }}
+        style={{ background: 'transparent' }}
+        gl={{ antialias: true, alpha: true }}
+      >
+        <TruchetPlane />
+      </Canvas>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────
 // WORK/PORTFOLIO SECTION
 // Project showcase with hover reveals
 // ─────────────────────────────────────────────────────────────────
@@ -581,8 +733,13 @@ function Work() {
     <section id="work" style={{
       background: colors.black,
       padding: '6rem 2rem',
+      position: 'relative',
+      overflow: 'hidden',
     }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      {/* Truchet Tiles Shader Background */}
+      <TruchetBackground />
+      
+      <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
         {/* Section header */}
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <motion.div
