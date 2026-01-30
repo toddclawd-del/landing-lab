@@ -53,24 +53,24 @@ function MultiLayerParallax() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    layersRef.current.forEach((layer, i) => {
-      if (!layer) return
-      
-      gsap.to(layer, {
-        y: () => CONFIG.scrollIntensity * layers[i].depth,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
-        },
+    const ctx = gsap.context(() => {
+      layersRef.current.forEach((layer, i) => {
+        if (!layer) return
+        
+        gsap.to(layer, {
+          y: () => CONFIG.scrollIntensity * layers[i].depth,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        })
       })
-    })
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -229,25 +229,27 @@ function CombinedParallax() {
     
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     
-    // Scroll parallax for background
-    if (!prefersReducedMotion) {
-      gsap.to(bgRef.current, {
-        y: 150,
-        scale: 1.2,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
-        },
-      })
-    }
-    
-    // Mouse parallax for content
     const container = containerRef.current
     const content = contentRef.current
     
+    const ctx = gsap.context(() => {
+      // Scroll parallax for background
+      if (!prefersReducedMotion) {
+        gsap.to(bgRef.current, {
+          y: 150,
+          scale: 1.2,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        })
+      }
+    }, containerRef)
+    
+    // Mouse parallax for content
     function handleMouseMove(e: MouseEvent) {
       if (prefersReducedMotion) return
       
@@ -282,7 +284,7 @@ function CombinedParallax() {
     return () => {
       container.removeEventListener('mousemove', handleMouseMove)
       container.removeEventListener('mouseleave', handleMouseLeave)
-      ScrollTrigger.getAll().forEach(t => t.kill())
+      ctx.revert()
     }
   }, [])
   
@@ -337,33 +339,33 @@ function TextOverImageParallax() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    // Image moves slower (appears farther away)
-    gsap.to(imageRef.current, {
-      y: 100,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: true,
-      },
-    })
+    const ctx = gsap.context(() => {
+      // Image moves slower (appears farther away)
+      gsap.to(imageRef.current, {
+        y: 100,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      })
+      
+      // Text moves faster (appears closer)
+      gsap.to(textRef.current, {
+        y: -100,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      })
+    }, containerRef)
     
-    // Text moves faster (appears closer)
-    gsap.to(textRef.current, {
-      y: -100,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: true,
-      },
-    })
-    
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -416,38 +418,38 @@ function PerspectiveParallax() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
     
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1,
-        pin: true,
-      },
-    })
-    
-    cardsRef.current.forEach((card, i) => {
-      if (!card) return
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1,
+          pin: true,
+        },
+      })
       
-      tl.fromTo(card,
-        {
-          z: cards[i].z,
-          opacity: 0,
-          scale: 0.8,
-        },
-        {
-          z: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1,
-        },
-        i * 0.5
-      )
-    })
+      cardsRef.current.forEach((card, i) => {
+        if (!card) return
+        
+        tl.fromTo(card,
+          {
+            z: cards[i].z,
+            opacity: 0,
+            scale: 0.8,
+          },
+          {
+            z: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 1,
+          },
+          i * 0.5
+        )
+      })
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (

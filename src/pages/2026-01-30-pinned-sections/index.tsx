@@ -66,54 +66,54 @@ function PinnedHeroContentSwap() {
     
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     
-    // Pin the hero section
-    ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: 'top top',
-      end: () => `+=${window.innerHeight * contents.length}`,
-      pin: heroRef.current,
-      pinSpacing: true,
-    })
-    
-    // Animate content changes
-    contents.forEach((_, i) => {
+    const ctx = gsap.context(() => {
+      // Pin the hero section
       ScrollTrigger.create({
         trigger: containerRef.current,
-        start: () => `${i * window.innerHeight} top`,
-        end: () => `${(i + 1) * window.innerHeight} top`,
-        onEnter: () => {
-          setActiveIndex(i)
-          if (!prefersReducedMotion) {
-            animateContent(i)
-          }
-        },
-        onEnterBack: () => {
-          setActiveIndex(i)
-          if (!prefersReducedMotion) {
-            animateContent(i)
-          }
-        },
+        start: 'top top',
+        end: () => `+=${window.innerHeight * contents.length}`,
+        pin: heroRef.current,
+        pinSpacing: true,
       })
-    })
-    
-    function animateContent(index: number) {
-      contentsRef.current.forEach((content, i) => {
-        if (!content) return
-        
-        if (i === index) {
-          gsap.fromTo(content,
-            { opacity: 0, y: 50 },
-            { opacity: 1, y: 0, duration: CONFIG.contentFadeDuration, ease: 'power2.out' }
-          )
-        } else {
-          gsap.to(content, { opacity: 0, duration: 0.2 })
-        }
+      
+      // Animate content changes
+      contents.forEach((_, i) => {
+        ScrollTrigger.create({
+          trigger: containerRef.current,
+          start: () => `${i * window.innerHeight} top`,
+          end: () => `${(i + 1) * window.innerHeight} top`,
+          onEnter: () => {
+            setActiveIndex(i)
+            if (!prefersReducedMotion) {
+              animateContent(i)
+            }
+          },
+          onEnterBack: () => {
+            setActiveIndex(i)
+            if (!prefersReducedMotion) {
+              animateContent(i)
+            }
+          },
+        })
       })
-    }
+      
+      function animateContent(index: number) {
+        contentsRef.current.forEach((content, i) => {
+          if (!content) return
+          
+          if (i === index) {
+            gsap.fromTo(content,
+              { opacity: 0, y: 50 },
+              { opacity: 1, y: 0, duration: CONFIG.contentFadeDuration, ease: 'power2.out' }
+            )
+          } else {
+            gsap.to(content, { opacity: 0, duration: 0.2 })
+          }
+        })
+      }
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -199,36 +199,36 @@ function CardStackUnstack() {
     
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: () => `+=${window.innerHeight * 2}`,
-        pin: true,
-        scrub: prefersReducedMotion ? 0 : 1,
-      },
-    })
-    
-    // Animate each card spreading out
-    cardsRef.current.forEach((card, i) => {
-      if (!card) return
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: () => `+=${window.innerHeight * 2}`,
+          pin: true,
+          scrub: prefersReducedMotion ? 0 : 1,
+        },
+      })
       
-      const offset = (i - (cards.length - 1) / 2) * 280 // Spread horizontally
-      const rotation = (i - (cards.length - 1) / 2) * 5 // Slight rotation
-      
-      tl.to(card, {
-        x: offset,
-        y: 0,
-        rotation: rotation,
-        scale: 1,
-        opacity: 1,
-        duration: 1,
-      }, 0)
-    })
+      // Animate each card spreading out
+      cardsRef.current.forEach((card, i) => {
+        if (!card) return
+        
+        const offset = (i - (cards.length - 1) / 2) * 280 // Spread horizontally
+        const rotation = (i - (cards.length - 1) / 2) * 5 // Slight rotation
+        
+        tl.to(card, {
+          x: offset,
+          y: 0,
+          rotation: rotation,
+          scale: 1,
+          opacity: 1,
+          duration: 1,
+        }, 0)
+      })
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -289,31 +289,31 @@ function PinnedSidebar() {
   useEffect(() => {
     if (!containerRef.current || !sidebarRef.current) return
     
-    // Pin the sidebar
-    ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: 'top top',
-      end: 'bottom bottom',
-      pin: sidebarRef.current,
-      pinSpacing: false,
-    })
-    
-    // Track active section
-    sectionsRef.current.forEach((section, i) => {
-      if (!section) return
-      
+    const ctx = gsap.context(() => {
+      // Pin the sidebar
       ScrollTrigger.create({
-        trigger: section,
-        start: 'top center',
-        end: 'bottom center',
-        onEnter: () => setActiveSection(i),
-        onEnterBack: () => setActiveSection(i),
+        trigger: containerRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        pin: sidebarRef.current,
+        pinSpacing: false,
       })
-    })
+      
+      // Track active section
+      sectionsRef.current.forEach((section, i) => {
+        if (!section) return
+        
+        ScrollTrigger.create({
+          trigger: section,
+          start: 'top center',
+          end: 'bottom center',
+          onEnter: () => setActiveSection(i),
+          onEnterBack: () => setActiveSection(i),
+        })
+      })
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
@@ -398,37 +398,37 @@ function StepByStepReveal() {
     
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: () => `+=${window.innerHeight * 2}`,
-        pin: true,
-        scrub: prefersReducedMotion ? 0 : 1,
-      },
-    })
-    
-    // Animate connecting line
-    tl.fromTo(lineRef.current,
-      { scaleX: 0 },
-      { scaleX: 1, duration: steps.length, ease: 'none' },
-      0
-    )
-    
-    // Animate each step
-    stepsRef.current.forEach((step, i) => {
-      if (!step) return
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: () => `+=${window.innerHeight * 2}`,
+          pin: true,
+          scrub: prefersReducedMotion ? 0 : 1,
+        },
+      })
       
-      tl.fromTo(step,
-        { opacity: 0.2, scale: 0.8, y: 20 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.5 },
-        i * 0.8
+      // Animate connecting line
+      tl.fromTo(lineRef.current,
+        { scaleX: 0 },
+        { scaleX: 1, duration: steps.length, ease: 'none' },
+        0
       )
-    })
+      
+      // Animate each step
+      stepsRef.current.forEach((step, i) => {
+        if (!step) return
+        
+        tl.fromTo(step,
+          { opacity: 0.2, scale: 0.8, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.5 },
+          i * 0.8
+        )
+      })
+    }, containerRef)
     
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
+    return () => ctx.revert()
   }, [])
   
   return (
