@@ -10,6 +10,12 @@ interface LandingPage {
 const pages: LandingPage[] = [
   // Latest Landing Page
   {
+    slug: 'creative-agency',
+    title: 'Creative Agency',
+    inspiration: 'Dark minimal design studio — GSAP parallax hero, work showcase, magnetic buttons, smooth scroll',
+    date: '2026-01-31'
+  },
+  {
     slug: 'liquid-motion',
     title: 'Liquid Motion',
     inspiration: 'Fluid design with morphing blobs, liquid hover effects, metaball cursors, organic UI',
