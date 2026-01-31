@@ -8,6 +8,13 @@ interface LandingPage {
 }
 
 const pages: LandingPage[] = [
+  // Latest Landing Page
+  {
+    slug: 'liquid-motion',
+    title: 'Liquid Motion',
+    inspiration: 'Fluid design with morphing blobs, liquid hover effects, metaball cursors, organic UI',
+    date: '2026-01-31'
+  },
   // GSAP Interaction Modules
   {
     slug: 'text-reveal',

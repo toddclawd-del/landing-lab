@@ -21,6 +21,7 @@ import ScrollProgress from './pages/2026-01-30-scroll-progress'
 import ParallaxLayers from './pages/2026-01-30-parallax-layers'
 import PinnedSections from './pages/2026-01-30-pinned-sections'
 import ElasticEffects from './pages/2026-01-30-elastic-effects'
+import LiquidMotion from './pages/2026-01-31-liquid-motion'
 
 function App() {
   return (
@@ -49,6 +50,8 @@ function App() {
         <Route path="/parallax-layers" element={<ParallaxLayers />} />
         <Route path="/pinned-sections" element={<PinnedSections />} />
         <Route path="/elastic-effects" element={<ElasticEffects />} />
+        {/* Landing Page Templates */}
+        <Route path="/liquid-motion" element={<LiquidMotion />} />
       </Routes>
     </HashRouter>
   )
