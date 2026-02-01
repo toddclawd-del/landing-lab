@@ -4,7 +4,7 @@ import {
   Sparkles, PartyPopper, Target, Users, BarChart3, Bell, Palette, Lock,
   Smile, CheckCircle, Rocket, Star, ClipboardList, Calendar, MessageCircle,
   PieChart, Check, Mail, Paintbrush, Sun, Moon, Twitter, Instagram, 
-  Briefcase, Gamepad2
+  Briefcase, Gamepad2, Menu, X, Heart, Globe, Zap
 } from 'lucide-react'
 
 // ============================================
@@ -420,12 +420,22 @@ const ThemeToggle = ({
 // Navigation
 const Nav = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
   const [scrolled, setScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Handle smooth scroll to section
+  const scrollToSection = (sectionId: string) => {
+    setMobileMenuOpen(false)
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
   
   return (
     <motion.nav
@@ -450,10 +460,10 @@ const Nav = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: t
           justifyContent: 'space-between',
           padding: '12px 24px',
           borderRadius: 20,
-          background: scrolled ? `${colors.surface}f0` : 'transparent',
-          backdropFilter: scrolled ? 'blur(20px)' : 'none',
-          boxShadow: scrolled ? clayShadow.soft : 'none',
-          border: scrolled ? `1px solid ${colors.border}` : '1px solid transparent',
+          background: scrolled || mobileMenuOpen ? `${colors.surface}f0` : 'transparent',
+          backdropFilter: scrolled || mobileMenuOpen ? 'blur(20px)' : 'none',
+          boxShadow: scrolled || mobileMenuOpen ? clayShadow.soft : 'none',
+          border: scrolled || mobileMenuOpen ? `1px solid ${colors.border}` : '1px solid transparent',
         }}
         transition={{ duration: 0.3 }}
       >
@@ -490,18 +500,22 @@ const Nav = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: t
           Claymoji
         </motion.div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {/* Desktop Navigation */}
+        <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {['Features', 'Pricing', 'About'].map((item) => (
-            <motion.a
+            <motion.button
               key={item}
-              href={`#${item.toLowerCase()}`}
+              onClick={() => scrollToSection(item.toLowerCase())}
               style={{
                 padding: '8px 16px',
                 color: colors.textMuted,
-                textDecoration: 'none',
+                background: 'transparent',
+                border: 'none',
                 fontSize: '0.9rem',
                 fontWeight: 500,
                 borderRadius: 12,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
                 transition: 'all 0.2s ease-out',
               }}
               whileHover={{ 
@@ -510,11 +524,96 @@ const Nav = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: t
               }}
             >
               {item}
-            </motion.a>
+            </motion.button>
           ))}
           <ClayButton size="sm" colors={colors} clayShadow={clayShadow}>Get Started</ClayButton>
         </div>
+
+        {/* Mobile Menu Button */}
+        <motion.button
+          className="mobile-menu-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          style={{
+            display: 'none',
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            border: `1px solid ${colors.border}`,
+            background: colors.card,
+            boxShadow: clayShadow.soft,
+            cursor: 'pointer',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: colors.text,
+          }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+        </motion.button>
       </motion.div>
+
+      {/* Mobile Menu Dropdown */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            className="mobile-menu"
+            initial={{ opacity: 0, y: -20, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: 'auto' }}
+            exit={{ opacity: 0, y: -20, height: 0 }}
+            style={{
+              maxWidth: 1200,
+              margin: '8px auto 0',
+              padding: '16px 24px',
+              borderRadius: 20,
+              background: `${colors.surface}f0`,
+              backdropFilter: 'blur(20px)',
+              boxShadow: clayShadow.card,
+              border: `1px solid ${colors.border}`,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+            }}
+          >
+            {['Features', 'Pricing', 'About'].map((item) => (
+              <motion.button
+                key={item}
+                onClick={() => scrollToSection(item.toLowerCase())}
+                style={{
+                  padding: '12px 16px',
+                  color: colors.textSecondary,
+                  background: 'transparent',
+                  border: 'none',
+                  textAlign: 'left',
+                  fontSize: '1rem',
+                  fontWeight: 500,
+                  borderRadius: 12,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  width: '100%',
+                  transition: 'all 0.2s ease-out',
+                }}
+                whileHover={{ 
+                  color: colors.accentBlue,
+                  background: `${colors.accentBlue}15`,
+                }}
+              >
+                {item}
+              </motion.button>
+            ))}
+            <div style={{ paddingTop: 8 }}>
+              <ClayButton 
+                size="md" 
+                colors={colors} 
+                clayShadow={clayShadow}
+                style={{ width: '100%' }}
+              >
+                Get Started
+              </ClayButton>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   )
 }
@@ -531,13 +630,13 @@ const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayS
   
   return (
     <section
+      id="hero"
       ref={ref}
       style={{
-        minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '120px 24px 80px',
+        padding: '100px 24px 40px',
         position: 'relative',
         overflow: 'hidden',
         background: theme === 'light'
@@ -595,10 +694,14 @@ const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayS
         >
           Make your ideas{' '}
           <span
+            className="gradient-text"
             style={{
               background: `linear-gradient(135deg, ${colors.accentBlue}, ${colors.accentPink})`,
+              backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
+              color: 'transparent',
+              display: 'inline-block',
             }}
           >
             come alive
@@ -803,7 +906,7 @@ const Features = ({ colors, clayShadow, theme }: { colors: typeof lightColors; c
     <section
       id="features"
       style={{
-        padding: '100px 24px',
+        padding: '40px 24px',
         background: colors.surface,
       }}
     >
@@ -862,7 +965,7 @@ const Features = ({ colors, clayShadow, theme }: { colors: typeof lightColors; c
 }
 
 // Stats Section
-const Stats = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
+const Stats = ({ colors, clayShadow, theme: _theme }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow; theme: Theme }) => {
   const stats = [
     { number: '50K+', label: 'Happy users', icon: Smile },
     { number: '2M+', label: 'Tasks completed', icon: CheckCircle },
@@ -872,8 +975,9 @@ const Stats = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow:
   
   return (
     <section
+      id="stats"
       style={{
-        padding: '80px 24px',
+        padding: '40px 24px',
         background: `linear-gradient(180deg, ${colors.surface} 0%, ${colors.bg} 100%)`,
       }}
     >
@@ -916,12 +1020,16 @@ const Stats = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow:
                 <stat.icon size={32} />
               </div>
               <div
+                className="stat-number"
                 style={{
                   fontSize: '2.5rem',
                   fontWeight: 800,
                   background: `linear-gradient(135deg, ${colors.accentBlue}, ${colors.accentPink})`,
+                  backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
+                  color: 'transparent',
+                  display: 'inline-block',
                 }}
               >
                 {stat.number}
@@ -967,8 +1075,9 @@ const Testimonials = ({ colors, clayShadow }: { colors: typeof lightColors; clay
   
   return (
     <section
+      id="testimonials"
       style={{
-        padding: '100px 24px',
+        padding: '40px 24px',
         background: colors.bg,
       }}
     >
@@ -1111,7 +1220,7 @@ const Pricing = ({ colors, clayShadow }: { colors: typeof lightColors; clayShado
     <section
       id="pricing"
       style={{
-        padding: '100px 24px',
+        padding: '40px 24px',
         background: colors.surface,
       }}
     >
@@ -1271,12 +1380,119 @@ const Pricing = ({ colors, clayShadow }: { colors: typeof lightColors; clayShado
   )
 }
 
+// About Section
+const About = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow; theme: Theme }) => {
+  const values = [
+    {
+      icon: Heart,
+      title: 'Built with Love',
+      description: 'Every feature is crafted with care to bring joy to your daily workflow.',
+      color: colors.accentPink,
+    },
+    {
+      icon: Globe,
+      title: 'Remote First',
+      description: 'Our global team understands the challenges of distributed work.',
+      color: colors.accentBlue,
+    },
+    {
+      icon: Zap,
+      title: 'Always Improving',
+      description: 'Weekly updates and new features based on your feedback.',
+      color: colors.accentPurple,
+    },
+  ]
+  
+  return (
+    <section
+      id="about"
+      style={{
+        padding: '40px 24px',
+        background: colors.bg,
+      }}
+    >
+      <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+        <motion.div
+          style={{ textAlign: 'center', marginBottom: 48 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2
+            style={{
+              fontSize: 'clamp(2rem, 4vw, 3rem)',
+              fontWeight: 800,
+              color: colors.text,
+              marginBottom: 16,
+            }}
+          >
+            About Claymoji
+          </h2>
+          <p style={{ fontSize: '1.125rem', color: colors.textSecondary, maxWidth: 600, margin: '0 auto' }}>
+            We believe productivity tools should feel good to use. That's why we built Claymoji — 
+            a playful workspace that helps you get things done without the stress.
+          </p>
+        </motion.div>
+        
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 24,
+          }}
+        >
+          {values.map((value, i) => (
+            <motion.div
+              key={i}
+              style={{
+                padding: 32,
+                borderRadius: 24,
+                background: colors.card,
+                boxShadow: clayShadow.card,
+                border: `1px solid ${colors.border}`,
+                textAlign: 'center',
+              }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ 
+                scale: 1.02, 
+                boxShadow: clayShadow.elevated,
+                borderColor: value.color,
+                y: -4,
+              }}
+            >
+              <ClayIcon icon={value.icon} bgColor={value.color} theme={theme} />
+              <h3
+                style={{
+                  fontSize: '1.25rem',
+                  fontWeight: 700,
+                  color: colors.text,
+                  margin: '20px 0 12px',
+                }}
+              >
+                {value.title}
+              </h3>
+              <p style={{ color: colors.textSecondary, lineHeight: 1.6 }}>
+                {value.description}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // CTA Section
 const CTA = ({ colors, theme }: { colors: typeof lightColors; theme: Theme }) => (
   <section
+    id="cta"
     style={{
-      padding: '100px 24px',
-      background: `linear-gradient(180deg, ${colors.bg} 0%, ${colors.surface} 100%)`,
+      padding: '40px 24px',
+      background: `linear-gradient(180deg, ${colors.surface} 0%, ${colors.bg} 100%)`,
       position: 'relative',
       overflow: 'hidden',
     }}
@@ -1308,10 +1524,14 @@ const CTA = ({ colors, theme }: { colors: typeof lightColors; theme: Theme }) =>
       >
         Ready to make work{' '}
         <span
+          className="gradient-text"
           style={{
             background: `linear-gradient(135deg, ${colors.accentBlue}, ${colors.accentPink})`,
+            backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
+            color: 'transparent',
+            display: 'inline-block',
           }}
         >
           feel like play?
@@ -1337,146 +1557,173 @@ const CTA = ({ colors, theme }: { colors: typeof lightColors; theme: Theme }) =>
 )
 
 // Footer
-const Footer = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => (
-  <footer
-    id="about"
-    style={{
-      padding: '60px 24px 40px',
-      background: colors.bg,
-      borderTop: `1px solid ${colors.border}`,
-    }}
-  >
-    <div
+const Footer = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
+  // Handle smooth scroll to section
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+  
+  // Map footer links to section IDs
+  const getSectionId = (link: string): string => {
+    const linkMap: Record<string, string> = {
+      'Features': 'features',
+      'Pricing': 'pricing',
+      'About': 'about',
+    }
+    return linkMap[link] || 'hero'
+  }
+  
+  return (
+    <footer
       style={{
-        maxWidth: 1200,
-        margin: '0 auto',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-        gap: 40,
+        padding: '60px 24px 40px',
+        background: colors.bg,
+        borderTop: `1px solid ${colors.border}`,
       }}
     >
-      {/* Logo */}
-      <div>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            fontWeight: 700,
-            fontSize: '1.25rem',
-            color: colors.text,
-            marginBottom: 16,
-          }}
-        >
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+          gap: 40,
+        }}
+      >
+        {/* Logo */}
+        <div>
           <div
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              background: `linear-gradient(145deg, ${colors.accentBlue}, ${colors.accentPink})`,
-              boxShadow: `
-                0 4px 8px -2px rgba(96, 165, 250, 0.4),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.2),
-                inset 0 2px 4px rgba(255, 255, 255, 0.2)
-              `,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              color: colors.white,
+              gap: 10,
+              fontWeight: 700,
+              fontSize: '1.25rem',
+              color: colors.text,
+              marginBottom: 16,
             }}
           >
-            <Sparkles size={16} />
-          </div>
-          Claymoji
-        </div>
-        <p style={{ color: colors.textMuted, fontSize: '0.9rem', lineHeight: 1.6 }}>
-          Making productivity playful since 2024.
-        </p>
-        <p style={{ color: colors.textMuted, fontSize: '0.8rem', lineHeight: 1.6, marginTop: 12 }}>
-          Built with React, Framer Motion & TypeScript
-        </p>
-      </div>
-      
-      {/* Links */}
-      {[
-        { title: 'Product', links: ['Features', 'Pricing', 'Integrations', 'Changelog'] },
-        { title: 'Company', links: ['About', 'Blog', 'Careers', 'Press'] },
-        { title: 'Resources', links: ['Help Center', 'Community', 'Templates', 'API'] },
-        { title: 'Legal', links: ['Privacy', 'Terms', 'Security', 'Cookies'] },
-      ].map((col, i) => (
-        <div key={i}>
-          <h4 style={{ fontWeight: 700, color: colors.text, marginBottom: 16 }}>{col.title}</h4>
-          {col.links.map((link, j) => (
-            <motion.a
-              key={j}
-              href="#"
+            <div
               style={{
-                display: 'block',
-                color: colors.textMuted,
-                textDecoration: 'none',
-                fontSize: '0.9rem',
-                padding: '6px 0',
-                transition: 'all 0.2s ease-out',
+                width: 32,
+                height: 32,
+                borderRadius: 10,
+                background: `linear-gradient(145deg, ${colors.accentBlue}, ${colors.accentPink})`,
+                boxShadow: `
+                  0 4px 8px -2px rgba(96, 165, 250, 0.4),
+                  inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+                  inset 0 2px 4px rgba(255, 255, 255, 0.2)
+                `,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: colors.white,
               }}
-              whileHover={{ color: colors.accentBlue, x: 4 }}
             >
-              {link}
-            </motion.a>
-          ))}
+              <Sparkles size={16} />
+            </div>
+            Claymoji
+          </div>
+          <p style={{ color: colors.textMuted, fontSize: '0.9rem', lineHeight: 1.6 }}>
+            Making productivity playful since 2024.
+          </p>
+          <p style={{ color: colors.textMuted, fontSize: '0.8rem', lineHeight: 1.6, marginTop: 12 }}>
+            Built with React, Framer Motion & TypeScript
+          </p>
         </div>
-      ))}
-    </div>
-    
-    {/* Bottom */}
-    <div
-      style={{
-        maxWidth: 1200,
-        margin: '40px auto 0',
-        paddingTop: 24,
-        borderTop: `1px solid ${colors.border}`,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: 16,
-      }}
-    >
-      <div style={{ color: colors.textMuted, fontSize: '0.85rem' }}>
-        © 2026 Claymoji. Made with love and lots of soft shadows.
-      </div>
-      <div style={{ display: 'flex', gap: 16 }}>
-        {[Twitter, Instagram, Briefcase, Gamepad2].map((Icon, i) => (
-          <motion.a
-            key={i}
-            href="#"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 12,
-              background: colors.card,
-              border: `1px solid ${colors.border}`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textDecoration: 'none',
-              color: colors.textMuted,
-              boxShadow: clayShadow.soft,
-              transition: 'all 0.2s ease-out',
-            }}
-            whileHover={{ 
-              scale: 1.1, 
-              boxShadow: clayShadow.button,
-              borderColor: colors.accentBlue,
-              color: colors.accentBlue,
-            }}
-          >
-            <Icon size={16} />
-          </motion.a>
+        
+        {/* Links */}
+        {[
+          { title: 'Product', links: ['Features', 'Pricing'] },
+          { title: 'Company', links: ['About'] },
+        ].map((col, i) => (
+          <div key={i}>
+            <h4 style={{ fontWeight: 700, color: colors.text, marginBottom: 16 }}>{col.title}</h4>
+            {col.links.map((link, j) => (
+              <motion.button
+                key={j}
+                onClick={() => scrollToSection(getSectionId(link))}
+                style={{
+                  display: 'block',
+                  color: colors.textMuted,
+                  background: 'transparent',
+                  border: 'none',
+                  fontSize: '0.9rem',
+                  padding: '6px 0',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  textAlign: 'left',
+                  transition: 'all 0.2s ease-out',
+                }}
+                whileHover={{ color: colors.accentBlue, x: 4 }}
+              >
+                {link}
+              </motion.button>
+            ))}
+          </div>
         ))}
       </div>
-    </div>
-  </footer>
-)
+      
+      {/* Bottom */}
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '40px auto 0',
+          paddingTop: 24,
+          borderTop: `1px solid ${colors.border}`,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 16,
+        }}
+      >
+        <div style={{ color: colors.textMuted, fontSize: '0.85rem' }}>
+          © 2026 Claymoji. Made with love and lots of soft shadows.
+        </div>
+        <div style={{ display: 'flex', gap: 16 }}>
+          {[
+            { Icon: Twitter, label: 'Twitter' },
+            { Icon: Instagram, label: 'Instagram' },
+            { Icon: Briefcase, label: 'LinkedIn' },
+            { Icon: Gamepad2, label: 'Discord' },
+          ].map(({ Icon, label }, i) => (
+            <motion.button
+              key={i}
+              onClick={() => scrollToSection('hero')}
+              aria-label={label}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 12,
+                background: colors.card,
+                border: `1px solid ${colors.border}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: colors.textMuted,
+                boxShadow: clayShadow.soft,
+                transition: 'all 0.2s ease-out',
+              }}
+              whileHover={{ 
+                scale: 1.1, 
+                boxShadow: clayShadow.button,
+                borderColor: colors.accentBlue,
+                color: colors.accentBlue,
+              }}
+            >
+              <Icon size={16} />
+            </motion.button>
+          ))}
+        </div>
+      </div>
+    </footer>
+  )
+}
 
 // Main Component
 export default function ClaymorphismLanding() {
@@ -1506,7 +1753,7 @@ export default function ClaymorphismLanding() {
         fontFamily: "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif",
         background: colors.bg,
         minHeight: '100vh',
-        overflow: 'hidden',
+        overflowX: 'hidden',
         transition: 'background 0.3s ease',
       }}
     >
@@ -1548,9 +1795,27 @@ export default function ClaymorphismLanding() {
           background: ${colors.accentBlue};
         }
         
+        /* Gradient text fallback for all browsers */
+        .gradient-text, .stat-number {
+          -webkit-background-clip: text !important;
+          background-clip: text !important;
+          -webkit-text-fill-color: transparent !important;
+          color: transparent !important;
+        }
+        
+        /* Mobile Navigation */
         @media (max-width: 768px) {
-          nav > div > div:last-child a:not(:last-child) {
-            display: none;
+          .desktop-nav {
+            display: none !important;
+          }
+          .mobile-menu-btn {
+            display: flex !important;
+          }
+        }
+        
+        @media (min-width: 769px) {
+          .mobile-menu {
+            display: none !important;
           }
         }
       `}</style>
@@ -1559,9 +1824,10 @@ export default function ClaymorphismLanding() {
       <Nav colors={colors} clayShadow={clayShadow} />
       <Hero colors={colors} clayShadow={clayShadow} theme={theme} />
       <Features colors={colors} clayShadow={clayShadow} theme={theme} />
-      <Stats colors={colors} clayShadow={clayShadow} />
+      <Stats colors={colors} clayShadow={clayShadow} theme={theme} />
       <Testimonials colors={colors} clayShadow={clayShadow} />
       <Pricing colors={colors} clayShadow={clayShadow} />
+      <About colors={colors} clayShadow={clayShadow} theme={theme} />
       <CTA colors={colors} theme={theme} />
       <Footer colors={colors} clayShadow={clayShadow} />
     </div>
