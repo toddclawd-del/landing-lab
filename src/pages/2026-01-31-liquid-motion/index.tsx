@@ -500,83 +500,234 @@ const LiquidMarquee = () => {
 const Nav = () => {
   const { scrollY } = useScroll()
   const [scrolled, setScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     return scrollY.on('change', (y) => setScrolled(y > 50))
   }, [scrollY])
 
+  // Close menu on resize to desktop
+  useEffect(() => {
+    if (!isMobile) setMobileMenuOpen(false)
+  }, [isMobile])
+
+  const navItems = ['Work', 'Services', 'About', 'Contact']
+
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6 }}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        padding: '20px 5%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        background: scrolled ? 'rgba(5, 5, 16, 0.9)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(20px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.1)' : 'none',
-        transition: 'all 0.3s ease',
-      }}
-    >
-      {/* Logo */}
-      <motion.div
-        whileHover={{ scale: 1.05 }}
+    <>
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6 }}
         style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          padding: '20px 5%',
           display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          gap: 12,
-          cursor: 'pointer',
+          background: scrolled || mobileMenuOpen ? 'rgba(5, 5, 16, 0.95)' : 'transparent',
+          backdropFilter: scrolled || mobileMenuOpen ? 'blur(20px)' : 'none',
+          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.1)' : 'none',
+          transition: 'all 0.3s ease',
         }}
       >
-        <div style={{
-          width: 40,
-          height: 40,
-          borderRadius: '50%',
-          background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <span style={{ fontSize: '1.2rem' }}>💧</span>
-        </div>
-        <span style={{
-          fontSize: '1.25rem',
-          fontWeight: 700,
-          color: colors.text,
-        }}>
-          Liquidflow
-        </span>
-      </motion.div>
+        {/* Logo */}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            cursor: 'pointer',
+          }}
+        >
+          <div style={{
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <span style={{ fontSize: '1.2rem' }}>💧</span>
+          </div>
+          <span style={{
+            fontSize: '1.25rem',
+            fontWeight: 700,
+            color: colors.text,
+          }}>
+            Liquidflow
+          </span>
+        </motion.div>
 
-      {/* Nav Links */}
-      <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>
-        {['Work', 'Services', 'About', 'Contact'].map((item) => (
-          <motion.a
-            key={item}
-            href={`#${item.toLowerCase()}`}
-            whileHover={{ color: colors.accent }}
+        {/* Desktop Nav Links */}
+        <div style={{ 
+          display: isMobile ? 'none' : 'flex', 
+          gap: 40, 
+          alignItems: 'center' 
+        }}>
+          {navItems.map((item) => (
+            <motion.a
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              whileHover={{ color: colors.accent }}
+              style={{
+                color: colors.textMuted,
+                textDecoration: 'none',
+                fontSize: '0.9rem',
+                fontWeight: 500,
+                transition: 'color 0.2s',
+              }}
+            >
+              {item}
+            </motion.a>
+          ))}
+          <LiquidButton primary>Get Started</LiquidButton>
+        </div>
+
+        {/* Mobile Hamburger */}
+        {isMobile && (
+          <motion.button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            whileTap={{ scale: 0.9 }}
             style={{
-              color: colors.textMuted,
-              textDecoration: 'none',
-              fontSize: '0.9rem',
-              fontWeight: 500,
-              transition: 'color 0.2s',
+              background: 'transparent',
+              border: 'none',
+              padding: 8,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 5,
+              zIndex: 101,
             }}
           >
-            {item}
-          </motion.a>
-        ))}
-        <LiquidButton primary>Get Started</LiquidButton>
-      </div>
-    </motion.nav>
+            <motion.span
+              animate={{
+                rotate: mobileMenuOpen ? 45 : 0,
+                y: mobileMenuOpen ? 8 : 0,
+              }}
+              style={{
+                width: 24,
+                height: 2,
+                background: colors.text,
+                borderRadius: 2,
+                transformOrigin: 'center',
+              }}
+            />
+            <motion.span
+              animate={{ opacity: mobileMenuOpen ? 0 : 1 }}
+              style={{
+                width: 24,
+                height: 2,
+                background: colors.text,
+                borderRadius: 2,
+              }}
+            />
+            <motion.span
+              animate={{
+                rotate: mobileMenuOpen ? -45 : 0,
+                y: mobileMenuOpen ? -8 : 0,
+              }}
+              style={{
+                width: 24,
+                height: 2,
+                background: colors.text,
+                borderRadius: 2,
+                transformOrigin: 'center',
+              }}
+            />
+          </motion.button>
+        )}
+      </motion.nav>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'tween', duration: 0.3 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: '80%',
+              maxWidth: 320,
+              background: 'rgba(5, 5, 16, 0.98)',
+              backdropFilter: 'blur(20px)',
+              zIndex: 99,
+              paddingTop: 100,
+              paddingLeft: 40,
+              paddingRight: 40,
+              borderLeft: `1px solid rgba(255,255,255,0.1)`,
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+              {navItems.map((item, index) => (
+                <motion.a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  style={{
+                    color: colors.text,
+                    textDecoration: 'none',
+                    fontSize: '1.5rem',
+                    fontWeight: 600,
+                    fontFamily: "'Space Grotesk', sans-serif",
+                  }}
+                >
+                  {item}
+                </motion.a>
+              ))}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                style={{ marginTop: 16 }}
+              >
+                <LiquidButton primary>Get Started</LiquidButton>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Backdrop */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.5)',
+              zIndex: 98,
+            }}
+          />
+        )}
+      </AnimatePresence>
+    </>
   )
 }
 
@@ -901,14 +1052,12 @@ const Work = () => {
           <LiquidButton>View All Projects</LiquidButton>
         </motion.div>
 
-        {/* Masonry-style grid */}
-        <div style={{
+        {/* Masonry-style grid - responsive */}
+        <div className="work-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gridTemplateRows: 'auto',
           gap: 24,
         }}>
-          <div style={{ gridColumn: 'span 2' }}>
+          <div className="work-span-2">
             <LiquidImage {...projects[0]} index={0} />
           </div>
           <div>
@@ -917,7 +1066,7 @@ const Work = () => {
           <div>
             <LiquidImage {...projects[2]} index={2} />
           </div>
-          <div style={{ gridColumn: 'span 2' }}>
+          <div className="work-span-2">
             <LiquidImage {...projects[3]} index={3} />
           </div>
         </div>
@@ -942,11 +1091,10 @@ const Stats = () => {
       padding: '80px 5%', 
       background: colors.bgLight,
     }}>
-      <div style={{ 
+      <div className="stats-grid" style={{ 
         maxWidth: 1200, 
         margin: '0 auto',
         display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
         gap: 40,
       }}>
         {stats.map((stat, index) => (
@@ -1071,15 +1219,14 @@ const Footer = () => {
       padding: '80px 5%',
       borderTop: `1px solid rgba(255,255,255,0.1)`,
     }}>
-      <div style={{ 
+      <div className="footer-grid" style={{ 
         maxWidth: 1400, 
         margin: '0 auto',
         display: 'grid',
-        gridTemplateColumns: 'repeat(5, 1fr)',
         gap: 40,
       }}>
         {/* Brand */}
-        <div style={{ gridColumn: 'span 1' }}>
+        <div className="footer-brand">
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -1223,17 +1370,71 @@ const GlobalStyles = () => (
       a, button { cursor: none; }
     }
 
-    /* Responsive adjustments */
+    /* Work grid - responsive */
+    .work-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .work-span-2 {
+      grid-column: span 2;
+    }
+
+    /* Stats grid - responsive */
+    .stats-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* Footer grid - responsive */
+    .footer-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    /* Tablet adjustments */
     @media (max-width: 1024px) {
-      nav > div:last-child > a {
-        display: none;
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .footer-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .footer-brand {
+        grid-column: span 3;
+        margin-bottom: 20px;
       }
     }
 
+    /* Mobile adjustments */
     @media (max-width: 768px) {
       body { cursor: auto; }
-      section > div {
-        grid-template-columns: 1fr !important;
+      
+      .work-grid {
+        grid-template-columns: 1fr;
+      }
+      .work-span-2 {
+        grid-column: span 1;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+      }
+      
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .footer-brand {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-brand {
+        grid-column: span 1;
       }
     }
   `}</style>
