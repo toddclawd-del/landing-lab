@@ -350,7 +350,19 @@ function PillButton({ children, className = '', onClick }: { children: React.Rea
 // Contact Modal
 function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' })
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({})
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const validateForm = () => {
+    const newErrors: typeof errors = {}
+    if (!formState.name.trim()) newErrors.name = 'Name is required'
+    if (!formState.email.trim()) newErrors.email = 'Email is required'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) newErrors.email = 'Invalid email format'
+    if (!formState.message.trim()) newErrors.message = 'Message is required'
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   useEffect(() => {
     if (isOpen) {
@@ -371,14 +383,24 @@ function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
     }
   }, [isOpen, onClose])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!validateForm()) return
+    
+    setIsSubmitting(true)
     // In production: integrate with Formspree, Resend, or your backend
+    // Example: await fetch('/api/contact', { method: 'POST', body: JSON.stringify(formState) })
     console.log('Form submitted:', formState)
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    setIsSubmitting(false)
     setSubmitted(true)
     setTimeout(() => {
       setSubmitted(false)
       setFormState({ name: '', email: '', message: '' })
+      setErrors({})
       onClose()
     }, 2000)
   }
@@ -430,41 +452,76 @@ function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm text-white/60 mb-1">Name</label>
+                    <label className="block text-sm text-white/60 mb-1">
+                      Name <span className="text-rose-400">*</span>
+                    </label>
                     <input
                       type="text"
-                      required
                       value={formState.name}
-                      onChange={(e) => setFormState(s => ({ ...s, name: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-indigo-500 transition-colors"
+                      onChange={(e) => { setFormState(s => ({ ...s, name: e.target.value })); setErrors(er => ({ ...er, name: undefined })) }}
+                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl text-white placeholder:text-white/30 focus:outline-none transition-colors ${errors.name ? 'border-rose-500' : 'border-white/10 focus:border-indigo-500'}`}
                       placeholder="Your name"
                     />
+                    {errors.name && <p className="text-rose-400 text-xs mt-1">{errors.name}</p>}
                   </div>
                   <div>
-                    <label className="block text-sm text-white/60 mb-1">Email</label>
+                    <label className="block text-sm text-white/60 mb-1">
+                      Email <span className="text-rose-400">*</span>
+                    </label>
                     <input
                       type="email"
-                      required
                       value={formState.email}
-                      onChange={(e) => setFormState(s => ({ ...s, email: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-indigo-500 transition-colors"
+                      onChange={(e) => { setFormState(s => ({ ...s, email: e.target.value })); setErrors(er => ({ ...er, email: undefined })) }}
+                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl text-white placeholder:text-white/30 focus:outline-none transition-colors ${errors.email ? 'border-rose-500' : 'border-white/10 focus:border-indigo-500'}`}
                       placeholder="your@email.com"
                     />
+                    {errors.email && <p className="text-rose-400 text-xs mt-1">{errors.email}</p>}
                   </div>
                   <div>
-                    <label className="block text-sm text-white/60 mb-1">Message</label>
+                    <label className="block text-sm text-white/60 mb-1">
+                      Message <span className="text-rose-400">*</span>
+                    </label>
                     <textarea
-                      required
                       rows={4}
                       value={formState.message}
-                      onChange={(e) => setFormState(s => ({ ...s, message: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-indigo-500 transition-colors resize-none"
+                      onChange={(e) => { setFormState(s => ({ ...s, message: e.target.value })); setErrors(er => ({ ...er, message: undefined })) }}
+                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl text-white placeholder:text-white/30 focus:outline-none transition-colors resize-none ${errors.message ? 'border-rose-500' : 'border-white/10 focus:border-indigo-500'}`}
                       placeholder="Tell us about your project..."
                     />
+                    {errors.message && <p className="text-rose-400 text-xs mt-1">{errors.message}</p>}
                   </div>
-                  <BorderFlowButton className="w-full">
-                    Send Message →
-                  </BorderFlowButton>
+                  <motion.button
+                    type="submit"
+                    disabled={isSubmitting}
+                    whileHover={isSubmitting ? {} : { scale: 1.02 }}
+                    whileTap={isSubmitting ? {} : { scale: 0.98 }}
+                    className={`relative w-full inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white overflow-hidden ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  >
+                    {/* Animated flowing border */}
+                    <span className="absolute inset-0 rounded-xl overflow-hidden">
+                      <span 
+                        className="absolute inset-[-200%] animate-[spin_4s_linear_infinite]"
+                        style={{
+                          background: `conic-gradient(from 0deg, transparent 0deg, #6366f1 60deg, #f43f5e 120deg, #f59e0b 180deg, #f43f5e 240deg, #6366f1 300deg, transparent 360deg)`,
+                        }}
+                      />
+                    </span>
+                    <span className="absolute inset-[2px] rounded-[10px] bg-neutral-950" />
+                    <span className="relative z-10 flex items-center gap-2">
+                      {isSubmitting ? (
+                        <>
+                          <motion.span 
+                            className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                          />
+                          Sending...
+                        </>
+                      ) : (
+                        'Send Message →'
+                      )}
+                    </span>
+                  </motion.button>
                 </form>
               </>
             )}
@@ -841,17 +898,23 @@ export default function CreativeAgencyPage() {
       {/* Footer */}
       <footer className="py-12 px-6 md:px-12 border-t border-white/5">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <span className="text-white/30 text-sm">© 2024 Studio. All rights reserved.</span>
+          <span className="text-white/30 text-sm">© {new Date().getFullYear()} Studio. All rights reserved.</span>
           <div className="flex gap-8">
-            {['Twitter', 'Instagram', 'Dribbble', 'LinkedIn'].map((social) => (
-              <button 
-                key={social} 
-                type="button"
+            {[
+              { name: 'Twitter', url: 'https://twitter.com/yourstudio' },
+              { name: 'Instagram', url: 'https://instagram.com/yourstudio' },
+              { name: 'Dribbble', url: 'https://dribbble.com/yourstudio' },
+              { name: 'LinkedIn', url: 'https://linkedin.com/company/yourstudio' },
+            ].map((social) => (
+              <a 
+                key={social.name}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-white/30 hover:text-white text-sm transition-colors"
-                aria-label={`Follow us on ${social}`}
               >
-                {social}
-              </button>
+                {social.name}
+              </a>
             ))}
           </div>
         </div>
