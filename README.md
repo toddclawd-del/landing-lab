@@ -2,6 +2,31 @@
 
 A daily experiment in modern landing page design. Each night, a new landing page is created based on current design trends.
 
+## 🚀 Quick Deploy
+
+Deploy your own instance with one click:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftoddclawd-del%2Flanding-lab&env=VITE_SANITY_PROJECT_ID,VITE_SANITY_DATASET&envDescription=Sanity%20CMS%20configuration%20(optional%20-%20works%20without%20it)&envLink=https%3A%2F%2Fwww.sanity.io%2Fmanage&project-name=claymorphism-landing&repository-name=claymorphism-landing)
+
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_SANITY_PROJECT_ID` | No | Your Sanity project ID |
+| `VITE_SANITY_DATASET` | No | Dataset name (usually `production`) |
+
+> **Note:** The template works perfectly without Sanity — it uses built-in default content. Connect Sanity when you're ready to customize.
+
+### Sanity Setup (Optional)
+
+1. Create a free project at [sanity.io/manage](https://www.sanity.io/manage)
+2. Copy your Project ID from the dashboard
+3. Import the schemas from `sanity/schemas/claymorphism/`
+4. Add your Project ID to Vercel's environment variables
+5. Redeploy to connect
+
+---
+
 ## Structure
 
 ```
@@ -11,6 +36,10 @@ landing-lab/
 │       ├── 2026-01-27-glassmorphism/    # Each page is dated + named
 │       ├── 2026-01-28-brutalist/
 │       └── ...
+├── sanity/
+│   └── schemas/
+│       ├── claymorphism/                 # Sanity CMS schemas
+│       └── landingPage.ts
 ├── LEARNINGS.md                          # Concepts & techniques learned
 └── ARCHIVE.md                            # Index of all pages with scores
 ```
@@ -18,8 +47,17 @@ landing-lab/
 ## Running Locally
 
 ```bash
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
 ## Adding a New Landing Page
@@ -33,11 +71,12 @@ npm run dev
 
 ## Tech Stack
 
-- React 18 + TypeScript + Vite
+- React 19 + TypeScript + Vite
 - Framer Motion (animations)
 - GSAP (advanced animations)
-- React Three Fiber (3D elements when needed)
-- CSS Modules or inline styles
+- React Three Fiber (3D elements)
+- Tailwind CSS 4
+- Sanity CMS (optional)
 
 ## Standards
 
