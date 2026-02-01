@@ -4,6 +4,7 @@ All landing pages created, with references and scores.
 
 | Date | Trend | Reference | Score | Notes |
 |------|-------|-----------|-------|-------|
+| 2026-02-01 | Claymorphism | [Hype4 Academy](https://hype4.academy/articles/design/claymorphism-in-user-interfaces) | 91/100 | Soft 3D clay-like UI, inner+outer shadows, pastel palette, floating shapes, spring physics, playful SaaS aesthetic |
 | 2026-01-31 | Liquid Motion | [Design Shack](https://designshack.net/articles/trends/liquid-animation/) | 89/100 | Morphing SVG blobs, metaball cursor, liquid hover distortion, goo filter, spring physics, deep ocean palette |
 | 2026-01-30 | Neo-Brutalism | [Bejamas](https://bejamas.com/blog/neubrutalism-web-design-trend) | 91/100 | Hard offset shadows, clashing high-saturation colors, chunky typography, floating geometric shapes, spring hover physics |
 | 2026-01-29 | Bento Grid 2.0 | [Haddington Creative](https://www.haddingtoncreative.com/post/the-top-web-design-trends-of-2026) | 90/100 | Interactive tiles with hover reveals, animated gradient backgrounds, colored shadows, variable aspect ratios, micro-interactions |

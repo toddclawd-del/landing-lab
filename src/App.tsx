@@ -23,6 +23,7 @@ import PinnedSections from './pages/2026-01-30-pinned-sections'
 import ElasticEffects from './pages/2026-01-30-elastic-effects'
 import LiquidMotion from './pages/2026-01-31-liquid-motion'
 import CreativeAgencyPage from './pages/2026-01-31-creative-agency'
+import Claymorphism from './pages/2026-02-01-claymorphism'
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
         {/* Landing Page Templates */}
         <Route path="/liquid-motion" element={<LiquidMotion />} />
         <Route path="/creative-agency" element={<CreativeAgencyPage />} />
+        <Route path="/claymorphism" element={<Claymorphism />} />
       </Routes>
     </HashRouter>
   )

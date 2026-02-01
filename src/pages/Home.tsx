@@ -10,6 +10,12 @@ interface LandingPage {
 const pages: LandingPage[] = [
   // Latest Landing Page
   {
+    slug: 'claymorphism',
+    title: 'Claymorphism',
+    inspiration: 'Soft 3D clay-like UI with inner/outer shadows, pastel palette, playful productivity SaaS',
+    date: '2026-02-01'
+  },
+  {
     slug: 'creative-agency',
     title: 'Creative Agency',
     inspiration: 'Dark minimal design studio — GSAP parallax hero, work showcase, magnetic buttons, smooth scroll',

@@ -8,6 +8,144 @@ Design techniques and concepts learned from building landing pages.
 
 ---
 
+## 2026-02-01 — Claymorphism
+
+**Reference:** [Oliver Revelo - What is Claymorphism](https://www.oliverrevelo.com/blog/what-is-claymorphism-in-web-design) | [Hype4 Academy - Claymorphism in UIs](https://hype4.academy/articles/design/claymorphism-in-user-interfaces) | [LogRocket - Implementing Claymorphism](https://blog.logrocket.com/implementing-claymorphism-css/)
+
+### 🎓 Concepts & Techniques
+
+**1. The Psychology of Soft 3D**
+- Claymorphism taps into our childhood associations with clay, playdough, and soft toys
+- Soft, rounded shapes feel SAFE — they trigger comfort responses in our brains
+- The "inflated" appearance creates tactile appeal — you want to touch/press these elements
+- It's a rebellion against years of flat, utilitarian minimalism
+- Perfect for brands that want to feel friendly, approachable, and fun
+
+**2. The Anatomy of a Claymorphic Element**
+- **Outer Shadow:** Large, soft shadow offset to bottom-right (creates "lifted" appearance)
+- **Inner Shadow (Light):** Top-left, lighter than background (simulates light hitting the top)
+- **Inner Shadow (Dark):** Bottom-right, darker than background (simulates shadow inside)
+- **Border Radius:** Very rounded corners (24px+), often "squircle" shaped
+- The combination creates a soft, pillow-like 3D illusion without actual 3D rendering
+
+**3. The Shadow Formula (CSS)**
+```css
+box-shadow:
+  0 20px 40px -10px rgba(color, 0.25),    /* outer lift shadow */
+  0 8px 16px -8px rgba(0, 0, 0, 0.1),      /* ambient shadow */
+  inset 0 -4px 8px rgba(color, 0.15),      /* inner bottom (darker) */
+  inset 0 4px 8px rgba(255, 255, 255, 0.9); /* inner top (lighter) */
+```
+- The outer shadow should use a color that matches or complements the element
+- Inner shadows must be subtle — too strong and it looks like a dent, not a pillow
+- The balance between inner light and inner dark creates the "3D clay" effect
+
+**4. Color Theory for Claymorphism**
+- Pastel palettes are essential — high saturation destroys the soft aesthetic
+- Common palette: soft lavender, mint, peach, baby blue, butter yellow
+- Background should be light (off-white with color tint) to let shadows show
+- Gradients (145° angle is common) add dimensionality to clay surfaces
+- Mix-blend-mode isn't needed here — it's about perceived depth, not transparency
+
+**5. The "Squircle" Shape Language**
+- Regular rounded rectangles feel too geometric for claymorphism
+- True squircles have continuous curvature (iOS icon style)
+- In CSS, use border-radius values >50% of the smaller dimension
+- The goal: shapes that look like they could be made of soft clay
+
+**6. Hover States That Feel Physical**
+- Hover should make elements appear to "lift" further off the page
+- Increase scale slightly (1.02-1.05x) and shadow offset/blur
+- Add y-offset (move element up 2-4px) for tactile feedback
+- Press (tap) state should feel like pressing into clay — reduce shadows, slight scale down
+
+**7. Floating 3D Shapes (Background Element)**
+- Decorative shapes (circles, pills, rounded squares) float in the background
+- Each shape gets its own claymorphic shadow treatment
+- Gentle animation (bobbing, rotating) makes them feel alive
+- Use various sizes and colors for visual interest
+- Keep z-index low so content floats above them
+
+**8. Typography in Clay World**
+- Sans-serif fonts with rounded terminals work best (Plus Jakarta Sans, Nunito, Quicksand)
+- Font weight should be medium to bold — thin fonts clash with the soft aesthetic
+- Gradient text on headlines adds polish without breaking the soft feel
+- Avoid all-caps for body text — it feels too aggressive
+
+**9. When Claymorphism Works**
+- ✅ Productivity apps, SaaS dashboards, children's products
+- ✅ Brands wanting to feel friendly, innovative, or playful
+- ✅ Mobile apps, onboarding flows, marketing pages
+- ❌ Luxury/high-end brands (too casual)
+- ❌ Financial/legal services (not serious enough)
+- ❌ Content-heavy sites (the style can overwhelm text)
+
+**10. Performance Considerations**
+- Claymorphism is pure CSS — no canvas or WebGL needed
+- Multiple box-shadows are GPU-accelerated but can add up
+- Keep continuous animations minimal (floating shapes are fine)
+- The aesthetic is lightweight compared to glassmorphism or 3D
+
+### 📋 Implementation Notes
+
+**Components Built:**
+- `FloatingShape` — Decorative 3D shapes with clay shadows and floating animation
+- `ClayButton` — Primary/secondary/ghost variants with spring hover/tap physics
+- `ClayCard` — Container with clay shadow, scroll-triggered reveal, hover lift
+- `ClayIcon` — Icon containers with matching clay shadow and accent color
+- `Nav` — Fixed nav with scroll-triggered glassmorphism background
+- `Hero` — Multiple floating shapes, badge, gradient headline, fake product preview
+- `Features` — Grid of clay cards with colored icons
+- `Stats` — Animated stat cards with gradient numbers
+- `Testimonials` — Carousel with AnimatePresence transitions
+- `Pricing` — Three-tier pricing with popular plan highlighted (inverted colors)
+- `CTA` — Final conversion section with floating background shapes
+- `Footer` — Multi-column links with clay social icons
+
+**Key Dependencies:**
+- `framer-motion` — AnimatePresence, useInView, useScroll, useTransform, spring physics
+- Google Fonts: Plus Jakarta Sans (all weights)
+
+**Color Palette:**
+- Background: `#F8F6FF` (soft lavender white)
+- Background Alt: `#FFF5F8` (soft pink white)
+- Background Mint: `#F0FFF4` (soft mint white)
+- Lavender: `#C4B5FD` (primary)
+- Lavender Dark: `#A78BFA` (primary hover)
+- Mint: `#86EFAC` (secondary)
+- Peach: `#FECACA` (accent)
+- Sky: `#BAE6FD` (accent)
+- Butter: `#FEF08A` (accent)
+- Text: `#1F2937` (dark gray)
+- Muted: `#6B7280` (secondary text)
+
+**Shadow Presets (reusable):**
+- `clayShadow.card` — Standard card shadow
+- `clayShadow.elevated` — Hover/elevated state
+- `clayShadow.button` — Button shadow
+- `clayShadow.pressed` — Button pressed state
+- `clayShadow.soft` — Subtle nav/utility shadow
+
+**Animation Techniques Used:**
+- Spring physics for button hover/tap (`stiffness: 400, damping: 25`)
+- Floating shapes with sine-wave motion (`y: [0, -20, 0]`)
+- Scroll-triggered reveals with useInView
+- Parallax scroll on hero content
+- Testimonial carousel with AnimatePresence mode="wait"
+
+**Score: 91/100**
+
+| Category | Score | Notes |
+|----------|-------|-------|
+| Visual Impact | 23/25 | Distinctive clay shadows, floating shapes, gradient text |
+| Modern Feel | 19/20 | Claymorphism is peak 2026; playful SaaS aesthetic |
+| Code Quality | 14/15 | TypeScript, reusable components, clean shadow presets |
+| Animation/Motion | 14/15 | Spring physics, scroll reveals, floating shapes, carousel |
+| Responsiveness | 13/15 | Grid auto-fit, clamp typography, mobile nav |
+| Performance | 8/10 | Pure CSS shadows, no heavy assets |
+
+---
+
 ## 2026-01-31 — Liquid Motion Design
 
 **Reference:** [Design Shack - Liquid Animation](https://designshack.net/articles/trends/liquid-animation/) | [Envato Hub - Liquid Design Deep Dive](https://hub.author.envato.com/trend-deep-dive-liquid-design/) | [Apple Liquid Glass](https://www.apple.com/au/newsroom/2025/06/apple-introduces-a-delightful-and-elegant-new-software-design/) | [Patreon Rebrand](https://news.patreon.com/articles/patreon-redesigned)
