@@ -323,7 +323,7 @@ const ClayCard = ({
   )
 }
 
-// Clay Icon component (for features)
+// Clay Icon component (for features) - Premium 3D clay-styled icons
 const ClayIcon = ({ 
   icon: Icon, 
   bgColor,
@@ -333,35 +333,63 @@ const ClayIcon = ({
   bgColor: string
   theme: Theme
 }) => (
-  <div
+  <motion.div
     style={{
-      width: 64,
-      height: 64,
-      borderRadius: 20,
+      width: 72,
+      height: 72,
+      borderRadius: 22,
       background: theme === 'light'
-        ? `linear-gradient(145deg, ${bgColor}40, ${bgColor}20)`
-        : `linear-gradient(145deg, ${bgColor}30, ${bgColor}15)`,
+        ? `linear-gradient(145deg, ${bgColor}50, ${bgColor}30)`
+        : `linear-gradient(145deg, ${bgColor}40, ${bgColor}20)`,
       boxShadow: theme === 'light'
         ? `
-            0 8px 16px -4px rgba(0, 0, 0, 0.1),
-            0 0 20px ${bgColor}30,
-            inset 0 -2px 4px rgba(0, 0, 0, 0.04),
-            inset 0 2px 4px rgba(255, 255, 255, 0.6)
+            0 12px 24px -6px ${bgColor}50,
+            0 6px 12px -3px rgba(0, 0, 0, 0.1),
+            0 0 30px ${bgColor}25,
+            inset 0 -4px 8px ${bgColor}20,
+            inset 0 4px 8px rgba(255, 255, 255, 0.7),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.4)
           `
         : `
-            0 8px 16px -4px rgba(0, 0, 0, 0.4),
-            0 0 20px ${bgColor}20,
-            inset 0 -2px 4px rgba(0, 0, 0, 0.2),
-            inset 0 2px 4px rgba(255, 255, 255, 0.05)
+            0 12px 24px -6px ${bgColor}30,
+            0 6px 12px -3px rgba(0, 0, 0, 0.4),
+            0 0 30px ${bgColor}15,
+            inset 0 -4px 8px rgba(0, 0, 0, 0.3),
+            inset 0 4px 8px rgba(255, 255, 255, 0.08),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.05)
           `,
-      border: `1px solid ${bgColor}30`,
+      border: `2px solid ${bgColor}40`,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      position: 'relative',
+      overflow: 'hidden',
+    }}
+    whileHover={{ 
+      scale: 1.1, 
+      rotate: [0, -5, 5, 0],
+      transition: { duration: 0.4 }
     }}
   >
-    <Icon size={28} />
-  </div>
+    {/* Inner highlight blob for extra 3D effect */}
+    <div
+      style={{
+        position: 'absolute',
+        top: 4,
+        left: 4,
+        right: 4,
+        height: '50%',
+        borderRadius: '16px 16px 50% 50%',
+        background: theme === 'light'
+          ? 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, transparent 100%)'
+          : 'linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%)',
+        pointerEvents: 'none',
+      }}
+    />
+    <span style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Icon size={32} />
+    </span>
+  </motion.div>
 )
 
 // Theme Toggle Button
@@ -737,49 +765,119 @@ const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayS
           <ClayButton size="lg" variant="secondary" colors={colors} clayShadow={clayShadow}>Watch Demo</ClayButton>
         </motion.div>
         
-        {/* Hero Image/Preview */}
+        {/* Hero Image/Preview - Enhanced Clay Style */}
         <motion.div
           style={{
             marginTop: 60,
-            borderRadius: 24,
-            background: colors.card,
-            boxShadow: clayShadow.elevated,
-            border: `1px solid ${colors.border}`,
-            padding: 16,
+            borderRadius: 32,
+            background: theme === 'light'
+              ? `linear-gradient(145deg, ${colors.card}, ${colors.cardHover})`
+              : `linear-gradient(145deg, ${colors.card}, ${colors.surface})`,
+            boxShadow: theme === 'light'
+              ? `
+                  0 30px 60px -15px rgba(0, 0, 0, 0.15),
+                  0 15px 30px -10px rgba(0, 0, 0, 0.1),
+                  0 0 50px rgba(147, 112, 219, 0.1),
+                  inset 0 -4px 8px rgba(0, 0, 0, 0.03),
+                  inset 0 4px 8px rgba(255, 255, 255, 0.8)
+                `
+              : `
+                  0 30px 60px -15px rgba(0, 0, 0, 0.6),
+                  0 15px 30px -10px rgba(0, 0, 0, 0.4),
+                  0 0 50px rgba(96, 165, 250, 0.1),
+                  inset 0 -4px 8px rgba(0, 0, 0, 0.3),
+                  inset 0 4px 8px rgba(255, 255, 255, 0.05)
+                `,
+            border: `2px solid ${colors.border}`,
+            padding: 20,
             maxWidth: 700,
             margin: '60px auto 0',
+            position: 'relative',
+            overflow: 'hidden',
           }}
           initial={{ opacity: 0, y: 60, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.7, duration: 0.8 }}
         >
+          {/* Top highlight for 3D effect */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 60,
+              background: theme === 'light'
+                ? 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, transparent 100%)'
+                : 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%)',
+              borderRadius: '30px 30px 0 0',
+              pointerEvents: 'none',
+            }}
+          />
+          
           <div
             style={{
               background: colors.surface,
-              borderRadius: 16,
+              borderRadius: 20,
               padding: 24,
               minHeight: 300,
               display: 'flex',
               flexDirection: 'column',
               gap: 16,
+              boxShadow: theme === 'light'
+                ? 'inset 0 2px 8px rgba(0,0,0,0.04)'
+                : 'inset 0 2px 8px rgba(0,0,0,0.2)',
             }}
           >
-            {/* Fake UI elements */}
-            <div style={{ display: 'flex', gap: 8 }}>
-              <div style={{ width: 12, height: 12, borderRadius: 6, background: colors.accentPink }} />
-              <div style={{ width: 12, height: 12, borderRadius: 6, background: colors.accentBlue }} />
-              <div style={{ width: 12, height: 12, borderRadius: 6, background: colors.accentPurple }} />
+            {/* Window controls - Clay style */}
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              {[colors.accentPink, colors.accentBlue, colors.accentPurple].map((color, i) => (
+                <motion.div 
+                  key={i}
+                  style={{ 
+                    width: 14, 
+                    height: 14, 
+                    borderRadius: 7, 
+                    background: `linear-gradient(145deg, ${color}, ${color}cc)`,
+                    boxShadow: `
+                      0 3px 6px -2px ${color}60,
+                      inset 0 -1px 2px rgba(0,0,0,0.2),
+                      inset 0 1px 2px rgba(255,255,255,0.3)
+                    `,
+                  }} 
+                  whileHover={{ scale: 1.2 }}
+                />
+              ))}
+              <div style={{ 
+                flex: 1, 
+                height: 8, 
+                borderRadius: 4, 
+                background: colors.border,
+                marginLeft: 12,
+              }} />
             </div>
             <div style={{ display: 'flex', gap: 16, flex: 1 }}>
-              {/* Sidebar */}
-              <div
+              {/* Sidebar - Clay style */}
+              <motion.div
                 style={{
                   width: 140,
-                  borderRadius: 16,
-                  background: colors.card,
-                  boxShadow: clayShadow.soft,
+                  borderRadius: 18,
+                  background: theme === 'light'
+                    ? `linear-gradient(145deg, ${colors.card}, ${colors.cardHover})`
+                    : `linear-gradient(145deg, ${colors.card}, ${colors.surface})`,
+                  boxShadow: theme === 'light'
+                    ? `
+                        0 8px 16px -4px rgba(0,0,0,0.08),
+                        inset 0 -2px 4px rgba(0,0,0,0.02),
+                        inset 0 2px 4px rgba(255,255,255,0.6)
+                      `
+                    : `
+                        0 8px 16px -4px rgba(0,0,0,0.4),
+                        inset 0 -2px 4px rgba(0,0,0,0.2),
+                        inset 0 2px 4px rgba(255,255,255,0.03)
+                      `,
                   border: `1px solid ${colors.border}`,
-                  padding: 12,
+                  padding: 14,
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 8,
@@ -791,65 +889,105 @@ const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayS
                   { icon: MessageCircle, text: 'Chat' },
                   { icon: PieChart, text: 'Stats' },
                 ].map((item, i) => (
-                  <div
+                  <motion.div
                     key={i}
                     style={{
-                      padding: '8px 12px',
-                      borderRadius: 10,
-                      background: i === 0 ? `${colors.accentBlue}20` : 'transparent',
+                      padding: '10px 12px',
+                      borderRadius: 12,
+                      background: i === 0 
+                        ? `linear-gradient(145deg, ${colors.accentBlue}30, ${colors.accentBlue}15)` 
+                        : 'transparent',
+                      boxShadow: i === 0 
+                        ? `0 4px 8px -2px ${colors.accentBlue}30, inset 0 1px 2px rgba(255,255,255,0.2)` 
+                        : 'none',
                       fontSize: '0.75rem',
+                      fontWeight: i === 0 ? 600 : 500,
                       color: i === 0 ? colors.accentBlue : colors.textMuted,
-                      transition: 'all 0.2s ease-out',
                       display: 'flex',
                       alignItems: 'center',
                       gap: 8,
+                      cursor: 'pointer',
+                    }}
+                    whileHover={{ 
+                      background: `${colors.accentBlue}15`,
+                      x: 2,
                     }}
                   >
                     <item.icon size={14} />
                     {item.text}
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
-              {/* Main content */}
+              </motion.div>
+              {/* Main content - Clay cards */}
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {[
-                  { icon: CheckCircle, text: 'Launch new feature', color: colors.accentBlue },
-                  { icon: Paintbrush, text: 'Design review', color: colors.accentPink },
-                  { icon: Mail, text: 'Send weekly update', color: colors.accentPurple },
+                  { icon: CheckCircle, text: 'Launch new feature', color: colors.accentBlue, done: true },
+                  { icon: Paintbrush, text: 'Design review', color: colors.accentPink, done: false },
+                  { icon: Mail, text: 'Send weekly update', color: colors.accentPurple, done: false },
                 ].map((task, i) => (
                   <motion.div
                     key={i}
                     style={{
-                      padding: 12,
-                      borderRadius: 14,
-                      background: colors.card,
-                      boxShadow: clayShadow.soft,
+                      padding: 14,
+                      borderRadius: 16,
+                      background: theme === 'light'
+                        ? `linear-gradient(145deg, ${colors.card}, ${colors.cardHover})`
+                        : `linear-gradient(145deg, ${colors.card}, ${colors.surface})`,
+                      boxShadow: theme === 'light'
+                        ? `
+                            0 6px 12px -3px rgba(0,0,0,0.08),
+                            inset 0 -2px 4px rgba(0,0,0,0.02),
+                            inset 0 2px 4px rgba(255,255,255,0.6)
+                          `
+                        : `
+                            0 6px 12px -3px rgba(0,0,0,0.4),
+                            inset 0 -2px 4px rgba(0,0,0,0.2),
+                            inset 0 2px 4px rgba(255,255,255,0.03)
+                          `,
                       border: `1px solid ${colors.border}`,
                       display: 'flex',
                       alignItems: 'center',
                       gap: 12,
                       fontSize: '0.85rem',
                       color: colors.textSecondary,
+                      textDecoration: task.done ? 'line-through' : 'none',
+                      opacity: task.done ? 0.7 : 1,
                     }}
                     initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    animate={{ opacity: task.done ? 0.7 : 1, x: 0 }}
                     transition={{ delay: 1 + i * 0.15 }}
+                    whileHover={{ 
+                      scale: 1.02, 
+                      boxShadow: theme === 'light'
+                        ? `0 10px 20px -5px ${task.color}30, inset 0 -2px 4px rgba(0,0,0,0.02), inset 0 2px 4px rgba(255,255,255,0.6)`
+                        : `0 10px 20px -5px ${task.color}20, inset 0 -2px 4px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.03)`,
+                      borderColor: task.color,
+                    }}
                   >
-                    <span
+                    <motion.span
                       style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: 8,
-                        background: `${task.color}20`,
+                        width: 32,
+                        height: 32,
+                        borderRadius: 10,
+                        background: `linear-gradient(145deg, ${task.color}40, ${task.color}20)`,
+                        boxShadow: `
+                          0 4px 8px -2px ${task.color}40,
+                          inset 0 -1px 2px rgba(0,0,0,0.1),
+                          inset 0 1px 2px rgba(255,255,255,0.2)
+                        `,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         color: task.color,
                       }}
+                      whileHover={{ rotate: [0, -10, 10, 0] }}
                     >
                       <task.icon size={16} />
-                    </span>
+                    </motion.span>
                     {task.text}
+                    {task.done && (
+                      <Check size={14} style={{ marginLeft: 'auto', color: colors.accentBlue }} />
+                    )}
                   </motion.div>
                 ))}
               </div>
@@ -1045,6 +1183,107 @@ const Stats = ({ colors, clayShadow, theme: _theme }: { colors: typeof lightColo
   )
 }
 
+// Logo Grid / Social Proof Section
+const LogoGrid = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
+  const companies = [
+    { name: 'Notion', letter: 'N' },
+    { name: 'Slack', letter: 'S' },
+    { name: 'Linear', letter: 'L' },
+    { name: 'Vercel', letter: 'V' },
+    { name: 'Figma', letter: 'F' },
+    { name: 'Stripe', letter: 'S' },
+  ]
+  
+  return (
+    <section
+      id="social-proof"
+      style={{
+        padding: '60px 24px',
+        background: colors.bg,
+      }}
+    >
+      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+        <motion.p
+          style={{
+            textAlign: 'center',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            color: colors.textMuted,
+            marginBottom: 32,
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          Trusted by teams at
+        </motion.p>
+        
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 24,
+          }}
+        >
+          {companies.map((company, i) => (
+            <motion.div
+              key={i}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '12px 20px',
+                borderRadius: 16,
+                background: colors.card,
+                boxShadow: clayShadow.soft,
+                border: `1px solid ${colors.border}`,
+                color: colors.textMuted,
+                fontSize: '1rem',
+                fontWeight: 700,
+                filter: 'grayscale(100%)',
+                opacity: 0.7,
+                transition: 'all 0.3s ease',
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 0.7, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              whileHover={{
+                filter: 'grayscale(0%)',
+                opacity: 1,
+                scale: 1.05,
+                boxShadow: clayShadow.button,
+                borderColor: colors.accentBlue,
+              }}
+            >
+              <div
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  background: `linear-gradient(145deg, ${colors.accentBlue}40, ${colors.accentPink}40)`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.85rem',
+                  fontWeight: 800,
+                }}
+              >
+                {company.letter}
+              </div>
+              {company.name}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // Testimonials Section
 const Testimonials = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
   const [active, setActive] = useState(0)
@@ -1054,24 +1293,43 @@ const Testimonials = ({ colors, clayShadow }: { colors: typeof lightColors; clay
       quote: "Claymoji made me actually enjoy my todo list. The little animations when I complete a task? *Chef's kiss*",
       author: 'Sarah Chen',
       role: 'Product Designer at Figma',
+      avatar: '👩‍🎨',
       icon: Paintbrush,
       color: colors.accentBlue,
     },
     {
-      quote: "My team went from chaotic Slack threads to actually organized work. Game changer.",
+      quote: "My team went from chaotic Slack threads to actually organized work. Game changer for our remote team.",
       author: 'Marcus Johnson',
       role: 'Engineering Lead at Stripe',
+      avatar: '👨‍💻',
       icon: Users,
       color: colors.accentPink,
     },
     {
-      quote: "Finally, a productivity app that doesn't make me feel guilty. It's like a supportive friend.",
+      quote: "Finally, a productivity app that doesn't make me feel guilty. It's like a supportive friend cheering me on.",
       author: 'Emma Rodriguez',
       role: 'Founder at Bloom',
+      avatar: '👩‍💼',
       icon: Briefcase,
       color: colors.accentPurple,
     },
+    {
+      quote: "The claymorphism design is stunning. Our whole team actually looks forward to checking tasks now.",
+      author: 'David Kim',
+      role: 'Creative Director at Vercel',
+      avatar: '🎨',
+      icon: Palette,
+      color: colors.accentBlue,
+    },
   ]
+  
+  // Auto-cycle through testimonials
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActive((prev) => (prev + 1) % testimonials.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [testimonials.length])
   
   return (
     <section
@@ -1133,13 +1391,10 @@ const Testimonials = ({ colors, clayShadow }: { colors: typeof lightColors; clay
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: testimonials[active].color,
+                  fontSize: '2.5rem',
                 }}
               >
-                {(() => {
-                  const IconComponent = testimonials[active].icon
-                  return <IconComponent size={36} />
-                })()}
+                {testimonials[active].avatar}
               </div>
               <p
                 style={{
@@ -1556,8 +1811,8 @@ const CTA = ({ colors, theme }: { colors: typeof lightColors; theme: Theme }) =>
   </section>
 )
 
-// Footer
-const Footer = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
+// Footer - Clay aesthetic with card background
+const Footer = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow; theme: Theme }) => {
   // Handle smooth scroll to section
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
@@ -1572,155 +1827,226 @@ const Footer = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow
       'Features': 'features',
       'Pricing': 'pricing',
       'About': 'about',
+      'Privacy': 'hero',
+      'Terms': 'hero',
     }
     return linkMap[link] || 'hero'
   }
   
+  const currentYear = new Date().getFullYear()
+  
   return (
     <footer
       style={{
-        padding: '60px 24px 40px',
-        background: colors.bg,
-        borderTop: `1px solid ${colors.border}`,
+        padding: '80px 24px 40px',
+        background: colors.surface,
+        position: 'relative',
       }}
     >
-      <div
+      {/* Main footer card with clay styling */}
+      <motion.div
         style={{
           maxWidth: 1200,
           margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-          gap: 40,
+          padding: 40,
+          borderRadius: 32,
+          background: theme === 'light'
+            ? `linear-gradient(145deg, ${colors.card}, ${colors.cardHover})`
+            : `linear-gradient(145deg, ${colors.card}, ${colors.surface})`,
+          boxShadow: clayShadow.card,
+          border: `1px solid ${colors.border}`,
+          position: 'relative',
+          overflow: 'hidden',
         }}
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
       >
-        {/* Logo */}
-        <div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              fontWeight: 700,
-              fontSize: '1.25rem',
-              color: colors.text,
-              marginBottom: 16,
-            }}
-          >
-            <div
+        {/* Top highlight for 3D effect */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 80,
+            background: theme === 'light'
+              ? 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, transparent 100%)'
+              : 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%)',
+            borderRadius: '30px 30px 0 0',
+            pointerEvents: 'none',
+          }}
+        />
+        
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gap: 48,
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          {/* Logo & Description */}
+          <div style={{ gridColumn: 'span 1' }}>
+            <motion.div
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 10,
-                background: `linear-gradient(145deg, ${colors.accentBlue}, ${colors.accentPink})`,
-                boxShadow: `
-                  0 4px 8px -2px rgba(96, 165, 250, 0.4),
-                  inset 0 -2px 4px rgba(0, 0, 0, 0.2),
-                  inset 0 2px 4px rgba(255, 255, 255, 0.2)
-                `,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                color: colors.white,
+                gap: 12,
+                fontWeight: 700,
+                fontSize: '1.35rem',
+                color: colors.text,
+                marginBottom: 16,
               }}
+              whileHover={{ scale: 1.02 }}
             >
-              <Sparkles size={16} />
-            </div>
-            Claymoji
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 14,
+                  background: `linear-gradient(145deg, ${colors.accentBlue}, ${colors.accentPink})`,
+                  boxShadow: `
+                    0 8px 16px -4px rgba(96, 165, 250, 0.5),
+                    inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+                    inset 0 3px 6px rgba(255, 255, 255, 0.3)
+                  `,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: colors.white,
+                }}
+              >
+                <Sparkles size={20} />
+              </div>
+              Claymoji
+            </motion.div>
+            <p style={{ color: colors.textSecondary, fontSize: '0.95rem', lineHeight: 1.7, marginBottom: 16 }}>
+              Making productivity playful.
+            </p>
+            <p style={{ 
+              color: colors.textMuted, 
+              fontSize: '0.8rem', 
+              lineHeight: 1.6,
+              padding: '8px 12px',
+              borderRadius: 10,
+              background: theme === 'light' ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.03)',
+              display: 'inline-block',
+            }}>
+              Built with React, Framer Motion & TypeScript
+            </p>
           </div>
-          <p style={{ color: colors.textMuted, fontSize: '0.9rem', lineHeight: 1.6 }}>
-            Making productivity playful since 2024.
-          </p>
-          <p style={{ color: colors.textMuted, fontSize: '0.8rem', lineHeight: 1.6, marginTop: 12 }}>
-            Built with React, Framer Motion & TypeScript
-          </p>
+          
+          {/* Links */}
+          {[
+            { title: 'Product', links: ['Features', 'Pricing'] },
+            { title: 'Company', links: ['About'] },
+            { title: 'Legal', links: ['Privacy', 'Terms'] },
+          ].map((col, i) => (
+            <div key={i}>
+              <h4 style={{ 
+                fontWeight: 700, 
+                color: colors.text, 
+                marginBottom: 20,
+                fontSize: '0.9rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+              }}>
+                {col.title}
+              </h4>
+              {col.links.map((link, j) => (
+                <motion.button
+                  key={j}
+                  onClick={() => scrollToSection(getSectionId(link))}
+                  style={{
+                    display: 'block',
+                    color: colors.textSecondary,
+                    background: 'transparent',
+                    border: 'none',
+                    fontSize: '0.95rem',
+                    padding: '8px 0',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    textAlign: 'left',
+                    transition: 'all 0.2s ease-out',
+                  }}
+                  whileHover={{ color: colors.accentBlue, x: 6 }}
+                >
+                  {link}
+                </motion.button>
+              ))}
+            </div>
+          ))}
         </div>
         
-        {/* Links */}
-        {[
-          { title: 'Product', links: ['Features', 'Pricing'] },
-          { title: 'Company', links: ['About'] },
-        ].map((col, i) => (
-          <div key={i}>
-            <h4 style={{ fontWeight: 700, color: colors.text, marginBottom: 16 }}>{col.title}</h4>
-            {col.links.map((link, j) => (
+        {/* Divider */}
+        <div
+          style={{
+            height: 1,
+            background: `linear-gradient(90deg, transparent, ${colors.border}, transparent)`,
+            margin: '40px 0 24px',
+          }}
+        />
+        
+        {/* Bottom row */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 20,
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          <div style={{ color: colors.textMuted, fontSize: '0.85rem' }}>
+            © {currentYear} Claymoji. Made with ❤️ and soft shadows.
+          </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            {[
+              { Icon: Twitter, label: 'Twitter', color: colors.accentBlue },
+              { Icon: Instagram, label: 'Instagram', color: colors.accentPink },
+              { Icon: Briefcase, label: 'LinkedIn', color: colors.accentBlue },
+              { Icon: Gamepad2, label: 'Discord', color: colors.accentPurple },
+            ].map(({ Icon, label, color }, i) => (
               <motion.button
-                key={j}
-                onClick={() => scrollToSection(getSectionId(link))}
+                key={i}
+                onClick={() => scrollToSection('hero')}
+                aria-label={label}
                 style={{
-                  display: 'block',
-                  color: colors.textMuted,
-                  background: 'transparent',
-                  border: 'none',
-                  fontSize: '0.9rem',
-                  padding: '6px 0',
+                  width: 40,
+                  height: 40,
+                  borderRadius: 14,
+                  background: theme === 'light'
+                    ? `linear-gradient(145deg, ${colors.surface}, ${colors.card})`
+                    : `linear-gradient(145deg, ${colors.surface}, ${colors.bg})`,
+                  border: `1px solid ${colors.border}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  textAlign: 'left',
+                  color: colors.textMuted,
+                  boxShadow: theme === 'light'
+                    ? `0 4px 8px -2px rgba(0,0,0,0.08), inset 0 -1px 2px rgba(0,0,0,0.02), inset 0 1px 2px rgba(255,255,255,0.5)`
+                    : `0 4px 8px -2px rgba(0,0,0,0.3), inset 0 -1px 2px rgba(0,0,0,0.2), inset 0 1px 2px rgba(255,255,255,0.03)`,
                   transition: 'all 0.2s ease-out',
                 }}
-                whileHover={{ color: colors.accentBlue, x: 4 }}
+                whileHover={{ 
+                  scale: 1.15, 
+                  boxShadow: `0 8px 16px -4px ${color}40`,
+                  borderColor: color,
+                  color: color,
+                }}
+                whileTap={{ scale: 0.95 }}
               >
-                {link}
+                <Icon size={18} />
               </motion.button>
             ))}
           </div>
-        ))}
-      </div>
-      
-      {/* Bottom */}
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: '40px auto 0',
-          paddingTop: 24,
-          borderTop: `1px solid ${colors.border}`,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 16,
-        }}
-      >
-        <div style={{ color: colors.textMuted, fontSize: '0.85rem' }}>
-          © 2026 Claymoji. Made with love and lots of soft shadows.
         </div>
-        <div style={{ display: 'flex', gap: 16 }}>
-          {[
-            { Icon: Twitter, label: 'Twitter' },
-            { Icon: Instagram, label: 'Instagram' },
-            { Icon: Briefcase, label: 'LinkedIn' },
-            { Icon: Gamepad2, label: 'Discord' },
-          ].map(({ Icon, label }, i) => (
-            <motion.button
-              key={i}
-              onClick={() => scrollToSection('hero')}
-              aria-label={label}
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 12,
-                background: colors.card,
-                border: `1px solid ${colors.border}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: colors.textMuted,
-                boxShadow: clayShadow.soft,
-                transition: 'all 0.2s ease-out',
-              }}
-              whileHover={{ 
-                scale: 1.1, 
-                boxShadow: clayShadow.button,
-                borderColor: colors.accentBlue,
-                color: colors.accentBlue,
-              }}
-            >
-              <Icon size={16} />
-            </motion.button>
-          ))}
-        </div>
-      </div>
+      </motion.div>
     </footer>
   )
 }
@@ -1823,13 +2149,14 @@ export default function ClaymorphismLanding() {
       <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
       <Nav colors={colors} clayShadow={clayShadow} />
       <Hero colors={colors} clayShadow={clayShadow} theme={theme} />
+      <LogoGrid colors={colors} clayShadow={clayShadow} />
       <Features colors={colors} clayShadow={clayShadow} theme={theme} />
       <Stats colors={colors} clayShadow={clayShadow} theme={theme} />
       <Testimonials colors={colors} clayShadow={clayShadow} />
       <Pricing colors={colors} clayShadow={clayShadow} />
       <About colors={colors} clayShadow={clayShadow} theme={theme} />
       <CTA colors={colors} theme={theme} />
-      <Footer colors={colors} clayShadow={clayShadow} />
+      <Footer colors={colors} clayShadow={clayShadow} theme={theme} />
     </div>
   )
 }
