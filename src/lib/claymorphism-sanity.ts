@@ -5,7 +5,7 @@
  * Uses the shared sanity client from src/lib/sanity.ts
  */
 
-import { sanityClient, urlFor } from './sanity'
+import { sanityClient, urlFor, isSanityConfigured } from './sanity'
 
 // =====================================
 // TYPE DEFINITIONS
@@ -318,6 +318,12 @@ const ALL_CONTENT_QUERY = `
  * Fetch all Claymorphism content in a single request
  */
 export async function getClaymorphismContent(): Promise<ClaymorphismContent | null> {
+  // Skip fetch if Sanity is not configured - template works in demo mode
+  if (!isSanityConfigured) {
+    console.info('Sanity CMS not configured - running in demo mode with defaults')
+    return null
+  }
+  
   try {
     const content = await sanityClient.fetch<ClaymorphismContent>(ALL_CONTENT_QUERY)
     return content
@@ -331,6 +337,7 @@ export async function getClaymorphismContent(): Promise<ClaymorphismContent | nu
  * Fetch individual sections (useful for partial updates)
  */
 export async function getSiteSettings(): Promise<SiteSettings | null> {
+  if (!isSanityConfigured) return null
   try {
     return await sanityClient.fetch<SiteSettings>(SITE_SETTINGS_QUERY)
   } catch (error) {

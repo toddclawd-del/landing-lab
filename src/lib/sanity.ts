@@ -1,10 +1,18 @@
 import { createClient } from '@sanity/client'
 import imageUrlBuilder from '@sanity/image-url'
 
-// Configure with environment variables or defaults
+// Get project ID from env, checking for placeholder values
+const projectId = import.meta.env.VITE_SANITY_PROJECT_ID || ''
+const dataset = import.meta.env.VITE_SANITY_DATASET || 'production'
+
+// Check if Sanity is properly configured (not placeholder values)
+const PLACEHOLDER_VALUES = ['your-project-id', 'your_project_id', 'placeholder', '']
+export const isSanityConfigured = !PLACEHOLDER_VALUES.includes(projectId.toLowerCase())
+
+// Configure client (will be null-ish operations if not configured)
 export const sanityClient = createClient({
-  projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'your-project-id',
-  dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
+  projectId: isSanityConfigured ? projectId : 'placeholder-skip',
+  dataset,
   apiVersion: '2024-01-29',
   useCdn: true,
 })
@@ -47,6 +55,12 @@ export interface LandingPageContent {
 
 // Fetch landing page content
 export async function getLandingPageContent(): Promise<LandingPageContent | null> {
+  // Skip fetch if Sanity is not configured
+  if (!isSanityConfigured) {
+    console.info('Sanity not configured - using demo mode with defaults')
+    return null
+  }
+  
   try {
     const content = await sanityClient.fetch<LandingPageContent>(`
       *[_type == "landingPage"][0] {

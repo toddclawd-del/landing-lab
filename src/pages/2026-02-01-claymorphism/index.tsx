@@ -330,6 +330,113 @@ const ClayCard = ({
   )
 }
 
+// Clay Modal component for dialogs
+const ClayModal = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  colors,
+  clayShadow,
+  theme,
+}: {
+  isOpen: boolean
+  onClose: () => void
+  title: string
+  children: React.ReactNode
+  colors: typeof lightColors
+  clayShadow: typeof lightClayShadow
+  theme: Theme
+}) => {
+  // Close on escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) onClose()
+    }
+    window.addEventListener('keydown', handleEscape)
+    return () => window.removeEventListener('keydown', handleEscape)
+  }, [isOpen, onClose])
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: theme === 'light' ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.7)',
+              backdropFilter: 'blur(8px)',
+              zIndex: 1000,
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+          {/* Modal */}
+          <motion.div
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              background: colors.card,
+              borderRadius: 28,
+              boxShadow: clayShadow.elevated,
+              border: `1px solid ${colors.border}`,
+              padding: 32,
+              maxWidth: 600,
+              width: '90%',
+              maxHeight: '80vh',
+              overflow: 'auto',
+              zIndex: 1001,
+            }}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          >
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: colors.text, margin: 0 }}>
+                {title}
+              </h3>
+              <motion.button
+                onClick={onClose}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 12,
+                  border: `1px solid ${colors.border}`,
+                  background: colors.surface,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: colors.textMuted,
+                }}
+                whileHover={{ scale: 1.1, borderColor: colors.accentBlue, color: colors.accentBlue }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <X size={20} />
+              </motion.button>
+            </div>
+            {/* Content */}
+            <div style={{ color: colors.textSecondary, lineHeight: 1.7 }}>
+              {children}
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  )
+}
+
 // Clay Icon component (for features) - Premium 3D clay-styled icons
 const ClayIcon = ({ 
   icon: Icon, 
@@ -667,6 +774,7 @@ const Hero = ({
   clayShadow, 
   theme,
   content,
+  onWatchDemo,
 }: { 
   colors: typeof lightColors; 
   clayShadow: typeof lightClayShadow; 
@@ -679,6 +787,7 @@ const Hero = ({
     ctaPrimary?: { text: string; url?: string }
     ctaSecondary?: { text: string; url?: string }
   }
+  onWatchDemo?: () => void
 }) => {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({
@@ -814,7 +923,7 @@ const Hero = ({
           <ClayButton size="lg" colors={colors} clayShadow={clayShadow}>
             {content?.ctaPrimary?.text || 'Start Free Trial'}
           </ClayButton>
-          <ClayButton size="lg" variant="secondary" colors={colors} clayShadow={clayShadow}>
+          <ClayButton size="lg" variant="secondary" colors={colors} clayShadow={clayShadow} onClick={onWatchDemo}>
             {content?.ctaSecondary?.text || 'Watch Demo'}
           </ClayButton>
         </motion.div>
@@ -1941,12 +2050,16 @@ const Footer = ({
   theme,
   brandName,
   tagline,
+  onPrivacy,
+  onTerms,
 }: { 
   colors: typeof lightColors; 
   clayShadow: typeof lightClayShadow; 
   theme: Theme
   brandName?: string
   tagline?: string
+  onPrivacy?: () => void
+  onTerms?: () => void
 }) => {
   // Handle smooth scroll to section
   const scrollToSection = (sectionId: string) => {
@@ -1956,16 +2069,20 @@ const Footer = ({
     }
   }
   
-  // Map footer links to section IDs
-  const getSectionId = (link: string): string => {
-    const linkMap: Record<string, string> = {
-      'Features': 'features',
-      'Pricing': 'pricing',
-      'About': 'about',
-      'Privacy': 'hero',
-      'Terms': 'hero',
+  // Handle link clicks - some scroll to sections, some open modals
+  const handleLinkClick = (link: string) => {
+    if (link === 'Privacy' && onPrivacy) {
+      onPrivacy()
+    } else if (link === 'Terms' && onTerms) {
+      onTerms()
+    } else {
+      const sectionMap: Record<string, string> = {
+        'Features': 'features',
+        'Pricing': 'pricing',
+        'About': 'about',
+      }
+      scrollToSection(sectionMap[link] || 'hero')
     }
-    return linkMap[link] || 'hero'
   }
   
   const currentYear = new Date().getFullYear()
@@ -2093,7 +2210,7 @@ const Footer = ({
               {col.links.map((link, j) => (
                 <motion.button
                   key={j}
-                  onClick={() => scrollToSection(getSectionId(link))}
+                  onClick={() => handleLinkClick(link)}
                   style={{
                     display: 'block',
                     color: colors.textSecondary,
@@ -2189,6 +2306,9 @@ const Footer = ({
 // Main Component
 export default function ClaymorphismLanding() {
   const [theme, setTheme] = useState<Theme>('light')
+  const [demoModalOpen, setDemoModalOpen] = useState(false)
+  const [privacyModalOpen, setPrivacyModalOpen] = useState(false)
+  const [termsModalOpen, setTermsModalOpen] = useState(false)
   
   // Fetch CMS content with fallbacks
   const content = useClaymorphismContent()
@@ -2289,7 +2409,7 @@ export default function ClaymorphismLanding() {
       
       <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
       <Nav colors={colors} clayShadow={clayShadow} brandName={brandName} />
-      <Hero colors={colors} clayShadow={clayShadow} theme={theme} content={content.heroSection} />
+      <Hero colors={colors} clayShadow={clayShadow} theme={theme} content={content.heroSection} onWatchDemo={() => setDemoModalOpen(true)} />
       <LogoGrid colors={colors} clayShadow={clayShadow} content={content.logoGrid} />
       <Features colors={colors} clayShadow={clayShadow} theme={theme} content={content.features} />
       <Stats colors={colors} clayShadow={clayShadow} theme={theme} content={content.statistics} />
@@ -2297,7 +2417,117 @@ export default function ClaymorphismLanding() {
       <Pricing colors={colors} clayShadow={clayShadow} content={content.pricingTiers} />
       <About colors={colors} clayShadow={clayShadow} theme={theme} content={content.aboutSection} />
       <CTA colors={colors} theme={theme} content={content.ctaSection} />
-      <Footer colors={colors} clayShadow={clayShadow} theme={theme} brandName={brandName} tagline={tagline} />
+      <Footer colors={colors} clayShadow={clayShadow} theme={theme} brandName={brandName} tagline={tagline} onPrivacy={() => setPrivacyModalOpen(true)} onTerms={() => setTermsModalOpen(true)} />
+      
+      {/* Demo Video Modal */}
+      <ClayModal
+        isOpen={demoModalOpen}
+        onClose={() => setDemoModalOpen(false)}
+        title="Watch Demo"
+        colors={colors}
+        clayShadow={clayShadow}
+        theme={theme}
+      >
+        <div style={{ 
+          aspectRatio: '16/9', 
+          background: theme === 'light' ? colors.surface : colors.bg,
+          borderRadius: 16,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 20,
+          border: `1px solid ${colors.border}`,
+        }}>
+          <div style={{ textAlign: 'center', padding: 24 }}>
+            <div style={{ 
+              width: 80, 
+              height: 80, 
+              borderRadius: 40, 
+              background: `linear-gradient(135deg, ${colors.accentBlue}, ${colors.accentPink})`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px',
+              boxShadow: `0 8px 24px ${colors.accentBlue}40`,
+            }}>
+              <Rocket size={32} color={colors.white} />
+            </div>
+            <p style={{ color: colors.textMuted, fontSize: '0.95rem' }}>
+              Demo video coming soon! In the meantime, explore the features above.
+            </p>
+          </div>
+        </div>
+        <p>
+          Claymoji is a playful productivity app that transforms how you organize work. 
+          Our demo showcases the intuitive interface, smart task management, and delightful 
+          animations that make getting things done feel like play.
+        </p>
+      </ClayModal>
+
+      {/* Privacy Policy Modal */}
+      <ClayModal
+        isOpen={privacyModalOpen}
+        onClose={() => setPrivacyModalOpen(false)}
+        title="Privacy Policy"
+        colors={colors}
+        clayShadow={clayShadow}
+        theme={theme}
+      >
+        <h4 style={{ color: colors.text, marginBottom: 12 }}>Your Privacy Matters</h4>
+        <p style={{ marginBottom: 16 }}>
+          At {brandName || 'Claymoji'}, we take your privacy seriously. This template is for 
+          demonstration purposes and doesn't collect any personal data.
+        </p>
+        <h4 style={{ color: colors.text, marginBottom: 12 }}>What We Collect</h4>
+        <p style={{ marginBottom: 16 }}>
+          • Basic usage analytics (page views, feature usage)<br/>
+          • Account information you provide (email, name)<br/>
+          • Task and project data you create within the app
+        </p>
+        <h4 style={{ color: colors.text, marginBottom: 12 }}>How We Use It</h4>
+        <p style={{ marginBottom: 16 }}>
+          Your data is used solely to provide and improve our services. We never sell 
+          your personal information to third parties.
+        </p>
+        <h4 style={{ color: colors.text, marginBottom: 12 }}>Data Security</h4>
+        <p>
+          We use industry-standard encryption and security measures to protect your data. 
+          All data is stored securely and transmitted using TLS encryption.
+        </p>
+      </ClayModal>
+
+      {/* Terms of Service Modal */}
+      <ClayModal
+        isOpen={termsModalOpen}
+        onClose={() => setTermsModalOpen(false)}
+        title="Terms of Service"
+        colors={colors}
+        clayShadow={clayShadow}
+        theme={theme}
+      >
+        <h4 style={{ color: colors.text, marginBottom: 12 }}>Terms of Use</h4>
+        <p style={{ marginBottom: 16 }}>
+          By using {brandName || 'Claymoji'}, you agree to these terms. This template 
+          is provided for demonstration and educational purposes.
+        </p>
+        <h4 style={{ color: colors.text, marginBottom: 12 }}>Acceptable Use</h4>
+        <p style={{ marginBottom: 16 }}>
+          • Use the service for lawful purposes only<br/>
+          • Don't attempt to disrupt or compromise our systems<br/>
+          • Respect other users' privacy and content<br/>
+          • Don't share your account credentials with others
+        </p>
+        <h4 style={{ color: colors.text, marginBottom: 12 }}>Intellectual Property</h4>
+        <p style={{ marginBottom: 16 }}>
+          The {brandName || 'Claymoji'} name, logo, and visual design are proprietary. 
+          Your content remains yours, but you grant us license to display it within the service.
+        </p>
+        <h4 style={{ color: colors.text, marginBottom: 12 }}>Limitation of Liability</h4>
+        <p>
+          This service is provided "as is" without warranties. We're not liable for 
+          any damages arising from your use of the service.
+        </p>
+      </ClayModal>
     </div>
   )
 }
