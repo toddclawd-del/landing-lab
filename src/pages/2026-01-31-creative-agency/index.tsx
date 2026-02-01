@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -264,10 +264,11 @@ function TestimonialCard({ testimonial, index }: { testimonial: typeof TESTIMONI
 }
 
 // Primary CTA - Animated gradient border with dark interior
-function BorderFlowButton({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+function BorderFlowButton({ children, className = '', onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) {
   return (
     <motion.button
       type="button"
+      onClick={onClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`relative inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white overflow-hidden ${className}`}
@@ -329,10 +330,11 @@ function GhostButton({ children, className = '' }: { children: React.ReactNode; 
 }
 
 // Header CTA - Pill with indicator dot
-function PillButton({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+function PillButton({ children, className = '', onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) {
   return (
     <motion.button
       type="button"
+      onClick={onClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`flex items-center gap-3 pl-5 pr-2 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors ${className}`}
@@ -345,6 +347,134 @@ function PillButton({ children, className = '' }: { children: React.ReactNode; c
   )
 }
 
+// Contact Modal
+function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [formState, setFormState] = useState({ name: '', email: '', message: '' })
+  const [submitted, setSubmitted] = useState(false)
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen])
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape)
+      return () => document.removeEventListener('keydown', handleEscape)
+    }
+  }, [isOpen, onClose])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // In production: integrate with Formspree, Resend, or your backend
+    console.log('Form submitted:', formState)
+    setSubmitted(true)
+    setTimeout(() => {
+      setSubmitted(false)
+      setFormState({ name: '', email: '', message: '' })
+      onClose()
+    }, 2000)
+  }
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          onClick={onClose}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-lg bg-neutral-900 border border-white/10 rounded-2xl p-8 shadow-2xl"
+          >
+            {/* Close button */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-white/40 hover:text-white transition-colors"
+            >
+              ✕
+            </button>
+
+            {submitted ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-8"
+              >
+                <div className="text-4xl mb-4">✓</div>
+                <h3 className="text-2xl font-bold text-white mb-2">Message Sent!</h3>
+                <p className="text-white/50">We'll get back to you soon.</p>
+              </motion.div>
+            ) : (
+              <>
+                <h3 className="text-2xl font-bold text-white mb-2">Start a Project</h3>
+                <p className="text-white/50 mb-6">Tell us about your project and we'll get back to you within 24 hours.</p>
+                
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-white/60 mb-1">Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={formState.name}
+                      onChange={(e) => setFormState(s => ({ ...s, name: e.target.value }))}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-indigo-500 transition-colors"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-white/60 mb-1">Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={formState.email}
+                      onChange={(e) => setFormState(s => ({ ...s, email: e.target.value }))}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-indigo-500 transition-colors"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-white/60 mb-1">Message</label>
+                    <textarea
+                      required
+                      rows={4}
+                      value={formState.message}
+                      onChange={(e) => setFormState(s => ({ ...s, message: e.target.value }))}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-indigo-500 transition-colors resize-none"
+                      placeholder="Tell us about your project..."
+                    />
+                  </div>
+                  <BorderFlowButton className="w-full">
+                    Send Message →
+                  </BorderFlowButton>
+                </form>
+              </>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
 // ============================================================================
 // Main Page
 // ============================================================================
@@ -353,6 +483,7 @@ export default function CreativeAgencyPage() {
   const heroRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const servicesRef = useRef<HTMLDivElement>(null)
+  const [isContactOpen, setIsContactOpen] = useState(false)
 
   useEffect(() => {
     // Hero parallax - reduced movement to prevent overlap
@@ -425,7 +556,7 @@ export default function CreativeAgencyPage() {
         </div>
         
         {/* CTA with pill indicator */}
-        <PillButton>Contact</PillButton>
+        <PillButton onClick={() => setIsContactOpen(true)}>Contact</PillButton>
       </motion.header>
 
       {/* Hero */}
@@ -700,7 +831,7 @@ export default function CreativeAgencyPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <BorderFlowButton className="text-lg">
+            <BorderFlowButton className="text-lg" onClick={() => setIsContactOpen(true)}>
               Start a Project →
             </BorderFlowButton>
           </motion.div>
@@ -725,6 +856,9 @@ export default function CreativeAgencyPage() {
           </div>
         </div>
       </footer>
+
+      {/* Contact Modal */}
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </div>
   )
 }
