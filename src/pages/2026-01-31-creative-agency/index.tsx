@@ -81,6 +81,27 @@ const STATS = [
   { value: '40+', label: 'Awards Won' },
 ]
 
+const TESTIMONIALS = [
+  {
+    quote: "Studio transformed our brand identity completely. The attention to detail and creative vision exceeded our expectations.",
+    author: "Sarah Chen",
+    role: "CEO, TechFlow",
+    image: "https://i.pravatar.cc/150?img=1"
+  },
+  {
+    quote: "Working with Studio was a game-changer. They delivered a website that truly captures our company's essence.",
+    author: "Marcus Johnson",
+    role: "Founder, Elevate",
+    image: "https://i.pravatar.cc/150?img=3"
+  },
+  {
+    quote: "The team's creativity and professionalism are unmatched. Our conversion rates doubled after the redesign.",
+    author: "Emily Rodriguez",
+    role: "CMO, Quantum",
+    image: "https://i.pravatar.cc/150?img=5"
+  },
+]
+
 // ============================================================================
 // Components
 // ============================================================================
@@ -206,6 +227,38 @@ function StatItem({ stat, index }: { stat: typeof STATS[0]; index: number }) {
     >
       <div className="text-5xl md:text-6xl font-bold text-white mb-2">{stat.value}</div>
       <div className="text-white/40 text-sm tracking-wider uppercase">{stat.label}</div>
+    </motion.div>
+  )
+}
+
+// Testimonial Card
+function TestimonialCard({ testimonial, index }: { testimonial: typeof TESTIMONIALS[0]; index: number }) {
+  return (
+    <motion.div
+      className="relative p-8 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.6, delay: index * 0.15 }}
+    >
+      {/* Quote mark */}
+      <div className="absolute top-6 right-8 text-6xl text-white/10 font-serif">"</div>
+      
+      <p className="text-white/70 text-lg leading-relaxed mb-6 relative z-10">
+        "{testimonial.quote}"
+      </p>
+      
+      <div className="flex items-center gap-4">
+        <img 
+          src={testimonial.image} 
+          alt={testimonial.author}
+          className="w-12 h-12 rounded-full object-cover"
+        />
+        <div>
+          <div className="font-semibold text-white">{testimonial.author}</div>
+          <div className="text-sm text-white/40">{testimonial.role}</div>
+        </div>
+      </div>
     </motion.div>
   )
 }
@@ -377,8 +430,79 @@ export default function CreativeAgencyPage() {
 
       {/* Hero */}
       <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(99,102,241,0.15),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(244,63,94,0.1),transparent_50%)]" />
+        {/* Animated mesh gradient background - unique visual */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Base dark gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950" />
+          
+          {/* Animated blob 1 - indigo */}
+          <motion.div
+            className="absolute w-[800px] h-[800px] rounded-full opacity-30 blur-[120px]"
+            style={{
+              background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)',
+              left: '10%',
+              top: '20%',
+            }}
+            animate={{
+              x: [0, 100, 50, 0],
+              y: [0, 50, 100, 0],
+              scale: [1, 1.1, 0.9, 1],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+          
+          {/* Animated blob 2 - rose */}
+          <motion.div
+            className="absolute w-[600px] h-[600px] rounded-full opacity-25 blur-[100px]"
+            style={{
+              background: 'radial-gradient(circle, #f43f5e 0%, transparent 70%)',
+              right: '15%',
+              bottom: '20%',
+            }}
+            animate={{
+              x: [0, -80, -40, 0],
+              y: [0, -60, 40, 0],
+              scale: [1, 0.9, 1.1, 1],
+            }}
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+          
+          {/* Animated blob 3 - amber accent */}
+          <motion.div
+            className="absolute w-[400px] h-[400px] rounded-full opacity-20 blur-[80px]"
+            style={{
+              background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)',
+              left: '50%',
+              top: '60%',
+            }}
+            animate={{
+              x: [0, 60, -30, 0],
+              y: [0, -40, 60, 0],
+              scale: [1, 1.2, 0.95, 1],
+            }}
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+          
+          {/* Grain overlay for texture */}
+          <div 
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+            }}
+          />
+        </div>
         
         <div className="relative z-10 text-center px-6">
           <motion.p
@@ -478,6 +602,30 @@ export default function CreativeAgencyPage() {
           {STATS.map((stat, index) => (
             <StatItem key={stat.label} stat={stat} index={index} />
           ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-32 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="text-white/30 text-sm tracking-[0.3em] uppercase">Testimonials</span>
+            <h2 className="text-4xl md:text-5xl font-bold mt-4">
+              What our clients say
+            </h2>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {TESTIMONIALS.map((testimonial, index) => (
+              <TestimonialCard key={testimonial.author} testimonial={testimonial} index={index} />
+            ))}
+          </div>
         </div>
       </section>
 
