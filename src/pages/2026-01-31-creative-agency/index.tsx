@@ -210,36 +210,84 @@ function StatItem({ stat, index }: { stat: typeof STATS[0]; index: number }) {
   )
 }
 
-function MagneticButton({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const button = buttonRef.current
-    if (!button) return
-    
-    const rect = button.getBoundingClientRect()
-    const x = e.clientX - rect.left - rect.width / 2
-    const y = e.clientY - rect.top - rect.height / 2
-    
-    setPosition({ x: x * 0.3, y: y * 0.3 })
-  }
-
-  const handleMouseLeave = () => {
-    setPosition({ x: 0, y: 0 })
-  }
-
+// Primary CTA - Animated gradient border with dark interior
+function BorderFlowButton({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
     <motion.button
-      ref={buttonRef}
       type="button"
-      className={`relative px-8 py-4 rounded-full font-medium transition-colors ${className}`}
-      animate={{ x: position.x, y: position.y }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`relative inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold text-white overflow-hidden ${className}`}
     >
-      {children}
+      {/* Animated flowing border */}
+      <span className="absolute inset-0 rounded-xl overflow-hidden">
+        <span 
+          className="absolute inset-[-200%] animate-[spin_4s_linear_infinite]"
+          style={{
+            background: `conic-gradient(
+              from 0deg,
+              transparent 0deg,
+              #6366f1 60deg,
+              #f43f5e 120deg,
+              #f59e0b 180deg,
+              #f43f5e 240deg,
+              #6366f1 300deg,
+              transparent 360deg
+            )`,
+          }}
+        />
+      </span>
+      {/* Dark inner */}
+      <span className="absolute inset-[2px] rounded-[10px] bg-neutral-950" />
+      <span className="relative z-10">{children}</span>
+    </motion.button>
+  )
+}
+
+// Secondary CTA - Ghost outline that fills on hover
+function GhostButton({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const [isHovered, setIsHovered] = useState(false)
+  
+  return (
+    <motion.button
+      type="button"
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`relative px-8 py-4 rounded-xl font-medium border border-white/20 overflow-hidden ${className}`}
+    >
+      {/* Fill animation on hover */}
+      <motion.span
+        className="absolute inset-0 bg-white"
+        initial={{ scale: 0, borderRadius: '100%' }}
+        animate={{ 
+          scale: isHovered ? 1.5 : 0, 
+          borderRadius: isHovered ? '0%' : '100%' 
+        }}
+        transition={{ duration: 0.4 }}
+        style={{ originX: 0.5, originY: 0.5 }}
+      />
+      <span className={`relative z-10 transition-colors duration-300 ${isHovered ? 'text-black' : 'text-white'}`}>
+        {children}
+      </span>
+    </motion.button>
+  )
+}
+
+// Header CTA - Pill with indicator dot
+function PillButton({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <motion.button
+      type="button"
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`flex items-center gap-3 pl-5 pr-2 py-2 rounded-full bg-white text-black text-sm font-medium hover:bg-white/90 transition-colors ${className}`}
+    >
+      <span>{children}</span>
+      <span className="w-6 h-6 rounded-full bg-black/10 flex items-center justify-center">
+        <span className="w-1.5 h-1.5 rounded-full bg-black/60" />
+      </span>
     </motion.button>
   )
 }
@@ -294,18 +342,38 @@ export default function CreativeAgencyPage() {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white overflow-x-hidden">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="text-white/50 hover:text-white transition-colors text-sm">
-            ← Back
-          </Link>
+      {/* Header - Glassmorphism with entrance animation */}
+      <motion.header 
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="fixed top-4 left-4 right-4 z-50 flex items-center justify-between px-6 py-3 rounded-2xl backdrop-blur-xl bg-neutral-950/70 border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+      >
+        {/* Back link */}
+        <Link 
+          to="/" 
+          className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm group"
+        >
+          <motion.span 
+            className="inline-block"
+            whileHover={{ x: -3 }}
+          >
+            ←
+          </motion.span>
+          <span className="hidden sm:inline">Back</span>
+        </Link>
+        
+        {/* Logo with icon */}
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-rose-500 flex items-center justify-center">
+            <span className="text-white text-sm font-bold">S</span>
+          </div>
           <span className="text-lg font-semibold tracking-tight">STUDIO</span>
-          <MagneticButton className="bg-white text-black text-sm hover:bg-white/90">
-            Contact
-          </MagneticButton>
         </div>
-      </header>
+        
+        {/* CTA with pill indicator */}
+        <PillButton>Contact</PillButton>
+      </motion.header>
 
       {/* Hero */}
       <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden z-10">
@@ -391,9 +459,9 @@ export default function CreativeAgencyPage() {
                 Projects that speak
               </h2>
             </div>
-            <MagneticButton className="border border-white/20 text-white hover:bg-white hover:text-black self-start md:self-auto">
+            <GhostButton className="self-start md:self-auto">
               View All Work →
-            </MagneticButton>
+            </GhostButton>
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -484,9 +552,9 @@ export default function CreativeAgencyPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <MagneticButton className="bg-white text-black text-lg hover:bg-white/90">
+            <BorderFlowButton className="text-lg">
               Start a Project →
-            </MagneticButton>
+            </BorderFlowButton>
           </motion.div>
         </div>
       </section>
