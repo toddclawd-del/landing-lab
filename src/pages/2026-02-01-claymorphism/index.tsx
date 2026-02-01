@@ -1,52 +1,103 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { 
+  Sparkles, PartyPopper, Target, Users, BarChart3, Bell, Palette, Lock,
+  Smile, CheckCircle, Rocket, Star, ClipboardList, Calendar, MessageCircle,
+  PieChart, Check, Mail, Paintbrush, Sun, Moon, Twitter, Instagram, 
+  Briefcase, Gamepad2
+} from 'lucide-react'
 
 // ============================================
-// DARK CLAYMORPHISM LANDING PAGE
+// CLAYMORPHISM LANDING PAGE - DUAL THEME
 // ============================================
-// A soft, 3D clay-like UI aesthetic with DARK theme:
-// - Dark backgrounds with subtle surface variations
-// - Inner + outer shadows for 3D depth (darker tones)
-// - Very rounded corners (squircle shapes)
+// Light & Dark mode toggle with localStorage persistence
+// - Soft, 3D clay-like UI aesthetic
+// - Inner + outer shadows for depth
+// - Rounded corners (squircle shapes)
 // - Playful, friendly, tactile feel
-// - Blue/Pink accent colors from design proposal
 // ============================================
 
-// Color Palette - Dark theme with glow accents
-const colors = {
-  // Backgrounds
-  bg: '#000000',           // Page base - pure black
-  surface: '#0a0a0a',      // Section backgrounds
-  card: '#1a1a1a',         // Card backgrounds
-  cardHover: '#222222',    // Card hover state
-  
-  // Border & dividers
-  border: 'rgba(255,255,255,0.1)',
-  borderHover: 'rgba(96,165,250,0.5)', // Blue accent border
-  
-  // Accent colors
-  accentBlue: '#60A5FA',   // Primary accent - hover states, CTA
-  accentPink: '#F472B6',   // Secondary accent (matches antennae reference)
-  accentPurple: '#A78BFA', // Tertiary accent
-  
-  // Text colors
-  text: '#FFFFFF',         // Primary text
-  textSecondary: 'rgba(255,255,255,0.7)', // Body text
-  textMuted: 'rgba(255,255,255,0.5)',     // Captions/muted
-  
+// Light Theme Colors
+const lightColors = {
+  bg: '#F7F5F0',
+  surface: '#FFFEF9',
+  card: '#FFFFFF',
+  cardHover: '#FAFAF5',
+  border: 'rgba(0,0,0,0.06)',
+  borderHover: 'rgba(147,112,219,0.4)',
+  accentBlue: '#7C9FF5',
+  accentPink: '#F5A0C4',
+  accentPurple: '#B88BF5',
+  text: '#2D2A33',
+  textSecondary: '#5C5867',
+  textMuted: '#8A8693',
   white: '#FFFFFF',
 }
 
-// Dark Claymorphism shadow presets
-const clayShadow = {
-  // Standard dark clay card
+// Dark Theme Colors
+const darkColors = {
+  bg: '#000000',
+  surface: '#0a0a0a',
+  card: '#1a1a1a',
+  cardHover: '#222222',
+  border: 'rgba(255,255,255,0.1)',
+  borderHover: 'rgba(96,165,250,0.5)',
+  accentBlue: '#60A5FA',
+  accentPink: '#F472B6',
+  accentPurple: '#A78BFA',
+  text: '#FFFFFF',
+  textSecondary: 'rgba(255,255,255,0.7)',
+  textMuted: 'rgba(255,255,255,0.5)',
+  white: '#FFFFFF',
+}
+
+// Light Theme Shadows
+const lightClayShadow = {
+  card: `
+    0 10px 30px -10px rgba(0, 0, 0, 0.08),
+    0 4px 10px -4px rgba(0, 0, 0, 0.04),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.02),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8)
+  `,
+  elevated: `
+    0 20px 40px -10px rgba(0, 0, 0, 0.12),
+    0 8px 16px -8px rgba(0, 0, 0, 0.06),
+    0 0 40px -10px rgba(147, 112, 219, 0.15),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.02),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9)
+  `,
+  button: `
+    0 6px 16px -4px rgba(0, 0, 0, 0.1),
+    0 3px 6px -3px rgba(0, 0, 0, 0.05),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.03),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8)
+  `,
+  pressed: `
+    0 2px 6px -1px rgba(0, 0, 0, 0.06),
+    0 1px 3px -1px rgba(0, 0, 0, 0.04),
+    inset 0 2px 4px rgba(0, 0, 0, 0.04),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.5)
+  `,
+  soft: `
+    0 4px 12px -2px rgba(0, 0, 0, 0.05),
+    0 2px 6px -2px rgba(0, 0, 0, 0.03),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.02),
+    inset 0 1px 2px rgba(255, 255, 255, 0.7)
+  `,
+  glow: `
+    0 0 30px rgba(147, 112, 219, 0.25),
+    0 0 60px rgba(147, 112, 219, 0.1)
+  `,
+}
+
+// Dark Theme Shadows
+const darkClayShadow = {
   card: `
     0 20px 40px -10px rgba(0, 0, 0, 0.6),
     0 8px 16px -8px rgba(0, 0, 0, 0.4),
     inset 0 -2px 4px rgba(0, 0, 0, 0.3),
     inset 0 2px 4px rgba(255, 255, 255, 0.05)
   `,
-  // Elevated dark clay with glow
   elevated: `
     0 30px 60px -15px rgba(0, 0, 0, 0.7),
     0 12px 24px -12px rgba(0, 0, 0, 0.5),
@@ -54,33 +105,32 @@ const clayShadow = {
     inset 0 -2px 4px rgba(0, 0, 0, 0.3),
     inset 0 2px 4px rgba(255, 255, 255, 0.08)
   `,
-  // Button dark clay
   button: `
     0 10px 20px -5px rgba(0, 0, 0, 0.5),
     0 4px 8px -4px rgba(0, 0, 0, 0.3),
     inset 0 -2px 4px rgba(0, 0, 0, 0.2),
     inset 0 2px 4px rgba(255, 255, 255, 0.1)
   `,
-  // Pressed button
   pressed: `
     0 4px 8px -2px rgba(0, 0, 0, 0.4),
     0 2px 4px -2px rgba(0, 0, 0, 0.3),
     inset 0 2px 4px rgba(0, 0, 0, 0.3),
     inset 0 -1px 2px rgba(255, 255, 255, 0.05)
   `,
-  // Soft dark clay
   soft: `
     0 8px 16px -4px rgba(0, 0, 0, 0.4),
     0 4px 8px -4px rgba(0, 0, 0, 0.2),
     inset 0 -1px 2px rgba(0, 0, 0, 0.2),
     inset 0 1px 2px rgba(255, 255, 255, 0.03)
   `,
-  // Glow effect for accent elements
   glow: `
     0 0 30px rgba(96, 165, 250, 0.3),
     0 0 60px rgba(96, 165, 250, 0.15)
   `,
 }
+
+// Theme context type
+type Theme = 'light' | 'dark'
 
 // Floating 3D shape component
 const FloatingShape = ({ 
@@ -89,7 +139,8 @@ const FloatingShape = ({
   top, 
   left, 
   delay = 0,
-  shape = 'circle' 
+  shape = 'circle',
+  theme
 }: { 
   color: string
   size: number
@@ -97,8 +148,10 @@ const FloatingShape = ({
   left: string
   delay?: number
   shape?: 'circle' | 'square' | 'pill'
+  theme: Theme
 }) => {
   const borderRadius = shape === 'circle' ? '50%' : shape === 'pill' ? size / 2 : size / 4
+  const opacity = theme === 'light' ? 0.5 : 0.6
   
   return (
     <motion.div
@@ -109,16 +162,25 @@ const FloatingShape = ({
         width: size,
         height: shape === 'pill' ? size / 2 : size,
         borderRadius,
-        background: `linear-gradient(145deg, ${color}20, ${color}10)`,
-        boxShadow: `
-          0 ${size / 4}px ${size / 2}px -${size / 8}px ${color}30,
-          0 ${size / 8}px ${size / 4}px -${size / 8}px rgba(0,0,0,0.3),
-          inset 0 -${size / 16}px ${size / 8}px ${color}10,
-          inset 0 ${size / 16}px ${size / 8}px rgba(255,255,255,0.05)
-        `,
+        background: theme === 'light' 
+          ? `linear-gradient(145deg, ${color}40, ${color}20)`
+          : `linear-gradient(145deg, ${color}20, ${color}10)`,
+        boxShadow: theme === 'light'
+          ? `
+              0 ${size / 4}px ${size / 2}px -${size / 8}px ${color}40,
+              0 ${size / 8}px ${size / 4}px -${size / 8}px rgba(0,0,0,0.1),
+              inset 0 -${size / 16}px ${size / 8}px ${color}20,
+              inset 0 ${size / 16}px ${size / 8}px rgba(255,255,255,0.4)
+            `
+          : `
+              0 ${size / 4}px ${size / 2}px -${size / 8}px ${color}30,
+              0 ${size / 8}px ${size / 4}px -${size / 8}px rgba(0,0,0,0.3),
+              inset 0 -${size / 16}px ${size / 8}px ${color}10,
+              inset 0 ${size / 16}px ${size / 8}px rgba(255,255,255,0.05)
+            `,
         border: `1px solid ${color}15`,
         zIndex: 0,
-        opacity: 0.6,
+        opacity,
       }}
       animate={{
         y: [0, -20, 0],
@@ -142,12 +204,16 @@ const ClayButton = ({
   size = 'md',
   onClick,
   style: customStyle,
+  colors,
+  clayShadow,
 }: { 
   children: React.ReactNode
   variant?: 'primary' | 'secondary' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   onClick?: () => void
   style?: React.CSSProperties
+  colors: typeof lightColors
+  clayShadow: typeof lightClayShadow
 }) => {
   const sizes = {
     sm: { padding: '10px 20px', fontSize: '0.875rem' },
@@ -217,11 +283,15 @@ const ClayCard = ({
   delay = 0,
   className,
   style,
+  colors,
+  clayShadow,
 }: { 
   children: React.ReactNode
   delay?: number
   className?: string
   style?: React.CSSProperties
+  colors: typeof lightColors
+  clayShadow: typeof lightClayShadow
 }) => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-50px' })
@@ -255,44 +325,107 @@ const ClayCard = ({
 
 // Clay Icon component (for features)
 const ClayIcon = ({ 
-  emoji, 
-  bgColor 
+  icon: Icon, 
+  bgColor,
+  theme
 }: { 
-  emoji: string
-  bgColor: string 
+  icon: React.ComponentType<{ size?: number; className?: string }>
+  bgColor: string
+  theme: Theme
 }) => (
   <div
     style={{
       width: 64,
       height: 64,
       borderRadius: 20,
-      background: `linear-gradient(145deg, ${bgColor}30, ${bgColor}15)`,
-      boxShadow: `
-        0 8px 16px -4px rgba(0, 0, 0, 0.4),
-        0 0 20px ${bgColor}20,
-        inset 0 -2px 4px rgba(0, 0, 0, 0.2),
-        inset 0 2px 4px rgba(255, 255, 255, 0.05)
-      `,
+      background: theme === 'light'
+        ? `linear-gradient(145deg, ${bgColor}40, ${bgColor}20)`
+        : `linear-gradient(145deg, ${bgColor}30, ${bgColor}15)`,
+      boxShadow: theme === 'light'
+        ? `
+            0 8px 16px -4px rgba(0, 0, 0, 0.1),
+            0 0 20px ${bgColor}30,
+            inset 0 -2px 4px rgba(0, 0, 0, 0.04),
+            inset 0 2px 4px rgba(255, 255, 255, 0.6)
+          `
+        : `
+            0 8px 16px -4px rgba(0, 0, 0, 0.4),
+            0 0 20px ${bgColor}20,
+            inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+            inset 0 2px 4px rgba(255, 255, 255, 0.05)
+          `,
       border: `1px solid ${bgColor}30`,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: '1.75rem',
     }}
   >
-    {emoji}
+    <Icon size={28} />
   </div>
 )
 
+// Theme Toggle Button
+const ThemeToggle = ({ 
+  theme, 
+  toggleTheme 
+}: { 
+  theme: Theme
+  toggleTheme: () => void 
+}) => {
+  const colors = theme === 'light' ? lightColors : darkColors
+  const clayShadow = theme === 'light' ? lightClayShadow : darkClayShadow
+  
+  return (
+    <motion.button
+      onClick={toggleTheme}
+      style={{
+        position: 'fixed',
+        top: 20,
+        right: 20,
+        zIndex: 1000,
+        width: 48,
+        height: 48,
+        borderRadius: 14,
+        border: `1px solid ${colors.border}`,
+        background: colors.card,
+        boxShadow: clayShadow.button,
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: colors.text,
+      }}
+      whileHover={{ 
+        scale: 1.1, 
+        boxShadow: clayShadow.elevated,
+        borderColor: colors.accentBlue,
+      }}
+      whileTap={{ scale: 0.95 }}
+    >
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={theme}
+          initial={{ rotate: -90, opacity: 0 }}
+          animate={{ rotate: 0, opacity: 1 }}
+          exit={{ rotate: 90, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        </motion.div>
+      </AnimatePresence>
+    </motion.button>
+  )
+}
+
 // Navigation
-const Nav = () => {
+const Nav = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
   const [scrolled, setScrolled] = useState(false)
   
-  useState(() => {
+  useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  })
+  }, [])
   
   return (
     <motion.nav
@@ -349,10 +482,10 @@ const Nav = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '1.1rem',
+              color: colors.white,
             }}
           >
-            ✨
+            <Sparkles size={18} />
           </div>
           Claymoji
         </motion.div>
@@ -379,7 +512,7 @@ const Nav = () => {
               {item}
             </motion.a>
           ))}
-          <ClayButton size="sm">Get Started</ClayButton>
+          <ClayButton size="sm" colors={colors} clayShadow={clayShadow}>Get Started</ClayButton>
         </div>
       </motion.div>
     </motion.nav>
@@ -387,7 +520,7 @@ const Nav = () => {
 }
 
 // Hero Section
-const Hero = () => {
+const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow; theme: Theme }) => {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -407,16 +540,18 @@ const Hero = () => {
         padding: '120px 24px 80px',
         position: 'relative',
         overflow: 'hidden',
-        background: `linear-gradient(180deg, ${colors.bg} 0%, ${colors.surface} 50%, ${colors.bg} 100%)`,
+        background: theme === 'light'
+          ? `linear-gradient(180deg, ${colors.bg} 0%, ${colors.surface} 50%, ${colors.bg} 100%)`
+          : `linear-gradient(180deg, ${colors.bg} 0%, ${colors.surface} 50%, ${colors.bg} 100%)`,
       }}
     >
-      {/* Floating shapes with dark theme colors */}
-      <FloatingShape color={colors.accentBlue} size={120} top="15%" left="8%" delay={0} shape="circle" />
-      <FloatingShape color={colors.accentPink} size={80} top="25%" left="85%" delay={0.5} shape="square" />
-      <FloatingShape color={colors.accentPurple} size={100} top="60%" left="5%" delay={1} shape="pill" />
-      <FloatingShape color={colors.accentBlue} size={60} top="70%" left="90%" delay={1.5} shape="circle" />
-      <FloatingShape color={colors.accentPink} size={90} top="80%" left="15%" delay={2} shape="square" />
-      <FloatingShape color={colors.accentPurple} size={70} top="10%" left="75%" delay={0.8} shape="pill" />
+      {/* Floating shapes */}
+      <FloatingShape color={colors.accentBlue} size={120} top="15%" left="8%" delay={0} shape="circle" theme={theme} />
+      <FloatingShape color={colors.accentPink} size={80} top="25%" left="85%" delay={0.5} shape="square" theme={theme} />
+      <FloatingShape color={colors.accentPurple} size={100} top="60%" left="5%" delay={1} shape="pill" theme={theme} />
+      <FloatingShape color={colors.accentBlue} size={60} top="70%" left="90%" delay={1.5} shape="circle" theme={theme} />
+      <FloatingShape color={colors.accentPink} size={90} top="80%" left="15%" delay={2} shape="square" theme={theme} />
+      <FloatingShape color={colors.accentPurple} size={70} top="10%" left="75%" delay={0.8} shape="pill" theme={theme} />
       
       <motion.div
         style={{ y, opacity, position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: 800 }}
@@ -440,7 +575,7 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <span style={{ fontSize: '1rem' }}>🎉</span>
+          <PartyPopper size={16} />
           New: Team collaboration is here
         </motion.div>
         
@@ -452,7 +587,7 @@ const Hero = () => {
             lineHeight: 1.1,
             color: colors.text,
             marginBottom: 24,
-            textShadow: '0 4px 20px rgba(0,0,0,0.5)',
+            textShadow: theme === 'dark' ? '0 4px 20px rgba(0,0,0,0.5)' : 'none',
           }}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -478,7 +613,7 @@ const Hero = () => {
             maxWidth: 560,
             margin: '0 auto 40px',
             lineHeight: 1.6,
-            textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+            textShadow: theme === 'dark' ? '0 2px 10px rgba(0,0,0,0.3)' : 'none',
           }}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -495,8 +630,8 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
         >
-          <ClayButton size="lg">Start Free Trial</ClayButton>
-          <ClayButton size="lg" variant="secondary">Watch Demo</ClayButton>
+          <ClayButton size="lg" colors={colors} clayShadow={clayShadow}>Start Free Trial</ClayButton>
+          <ClayButton size="lg" variant="secondary" colors={colors} clayShadow={clayShadow}>Watch Demo</ClayButton>
         </motion.div>
         
         {/* Hero Image/Preview */}
@@ -547,7 +682,12 @@ const Hero = () => {
                   gap: 8,
                 }}
               >
-                {['📋 Tasks', '📅 Calendar', '💬 Chat', '📊 Stats'].map((item, i) => (
+                {[
+                  { icon: ClipboardList, text: 'Tasks' },
+                  { icon: Calendar, text: 'Calendar' },
+                  { icon: MessageCircle, text: 'Chat' },
+                  { icon: PieChart, text: 'Stats' },
+                ].map((item, i) => (
                   <div
                     key={i}
                     style={{
@@ -557,18 +697,22 @@ const Hero = () => {
                       fontSize: '0.75rem',
                       color: i === 0 ? colors.accentBlue : colors.textMuted,
                       transition: 'all 0.2s ease-out',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
                     }}
                   >
-                    {item}
+                    <item.icon size={14} />
+                    {item.text}
                   </div>
                 ))}
               </div>
               {/* Main content */}
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {[
-                  { emoji: '✅', text: 'Launch new feature', color: colors.accentBlue },
-                  { emoji: '🎨', text: 'Design review', color: colors.accentPink },
-                  { emoji: '📧', text: 'Send weekly update', color: colors.accentPurple },
+                  { icon: CheckCircle, text: 'Launch new feature', color: colors.accentBlue },
+                  { icon: Paintbrush, text: 'Design review', color: colors.accentPink },
+                  { icon: Mail, text: 'Send weekly update', color: colors.accentPurple },
                 ].map((task, i) => (
                   <motion.div
                     key={i}
@@ -597,10 +741,10 @@ const Hero = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '0.9rem',
+                        color: task.color,
                       }}
                     >
-                      {task.emoji}
+                      <task.icon size={16} />
                     </span>
                     {task.text}
                   </motion.div>
@@ -615,40 +759,40 @@ const Hero = () => {
 }
 
 // Features Section
-const Features = () => {
+const Features = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow; theme: Theme }) => {
   const features = [
     {
-      emoji: '🎯',
+      icon: Target,
       title: 'Smart Focus',
       description: 'AI-powered task prioritization that knows what matters most.',
       color: colors.accentBlue,
     },
     {
-      emoji: '🤝',
+      icon: Users,
       title: 'Team Sync',
       description: 'Real-time collaboration that feels like working side by side.',
       color: colors.accentPink,
     },
     {
-      emoji: '📊',
+      icon: BarChart3,
       title: 'Visual Progress',
       description: 'Beautiful charts and insights that celebrate your wins.',
       color: colors.accentPurple,
     },
     {
-      emoji: '🔔',
+      icon: Bell,
       title: 'Gentle Reminders',
       description: 'Friendly nudges that help you stay on track without stress.',
       color: colors.accentBlue,
     },
     {
-      emoji: '🎨',
+      icon: Palette,
       title: 'Custom Themes',
       description: 'Make it yours with playful colors and personalization.',
       color: colors.accentPink,
     },
     {
-      emoji: '🔒',
+      icon: Lock,
       title: 'Private & Secure',
       description: 'Your data stays yours with end-to-end encryption.',
       color: colors.accentPurple,
@@ -694,8 +838,8 @@ const Features = () => {
           }}
         >
           {features.map((feature, i) => (
-            <ClayCard key={i} delay={i * 0.1} style={{ padding: 32 }}>
-              <ClayIcon emoji={feature.emoji} bgColor={feature.color} />
+            <ClayCard key={i} delay={i * 0.1} style={{ padding: 32 }} colors={colors} clayShadow={clayShadow}>
+              <ClayIcon icon={feature.icon} bgColor={feature.color} theme={theme} />
               <h3
                 style={{
                   fontSize: '1.25rem',
@@ -718,12 +862,12 @@ const Features = () => {
 }
 
 // Stats Section
-const Stats = () => {
+const Stats = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
   const stats = [
-    { number: '50K+', label: 'Happy users', emoji: '😊' },
-    { number: '2M+', label: 'Tasks completed', emoji: '✅' },
-    { number: '99%', label: 'Uptime', emoji: '🚀' },
-    { number: '4.9', label: 'App Store rating', emoji: '⭐' },
+    { number: '50K+', label: 'Happy users', icon: Smile },
+    { number: '2M+', label: 'Tasks completed', icon: CheckCircle },
+    { number: '99%', label: 'Uptime', icon: Rocket },
+    { number: '4.9', label: 'App Store rating', icon: Star },
   ]
   
   return (
@@ -763,7 +907,14 @@ const Stats = () => {
                 borderColor: colors.accentBlue,
               }}
             >
-              <div style={{ fontSize: '2rem', marginBottom: 8 }}>{stat.emoji}</div>
+              <div style={{ 
+                marginBottom: 8,
+                display: 'flex',
+                justifyContent: 'center',
+                color: colors.accentBlue,
+              }}>
+                <stat.icon size={32} />
+              </div>
               <div
                 style={{
                   fontSize: '2.5rem',
@@ -787,7 +938,7 @@ const Stats = () => {
 }
 
 // Testimonials Section
-const Testimonials = () => {
+const Testimonials = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
   const [active, setActive] = useState(0)
   
   const testimonials = [
@@ -795,21 +946,21 @@ const Testimonials = () => {
       quote: "Claymoji made me actually enjoy my todo list. The little animations when I complete a task? *Chef's kiss*",
       author: 'Sarah Chen',
       role: 'Product Designer at Figma',
-      avatar: '👩‍🎨',
+      icon: Paintbrush,
       color: colors.accentBlue,
     },
     {
       quote: "My team went from chaotic Slack threads to actually organized work. Game changer.",
       author: 'Marcus Johnson',
       role: 'Engineering Lead at Stripe',
-      avatar: '👨‍💻',
+      icon: Users,
       color: colors.accentPink,
     },
     {
       quote: "Finally, a productivity app that doesn't make me feel guilty. It's like a supportive friend.",
       author: 'Emma Rodriguez',
       role: 'Founder at Bloom',
-      avatar: '👩‍💼',
+      icon: Briefcase,
       color: colors.accentPurple,
     },
   ]
@@ -873,10 +1024,13 @@ const Testimonials = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '2.5rem',
+                  color: testimonials[active].color,
                 }}
               >
-                {testimonials[active].avatar}
+                {(() => {
+                  const IconComponent = testimonials[active].icon
+                  return <IconComponent size={36} />
+                })()}
               </div>
               <p
                 style={{
@@ -925,7 +1079,7 @@ const Testimonials = () => {
 }
 
 // Pricing Section
-const Pricing = () => {
+const Pricing = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
   const plans = [
     {
       name: 'Free',
@@ -1030,9 +1184,12 @@ const Pricing = () => {
                     fontSize: '0.75rem',
                     fontWeight: 700,
                     color: colors.white,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 4,
                   }}
                 >
-                  Most Popular ✨
+                  Most Popular <Sparkles size={12} />
                 </div>
               )}
               
@@ -1088,11 +1245,10 @@ const Pricing = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '0.7rem',
                         color: plan.color,
                       }}
                     >
-                      ✓
+                      <Check size={12} />
                     </span>
                     {feature}
                   </li>
@@ -1102,6 +1258,8 @@ const Pricing = () => {
               <ClayButton 
                 variant={plan.popular ? 'primary' : 'secondary'}
                 style={{ width: '100%' }}
+                colors={colors}
+                clayShadow={clayShadow}
               >
                 Get Started
               </ClayButton>
@@ -1114,7 +1272,7 @@ const Pricing = () => {
 }
 
 // CTA Section
-const CTA = () => (
+const CTA = ({ colors, theme }: { colors: typeof lightColors; theme: Theme }) => (
   <section
     style={{
       padding: '100px 24px',
@@ -1124,9 +1282,9 @@ const CTA = () => (
     }}
   >
     {/* Background shapes */}
-    <FloatingShape color={colors.accentBlue} size={200} top="10%" left="-5%" delay={0} />
-    <FloatingShape color={colors.accentPink} size={150} top="60%" left="90%" delay={0.5} />
-    <FloatingShape color={colors.accentPurple} size={100} top="20%" left="80%" delay={1} shape="square" />
+    <FloatingShape color={colors.accentBlue} size={200} top="10%" left="-5%" delay={0} theme={theme} />
+    <FloatingShape color={colors.accentPink} size={150} top="60%" left="90%" delay={0.5} theme={theme} />
+    <FloatingShape color={colors.accentPurple} size={100} top="20%" left="80%" delay={1} shape="square" theme={theme} />
     
     <motion.div
       style={{
@@ -1171,15 +1329,15 @@ const CTA = () => (
         Join 50,000+ happy users who've transformed their productivity.
       </p>
       <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <ClayButton size="lg">Start Free Trial</ClayButton>
-        <ClayButton size="lg" variant="ghost">Talk to Sales</ClayButton>
+        <ClayButton size="lg" colors={colors} clayShadow={theme === 'light' ? lightClayShadow : darkClayShadow}>Start Free Trial</ClayButton>
+        <ClayButton size="lg" variant="ghost" colors={colors} clayShadow={theme === 'light' ? lightClayShadow : darkClayShadow}>Talk to Sales</ClayButton>
       </div>
     </motion.div>
   </section>
 )
 
 // Footer
-const Footer = () => (
+const Footer = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => (
   <footer
     id="about"
     style={{
@@ -1224,10 +1382,10 @@ const Footer = () => (
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '0.9rem',
+              color: colors.white,
             }}
           >
-            ✨
+            <Sparkles size={16} />
           </div>
           Claymoji
         </div>
@@ -1284,10 +1442,10 @@ const Footer = () => (
       }}
     >
       <div style={{ color: colors.textMuted, fontSize: '0.85rem' }}>
-        © 2026 Claymoji. Made with 💜 and lots of soft shadows.
+        © 2026 Claymoji. Made with love and lots of soft shadows.
       </div>
       <div style={{ display: 'flex', gap: 16 }}>
-        {['𝕏', '📷', '💼', '🎮'].map((icon, i) => (
+        {[Twitter, Instagram, Briefcase, Gamepad2].map((Icon, i) => (
           <motion.a
             key={i}
             href="#"
@@ -1301,6 +1459,7 @@ const Footer = () => (
               alignItems: 'center',
               justifyContent: 'center',
               textDecoration: 'none',
+              color: colors.textMuted,
               boxShadow: clayShadow.soft,
               transition: 'all 0.2s ease-out',
             }}
@@ -1308,9 +1467,10 @@ const Footer = () => (
               scale: 1.1, 
               boxShadow: clayShadow.button,
               borderColor: colors.accentBlue,
+              color: colors.accentBlue,
             }}
           >
-            {icon}
+            <Icon size={16} />
           </motion.a>
         ))}
       </div>
@@ -1320,6 +1480,26 @@ const Footer = () => (
 
 // Main Component
 export default function ClaymorphismLanding() {
+  const [theme, setTheme] = useState<Theme>('light')
+  
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('claymorphism-theme') as Theme
+    if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
+      setTheme(savedTheme)
+    }
+  }, [])
+  
+  // Save theme to localStorage when changed
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light'
+    setTheme(newTheme)
+    localStorage.setItem('claymorphism-theme', newTheme)
+  }
+  
+  const colors = theme === 'light' ? lightColors : darkColors
+  const clayShadow = theme === 'light' ? lightClayShadow : darkClayShadow
+  
   return (
     <div
       style={{
@@ -1327,6 +1507,7 @@ export default function ClaymorphismLanding() {
         background: colors.bg,
         minHeight: '100vh',
         overflow: 'hidden',
+        transition: 'background 0.3s ease',
       }}
     >
       <style>{`
@@ -1346,9 +1527,10 @@ export default function ClaymorphismLanding() {
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
           background: ${colors.bg} !important;
+          transition: background 0.3s ease;
         }
         
-        /* Hide scrollbar but keep functionality */
+        /* Scrollbar styles */
         ::-webkit-scrollbar {
           width: 8px;
         }
@@ -1373,14 +1555,15 @@ export default function ClaymorphismLanding() {
         }
       `}</style>
       
-      <Nav />
-      <Hero />
-      <Features />
-      <Stats />
-      <Testimonials />
-      <Pricing />
-      <CTA />
-      <Footer />
+      <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+      <Nav colors={colors} clayShadow={clayShadow} />
+      <Hero colors={colors} clayShadow={clayShadow} theme={theme} />
+      <Features colors={colors} clayShadow={clayShadow} theme={theme} />
+      <Stats colors={colors} clayShadow={clayShadow} />
+      <Testimonials colors={colors} clayShadow={clayShadow} />
+      <Pricing colors={colors} clayShadow={clayShadow} />
+      <CTA colors={colors} theme={theme} />
+      <Footer colors={colors} clayShadow={clayShadow} />
     </div>
   )
 }

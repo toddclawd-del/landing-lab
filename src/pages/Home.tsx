@@ -1,5 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import {
+  FlaskConical, Palette, Building2, Droplets, Type, Zap, Magnet, ArrowLeftRight,
+  Image, Hash, Grid3x3, ScrollText, Layers, Pin, Sparkles, Square, Waves,
+  RotateCcw, LayoutGrid, Trophy, Egg, Mountain, Triangle, ArrowDown,
+  Github, Heart, CircleDot
+} from 'lucide-react'
 
 // Color System from design proposal
 const colors = {
@@ -20,7 +26,7 @@ interface LandingPage {
   title: string
   inspiration: string
   date: string
-  emoji?: string
+  icon: React.ComponentType<{ size?: number; className?: string }>
   featured?: boolean
 }
 
@@ -31,7 +37,7 @@ const pages: LandingPage[] = [
     title: 'Claymorphism',
     inspiration: 'Soft 3D clay-like UI with inner/outer shadows, pastel palette, playful productivity SaaS',
     date: '2026-02-01',
-    emoji: '🎨',
+    icon: Palette,
     featured: true
   },
   {
@@ -39,14 +45,14 @@ const pages: LandingPage[] = [
     title: 'Creative Agency',
     inspiration: 'Dark minimal design studio — GSAP parallax hero, work showcase, magnetic buttons, smooth scroll',
     date: '2026-01-31',
-    emoji: '🏢'
+    icon: Building2
   },
   {
     slug: 'liquid-motion',
     title: 'Liquid Motion',
     inspiration: 'Fluid design with morphing blobs, liquid hover effects, metaball cursors, organic UI',
     date: '2026-01-31',
-    emoji: '💧'
+    icon: Droplets
   },
   // GSAP Interaction Modules
   {
@@ -54,77 +60,77 @@ const pages: LandingPage[] = [
     title: 'Text Reveal',
     inspiration: 'GSAP Module: 6 text animation techniques — character, word, line reveals, scramble, clip-path',
     date: '2026-01-30',
-    emoji: '✍️'
+    icon: Type
   },
   {
     slug: 'scroll-velocity',
     title: 'Scroll Velocity',
     inspiration: 'GSAP Module: Velocity-based effects — text skew, responsive marquee, stretch/squash, momentum',
     date: '2026-01-30',
-    emoji: '⚡'
+    icon: Zap
   },
   {
     slug: 'magnetic-buttons',
     title: 'Magnetic Buttons',
     inspiration: 'GSAP Module: Magnetic cursor interactions — buttons, nav, elastic snap-back, fleeing particles',
     date: '2026-01-30',
-    emoji: '🧲'
+    icon: Magnet
   },
   {
     slug: 'horizontal-scroll',
     title: 'Horizontal Scroll',
     inspiration: 'GSAP Module: Pinned horizontal galleries — filmstrip, stacking cards, progress indicators',
     date: '2026-01-30',
-    emoji: '↔️'
+    icon: ArrowLeftRight
   },
   {
     slug: 'image-reveal',
     title: 'Image Reveal',
     inspiration: 'GSAP Module: Image reveal effects — clip-path wipes, blur, parallax zoom, before/after',
     date: '2026-01-30',
-    emoji: '🖼️'
+    icon: Image
   },
   {
     slug: 'counter-animations',
     title: 'Counter Animations',
     inspiration: 'GSAP Module: Number animations — slot machine, odometer, scroll-linked, staggered stats',
     date: '2026-01-30',
-    emoji: '🔢'
+    icon: Hash
   },
   {
     slug: 'stagger-grids',
     title: 'Stagger Grids',
     inspiration: 'GSAP Module: Grid animations — cascade reveals, ripple hover, shuffle, wave patterns',
     date: '2026-01-30',
-    emoji: '⬛'
+    icon: Grid3x3
   },
   {
     slug: 'scroll-progress',
     title: 'Scroll Progress',
     inspiration: 'GSAP Module: Progress indicators — horizontal bar, circular, section dots, timeline',
     date: '2026-01-30',
-    emoji: '📊'
+    icon: ScrollText
   },
   {
     slug: 'parallax-layers',
     title: 'Parallax Layers',
     inspiration: 'GSAP Module: Advanced parallax — multi-layer depth, mouse parallax, 3D perspective',
     date: '2026-01-30',
-    emoji: '🎭'
+    icon: Layers
   },
   {
     slug: 'pinned-sections',
     title: 'Pinned Sections',
     inspiration: 'GSAP Module: ScrollTrigger pinning — content swap, card stacking, step-by-step reveal',
     date: '2026-01-30',
-    emoji: '📌'
+    icon: Pin
   },
   {
     slug: 'elastic-effects',
     title: 'Elastic Effects',
     inspiration: 'GSAP Module: Bouncy physics — elastic buttons, jelly text, spring nav, rubber band',
     date: '2026-01-30',
-    emoji: '🎾'
+    icon: CircleDot
   },
   // Landing Page Templates
   {
@@ -132,69 +138,70 @@ const pages: LandingPage[] = [
     title: 'Neo-Brutalism',
     inspiration: 'Bold, unapologetic design with hard shadows, clashing colors, and chunky typography',
     date: '2026-01-30',
-    emoji: '🔲'
+    icon: Square
   },
   {
     slug: 'domain-warp',
     title: 'Domain Warp',
     inspiration: 'Scandinavian clean SaaS landing with organic domain warping shader background',
     date: '2026-01-29',
-    emoji: '🌊'
+    icon: Waves
   },
   {
     slug: 'cylinder-text',
     title: 'Cylinder Text',
     inspiration: '3D rotating text cylinder with scroll-driven animation — creative studio showcase',
     date: '2026-01-29',
-    emoji: '🔄'
+    icon: RotateCcw
   },
   {
     slug: 'bento-grid',
     title: 'Bento Grid 2.0',
     inspiration: 'Interactive bento tiles with hover reveals, animated gradients, micro-interactions',
     date: '2026-01-29',
-    emoji: '🍱'
+    icon: LayoutGrid
   },
   {
     slug: 'voodoo-bracket',
     title: 'Voodoo Bracket',
     inspiration: 'March Madness bracket picker with Voodoo Ranger beer branding',
     date: '2026-01-28',
-    emoji: '🏀'
+    icon: Trophy
   },
   {
     slug: 'sunny-side',
     title: 'Sunny Side Restaurant',
     inspiration: 'Warm, playful Denver brunch spot — fun colors, not crypto vibes',
     date: '2026-01-28',
-    emoji: '🍳'
+    icon: Egg
   },
   {
     slug: 'kinetic-typography',
     title: 'Kinetic Typography',
     inspiration: 'Bold animated text with scroll-triggered motion',
     date: '2026-01-28',
-    emoji: '📝'
+    icon: Type
   },
   {
     slug: 'vercel-minimal',
     title: 'Vercel Minimal',
     inspiration: 'Clean light theme with prism gradient hero — Vercel style',
     date: '2026-01-27',
-    emoji: '▲'
+    icon: Triangle
   },
   {
     slug: 'aurora-mesh',
     title: 'Aurora Mesh',
     inspiration: 'SaaS landing with animated aurora background',
     date: '2026-01-27',
-    emoji: '🌌'
+    icon: Mountain
   }
 ]
 
 // Card component with hover state
 function PageCard({ page }: { page: LandingPage }) {
   const [isHovered, setIsHovered] = useState(false)
+  const IconComponent = page.icon
   
   return (
     <Link 
@@ -213,10 +220,15 @@ function PageCard({ page }: { page: LandingPage }) {
     >
       {page.featured && (
         <div style={styles.featuredBadge}>
-          ✨ Latest
+          <Sparkles size={12} style={{ marginRight: 4 }} /> Latest
         </div>
       )}
-      <div style={styles.cardEmoji}>{page.emoji || '🚀'}</div>
+      <div style={{
+        ...styles.cardIcon,
+        color: isHovered ? colors.accentBlue : colors.textSecondary,
+      }}>
+        <IconComponent size={32} />
+      </div>
       <div style={styles.cardContent}>
         <span style={styles.date}>{page.date}</span>
         <h2 style={{
@@ -233,8 +245,6 @@ function PageCard({ page }: { page: LandingPage }) {
     </Link>
   )
 }
-
-// Main Home component defined below as Home2
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
@@ -259,7 +269,7 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: '1.5rem',
   },
   logoIcon: {
-    fontSize: '2.5rem',
+    color: colors.accentBlue,
   },
   logoText: {
     fontSize: 'clamp(2rem, 5vw, 3rem)',
@@ -318,7 +328,6 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
     gap: '1.5rem',
-    // Responsive breakpoints handled via media query approach
   },
   card: {
     display: 'flex',
@@ -342,11 +351,12 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '50px',
     fontSize: '0.75rem',
     fontWeight: 600,
+    display: 'flex',
+    alignItems: 'center',
   },
-  cardEmoji: {
-    fontSize: '2rem',
+  cardIcon: {
     marginBottom: '1rem',
-    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+    transition: 'color 0.2s ease-out',
   },
   cardContent: {
     display: 'flex',
@@ -398,7 +408,7 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: '0.75rem',
   },
   footerLogo: {
-    fontSize: '1.5rem',
+    color: colors.accentBlue,
   },
   footerCredits: {
     color: colors.textMuted,
@@ -416,6 +426,9 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: 'none',
     fontSize: '0.9rem',
     transition: 'color 0.2s ease-out',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.25rem',
   },
   footerDivider: {
     color: colors.textMuted,
@@ -454,7 +467,7 @@ export function Home() {
       {/* Hero Section */}
       <header style={styles.header}>
         <div style={styles.logo}>
-          <span style={styles.logoIcon}>🧪</span>
+          <span style={styles.logoIcon}><FlaskConical size={40} /></span>
           <span style={styles.logoText}>Landing Lab</span>
         </div>
         <p style={styles.tagline}>
@@ -462,7 +475,7 @@ export function Home() {
         </p>
         <div style={styles.cta}>
           <a href="#gallery" className="cta-button" style={styles.ctaButton}>
-            Explore Demos ↓
+            Explore Demos <ArrowDown size={18} />
           </a>
         </div>
       </header>
@@ -485,7 +498,7 @@ export function Home() {
       <footer style={styles.footer}>
         <div style={styles.footerContent}>
           <div style={styles.footerBrand}>
-            <span style={styles.footerLogo}>🧪</span>
+            <span style={styles.footerLogo}><FlaskConical size={24} /></span>
             <span>Landing Lab</span>
           </div>
           <p style={styles.footerCredits}>
@@ -499,11 +512,11 @@ export function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              GitHub
+              <Github size={16} /> GitHub
             </a>
             <span style={styles.footerDivider}>•</span>
             <span style={styles.footerLink}>
-              Made with 💜 in Denver
+              Made with <Heart size={14} style={{ color: colors.accentPink }} /> in Denver
             </span>
           </div>
         </div>
@@ -511,5 +524,3 @@ export function Home() {
     </div>
   )
 }
-
-// End of Home component
