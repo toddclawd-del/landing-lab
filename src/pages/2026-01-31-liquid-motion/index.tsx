@@ -870,7 +870,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            style={{ display: 'flex', gap: 16, justifyContent: 'center' }}
+            style={{ display: 'flex', gap: 24, justifyContent: 'center' }}
           >
             <LiquidButton primary>View Our Work</LiquidButton>
             <LiquidButton>Book a Call</LiquidButton>
