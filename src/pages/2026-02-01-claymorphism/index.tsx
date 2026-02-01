@@ -4,8 +4,15 @@ import {
   Sparkles, PartyPopper, Target, Users, BarChart3, Bell, Palette, Lock,
   Smile, CheckCircle, Rocket, Star, ClipboardList, Calendar, MessageCircle,
   PieChart, Check, Mail, Paintbrush, Sun, Moon, Twitter, Instagram, 
-  Briefcase, Gamepad2, Menu, X, Heart, Globe, Zap
+  Briefcase, Gamepad2, Menu, X, Heart, Globe, Zap, Shield, Cloud, TrendingUp, Award
 } from 'lucide-react'
+import { useClaymorphismContent, type Feature, type Statistic, type Testimonial, type PricingTier, type LogoGridItem } from './useClaymorphismContent'
+
+// Icon mapping for CMS icon names to Lucide components
+const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  Target, Users, BarChart3, Bell, Palette, Lock, Smile, CheckCircle, Rocket, Star,
+  Heart, Globe, Zap, Shield, Cloud, TrendingUp, Award, MessageCircle, Paintbrush,
+}
 
 // ============================================
 // CLAYMORPHISM LANDING PAGE - DUAL THEME
@@ -446,7 +453,15 @@ const ThemeToggle = ({
 }
 
 // Navigation
-const Nav = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
+const Nav = ({ 
+  colors, 
+  clayShadow,
+  brandName,
+}: { 
+  colors: typeof lightColors; 
+  clayShadow: typeof lightClayShadow
+  brandName?: string
+}) => {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   
@@ -525,7 +540,7 @@ const Nav = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: t
           >
             <Sparkles size={18} />
           </div>
-          Claymoji
+          {brandName || 'Claymoji'}
         </motion.div>
         
         {/* Desktop Navigation */}
@@ -647,7 +662,24 @@ const Nav = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: t
 }
 
 // Hero Section
-const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow; theme: Theme }) => {
+const Hero = ({ 
+  colors, 
+  clayShadow, 
+  theme,
+  content,
+}: { 
+  colors: typeof lightColors; 
+  clayShadow: typeof lightClayShadow; 
+  theme: Theme
+  content?: {
+    badge?: { text: string; enabled: boolean }
+    headline: string
+    headlineHighlight?: string
+    subheadline?: string
+    ctaPrimary?: { text: string; url?: string }
+    ctaSecondary?: { text: string; url?: string }
+  }
+}) => {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -684,27 +716,29 @@ const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayS
         style={{ y, opacity, position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: 800 }}
       >
         {/* Badge */}
-        <motion.div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '8px 16px',
-            borderRadius: 50,
-            background: colors.card,
-            boxShadow: clayShadow.soft,
-            border: `1px solid ${colors.border}`,
-            marginBottom: 24,
-            fontSize: '0.875rem',
-            color: colors.textSecondary,
-          }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <PartyPopper size={16} />
-          New: Team collaboration is here
-        </motion.div>
+        {(content?.badge?.enabled !== false) && (
+          <motion.div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '8px 16px',
+              borderRadius: 50,
+              background: colors.card,
+              boxShadow: clayShadow.soft,
+              border: `1px solid ${colors.border}`,
+              marginBottom: 24,
+              fontSize: '0.875rem',
+              color: colors.textSecondary,
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <PartyPopper size={16} />
+            {content?.badge?.text || 'New: Team collaboration is here'}
+          </motion.div>
+        )}
         
         {/* Headline */}
         <motion.h1
@@ -720,20 +754,37 @@ const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayS
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
-          Make your ideas{' '}
-          <span
-            className="gradient-text"
-            style={{
-              background: `linear-gradient(135deg, ${colors.accentBlue}, ${colors.accentPink})`,
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              color: 'transparent',
-              display: 'inline-block',
-            }}
-          >
-            come alive
-          </span>
+          {content?.headline || 'Make your ideas'}{' '}
+          {content?.headlineHighlight && (
+            <span
+              className="gradient-text"
+              style={{
+                background: `linear-gradient(135deg, ${colors.accentBlue}, ${colors.accentPink})`,
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'transparent',
+                display: 'inline-block',
+              }}
+            >
+              {content.headlineHighlight}
+            </span>
+          )}
+          {!content?.headlineHighlight && (
+            <span
+              className="gradient-text"
+              style={{
+                background: `linear-gradient(135deg, ${colors.accentBlue}, ${colors.accentPink})`,
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'transparent',
+                display: 'inline-block',
+              }}
+            >
+              come alive
+            </span>
+          )}
         </motion.h1>
         
         {/* Subheadline */}
@@ -750,8 +801,7 @@ const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayS
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
-          The playful productivity app that makes work feel like play. 
-          Organize, collaborate, and create with joy.
+          {content?.subheadline || 'The playful productivity app that makes work feel like play. Organize, collaborate, and create with joy.'}
         </motion.p>
         
         {/* CTAs */}
@@ -761,8 +811,12 @@ const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayS
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
         >
-          <ClayButton size="lg" colors={colors} clayShadow={clayShadow}>Start Free Trial</ClayButton>
-          <ClayButton size="lg" variant="secondary" colors={colors} clayShadow={clayShadow}>Watch Demo</ClayButton>
+          <ClayButton size="lg" colors={colors} clayShadow={clayShadow}>
+            {content?.ctaPrimary?.text || 'Start Free Trial'}
+          </ClayButton>
+          <ClayButton size="lg" variant="secondary" colors={colors} clayShadow={clayShadow}>
+            {content?.ctaSecondary?.text || 'Watch Demo'}
+          </ClayButton>
         </motion.div>
         
         {/* Hero Image/Preview - Enhanced Clay Style */}
@@ -1000,45 +1054,39 @@ const Hero = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayS
 }
 
 // Features Section
-const Features = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow; theme: Theme }) => {
-  const features = [
-    {
-      icon: Target,
-      title: 'Smart Focus',
-      description: 'AI-powered task prioritization that knows what matters most.',
-      color: colors.accentBlue,
-    },
-    {
-      icon: Users,
-      title: 'Team Sync',
-      description: 'Real-time collaboration that feels like working side by side.',
-      color: colors.accentPink,
-    },
-    {
-      icon: BarChart3,
-      title: 'Visual Progress',
-      description: 'Beautiful charts and insights that celebrate your wins.',
-      color: colors.accentPurple,
-    },
-    {
-      icon: Bell,
-      title: 'Gentle Reminders',
-      description: 'Friendly nudges that help you stay on track without stress.',
-      color: colors.accentBlue,
-    },
-    {
-      icon: Palette,
-      title: 'Custom Themes',
-      description: 'Make it yours with playful colors and personalization.',
-      color: colors.accentPink,
-    },
-    {
-      icon: Lock,
-      title: 'Private & Secure',
-      description: 'Your data stays yours with end-to-end encryption.',
-      color: colors.accentPurple,
-    },
+const Features = ({ 
+  colors, 
+  clayShadow, 
+  theme,
+  content,
+}: { 
+  colors: typeof lightColors; 
+  clayShadow: typeof lightClayShadow; 
+  theme: Theme
+  content?: Feature[]
+}) => {
+  // Map CMS content to component format, with fallbacks
+  const getAccentColor = (accent?: string) => {
+    if (accent === 'pink') return colors.accentPink
+    if (accent === 'purple') return colors.accentPurple
+    return colors.accentBlue
+  }
+  
+  const defaultFeatures = [
+    { icon: Target, title: 'Smart Focus', description: 'AI-powered task prioritization that knows what matters most.', color: colors.accentBlue },
+    { icon: Users, title: 'Team Sync', description: 'Real-time collaboration that feels like working side by side.', color: colors.accentPink },
+    { icon: BarChart3, title: 'Visual Progress', description: 'Beautiful charts and insights that celebrate your wins.', color: colors.accentPurple },
+    { icon: Bell, title: 'Gentle Reminders', description: 'Friendly nudges that help you stay on track without stress.', color: colors.accentBlue },
+    { icon: Palette, title: 'Custom Themes', description: 'Make it yours with playful colors and personalization.', color: colors.accentPink },
+    { icon: Lock, title: 'Private & Secure', description: 'Your data stays yours with end-to-end encryption.', color: colors.accentPurple },
   ]
+  
+  const features = content?.length ? content.map(f => ({
+    icon: iconMap[f.icon || 'Target'] || Target,
+    title: f.title,
+    description: f.description,
+    color: getAccentColor(f.accentColor),
+  })) : defaultFeatures
   
   return (
     <section
@@ -1103,13 +1151,29 @@ const Features = ({ colors, clayShadow, theme }: { colors: typeof lightColors; c
 }
 
 // Stats Section
-const Stats = ({ colors, clayShadow, theme: _theme }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow; theme: Theme }) => {
-  const stats = [
+const Stats = ({ 
+  colors, 
+  clayShadow, 
+  theme: _theme,
+  content,
+}: { 
+  colors: typeof lightColors; 
+  clayShadow: typeof lightClayShadow; 
+  theme: Theme
+  content?: Statistic[]
+}) => {
+  const defaultStats = [
     { number: '50K+', label: 'Happy users', icon: Smile },
     { number: '2M+', label: 'Tasks completed', icon: CheckCircle },
     { number: '99%', label: 'Uptime', icon: Rocket },
     { number: '4.9', label: 'App Store rating', icon: Star },
   ]
+  
+  const stats = content?.length ? content.map(s => ({
+    number: s.value,
+    label: s.label,
+    icon: iconMap[s.icon || 'Star'] || Star,
+  })) : defaultStats
   
   return (
     <section
@@ -1184,8 +1248,16 @@ const Stats = ({ colors, clayShadow, theme: _theme }: { colors: typeof lightColo
 }
 
 // Logo Grid / Social Proof Section
-const LogoGrid = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
-  const companies = [
+const LogoGrid = ({ 
+  colors, 
+  clayShadow,
+  content,
+}: { 
+  colors: typeof lightColors; 
+  clayShadow: typeof lightClayShadow
+  content?: LogoGridItem[]
+}) => {
+  const defaultCompanies = [
     { name: 'Notion', letter: 'N' },
     { name: 'Slack', letter: 'S' },
     { name: 'Linear', letter: 'L' },
@@ -1193,6 +1265,11 @@ const LogoGrid = ({ colors, clayShadow }: { colors: typeof lightColors; clayShad
     { name: 'Figma', letter: 'F' },
     { name: 'Stripe', letter: 'S' },
   ]
+  
+  const companies = content?.length ? content.map(c => ({
+    name: c.companyName,
+    letter: c.logo?.letter || c.companyName.charAt(0),
+  })) : defaultCompanies
   
   return (
     <section
@@ -1285,43 +1362,37 @@ const LogoGrid = ({ colors, clayShadow }: { colors: typeof lightColors; clayShad
 }
 
 // Testimonials Section
-const Testimonials = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
+const Testimonials = ({ 
+  colors, 
+  clayShadow,
+  content,
+}: { 
+  colors: typeof lightColors; 
+  clayShadow: typeof lightClayShadow
+  content?: Testimonial[]
+}) => {
   const [active, setActive] = useState(0)
   
-  const testimonials = [
-    {
-      quote: "Claymoji made me actually enjoy my todo list. The little animations when I complete a task? *Chef's kiss*",
-      author: 'Sarah Chen',
-      role: 'Product Designer at Figma',
-      avatar: '👩‍🎨',
-      icon: Paintbrush,
-      color: colors.accentBlue,
-    },
-    {
-      quote: "My team went from chaotic Slack threads to actually organized work. Game changer for our remote team.",
-      author: 'Marcus Johnson',
-      role: 'Engineering Lead at Stripe',
-      avatar: '👨‍💻',
-      icon: Users,
-      color: colors.accentPink,
-    },
-    {
-      quote: "Finally, a productivity app that doesn't make me feel guilty. It's like a supportive friend cheering me on.",
-      author: 'Emma Rodriguez',
-      role: 'Founder at Bloom',
-      avatar: '👩‍💼',
-      icon: Briefcase,
-      color: colors.accentPurple,
-    },
-    {
-      quote: "The claymorphism design is stunning. Our whole team actually looks forward to checking tasks now.",
-      author: 'David Kim',
-      role: 'Creative Director at Vercel',
-      avatar: '🎨',
-      icon: Palette,
-      color: colors.accentBlue,
-    },
+  const getAccentColor = (accent?: string) => {
+    if (accent === 'pink') return colors.accentPink
+    if (accent === 'purple') return colors.accentPurple
+    return colors.accentBlue
+  }
+  
+  const defaultTestimonials = [
+    { quote: "Claymoji made me actually enjoy my todo list. The little animations when I complete a task? *Chef's kiss*", author: 'Sarah Chen', role: 'Product Designer at Figma', avatar: '👩‍🎨', color: colors.accentBlue },
+    { quote: "My team went from chaotic Slack threads to actually organized work. Game changer for our remote team.", author: 'Marcus Johnson', role: 'Engineering Lead at Stripe', avatar: '👨‍💻', color: colors.accentPink },
+    { quote: "Finally, a productivity app that doesn't make me feel guilty. It's like a supportive friend cheering me on.", author: 'Emma Rodriguez', role: 'Founder at Bloom', avatar: '👩‍💼', color: colors.accentPurple },
+    { quote: "The claymorphism design is stunning. Our whole team actually looks forward to checking tasks now.", author: 'David Kim', role: 'Creative Director at Vercel', avatar: '🎨', color: colors.accentBlue },
   ]
+  
+  const testimonials = content?.length ? content.map(t => ({
+    quote: t.quote,
+    author: t.authorName,
+    role: `${t.role || ''}${t.role && t.company ? ' at ' : ''}${t.company || ''}`.trim(),
+    avatar: t.avatar?.emoji || '👤',
+    color: getAccentColor(t.accentColor),
+  })) : defaultTestimonials
   
   // Auto-cycle through testimonials
   useEffect(() => {
@@ -1443,33 +1514,37 @@ const Testimonials = ({ colors, clayShadow }: { colors: typeof lightColors; clay
 }
 
 // Pricing Section
-const Pricing = ({ colors, clayShadow }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow }) => {
-  const plans = [
-    {
-      name: 'Free',
-      price: '$0',
-      description: 'Perfect for getting started',
-      features: ['Up to 3 projects', 'Basic analytics', 'Email support', '1 team member'],
-      color: colors.accentBlue,
-      popular: false,
-    },
-    {
-      name: 'Pro',
-      price: '$12',
-      description: 'For serious productivity',
-      features: ['Unlimited projects', 'Advanced analytics', 'Priority support', 'Up to 10 team members', 'Custom themes', 'Integrations'],
-      color: colors.accentPink,
-      popular: true,
-    },
-    {
-      name: 'Team',
-      price: '$29',
-      description: 'For growing teams',
-      features: ['Everything in Pro', 'Unlimited members', 'Admin controls', 'SSO & SAML', 'Dedicated support', 'API access'],
-      color: colors.accentPurple,
-      popular: false,
-    },
+const Pricing = ({ 
+  colors, 
+  clayShadow,
+  content,
+}: { 
+  colors: typeof lightColors; 
+  clayShadow: typeof lightClayShadow
+  content?: PricingTier[]
+}) => {
+  const getAccentColor = (accent?: string) => {
+    if (accent === 'pink') return colors.accentPink
+    if (accent === 'purple') return colors.accentPurple
+    return colors.accentBlue
+  }
+  
+  const defaultPlans = [
+    { name: 'Free', price: '$0', description: 'Perfect for getting started', features: ['Up to 3 projects', 'Basic analytics', 'Email support', '1 team member'], color: colors.accentBlue, popular: false },
+    { name: 'Pro', price: '$12', description: 'For serious productivity', features: ['Unlimited projects', 'Advanced analytics', 'Priority support', 'Up to 10 team members', 'Custom themes', 'Integrations'], color: colors.accentPink, popular: true },
+    { name: 'Team', price: '$29', description: 'For growing teams', features: ['Everything in Pro', 'Unlimited members', 'Admin controls', 'SSO & SAML', 'Dedicated support', 'API access'], color: colors.accentPurple, popular: false },
   ]
+  
+  const plans = content?.length ? content.map(p => ({
+    name: p.name,
+    price: p.price,
+    billingPeriod: p.billingPeriod || '/mo',
+    description: p.description || '',
+    features: p.features || [],
+    ctaText: p.ctaText || 'Get Started',
+    color: getAccentColor(p.accentColor),
+    popular: p.highlighted || false,
+  })) : defaultPlans.map(p => ({ ...p, billingPeriod: '/mo', ctaText: 'Get Started' }))
   
   return (
     <section
@@ -1576,7 +1651,7 @@ const Pricing = ({ colors, clayShadow }: { colors: typeof lightColors; clayShado
                 }}
               >
                 {plan.price}
-                <span style={{ fontSize: '1rem', fontWeight: 500, color: colors.textMuted }}>/mo</span>
+                <span style={{ fontSize: '1rem', fontWeight: 500, color: colors.textMuted }}>{plan.billingPeriod || '/mo'}</span>
               </div>
               <p
                 style={{
@@ -1625,7 +1700,7 @@ const Pricing = ({ colors, clayShadow }: { colors: typeof lightColors; clayShado
                 colors={colors}
                 clayShadow={clayShadow}
               >
-                Get Started
+                {plan.ctaText || 'Get Started'}
               </ClayButton>
             </motion.div>
           ))}
@@ -1636,27 +1711,47 @@ const Pricing = ({ colors, clayShadow }: { colors: typeof lightColors; clayShado
 }
 
 // About Section
-const About = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow; theme: Theme }) => {
-  const values = [
-    {
-      icon: Heart,
-      title: 'Built with Love',
-      description: 'Every feature is crafted with care to bring joy to your daily workflow.',
-      color: colors.accentPink,
-    },
-    {
-      icon: Globe,
-      title: 'Remote First',
-      description: 'Our global team understands the challenges of distributed work.',
-      color: colors.accentBlue,
-    },
-    {
-      icon: Zap,
-      title: 'Always Improving',
-      description: 'Weekly updates and new features based on your feedback.',
-      color: colors.accentPurple,
-    },
+const About = ({ 
+  colors, 
+  clayShadow, 
+  theme,
+  content,
+}: { 
+  colors: typeof lightColors; 
+  clayShadow: typeof lightClayShadow; 
+  theme: Theme
+  content?: {
+    headline?: string
+    description?: string
+    values?: Array<{
+      title: string
+      description: string
+      icon?: string
+      accentColor?: 'blue' | 'pink' | 'purple'
+    }>
+  }
+}) => {
+  const getAccentColor = (accent?: string) => {
+    if (accent === 'pink') return colors.accentPink
+    if (accent === 'purple') return colors.accentPurple
+    return colors.accentBlue
+  }
+  
+  const defaultValues = [
+    { icon: Heart, title: 'Built with Love', description: 'Every feature is crafted with care to bring joy to your daily workflow.', color: colors.accentPink },
+    { icon: Globe, title: 'Remote First', description: 'Our global team understands the challenges of distributed work.', color: colors.accentBlue },
+    { icon: Zap, title: 'Always Improving', description: 'Weekly updates and new features based on your feedback.', color: colors.accentPurple },
   ]
+  
+  const values = content?.values?.length ? content.values.map(v => ({
+    icon: iconMap[v.icon || 'Heart'] || Heart,
+    title: v.title,
+    description: v.description,
+    color: getAccentColor(v.accentColor),
+  })) : defaultValues
+  
+  const headline = content?.headline || 'About Claymoji'
+  const description = content?.description || "We believe productivity tools should feel good to use. That's why we built Claymoji — a playful workspace that helps you get things done without the stress."
   
   return (
     <section
@@ -1682,11 +1777,10 @@ const About = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clay
               marginBottom: 16,
             }}
           >
-            About Claymoji
+            {headline}
           </h2>
           <p style={{ fontSize: '1.125rem', color: colors.textSecondary, maxWidth: 600, margin: '0 auto' }}>
-            We believe productivity tools should feel good to use. That's why we built Claymoji — 
-            a playful workspace that helps you get things done without the stress.
+            {description}
           </p>
         </motion.div>
         
@@ -1742,7 +1836,20 @@ const About = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clay
 }
 
 // CTA Section
-const CTA = ({ colors, theme }: { colors: typeof lightColors; theme: Theme }) => (
+const CTA = ({ 
+  colors, 
+  theme,
+  content,
+}: { 
+  colors: typeof lightColors; 
+  theme: Theme
+  content?: {
+    headline?: string
+    headlineHighlight?: string
+    subtext?: string
+    buttons?: Array<{ text: string; url?: string; variant?: 'primary' | 'ghost' }>
+  }
+}) => (
   <section
     id="cta"
     style={{
@@ -1777,7 +1884,7 @@ const CTA = ({ colors, theme }: { colors: typeof lightColors; theme: Theme }) =>
           marginBottom: 24,
         }}
       >
-        Ready to make work{' '}
+        {content?.headline || 'Ready to make work'}{' '}
         <span
           className="gradient-text"
           style={{
@@ -1789,7 +1896,7 @@ const CTA = ({ colors, theme }: { colors: typeof lightColors; theme: Theme }) =>
             display: 'inline-block',
           }}
         >
-          feel like play?
+          {content?.headlineHighlight || 'feel like play?'}
         </span>
       </h2>
       <p
@@ -1801,18 +1908,46 @@ const CTA = ({ colors, theme }: { colors: typeof lightColors; theme: Theme }) =>
           margin: '0 auto 40px',
         }}
       >
-        Join 50,000+ happy users who've transformed their productivity.
+        {content?.subtext || "Join 50,000+ happy users who've transformed their productivity."}
       </p>
       <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <ClayButton size="lg" colors={colors} clayShadow={theme === 'light' ? lightClayShadow : darkClayShadow}>Start Free Trial</ClayButton>
-        <ClayButton size="lg" variant="ghost" colors={colors} clayShadow={theme === 'light' ? lightClayShadow : darkClayShadow}>Talk to Sales</ClayButton>
+        {content?.buttons?.length ? (
+          content.buttons.map((btn, i) => (
+            <ClayButton 
+              key={i}
+              size="lg" 
+              variant={btn.variant === 'ghost' ? 'ghost' : 'primary'}
+              colors={colors} 
+              clayShadow={theme === 'light' ? lightClayShadow : darkClayShadow}
+            >
+              {btn.text}
+            </ClayButton>
+          ))
+        ) : (
+          <>
+            <ClayButton size="lg" colors={colors} clayShadow={theme === 'light' ? lightClayShadow : darkClayShadow}>Start Free Trial</ClayButton>
+            <ClayButton size="lg" variant="ghost" colors={colors} clayShadow={theme === 'light' ? lightClayShadow : darkClayShadow}>Talk to Sales</ClayButton>
+          </>
+        )}
       </div>
     </motion.div>
   </section>
 )
 
 // Footer - Clay aesthetic with card background
-const Footer = ({ colors, clayShadow, theme }: { colors: typeof lightColors; clayShadow: typeof lightClayShadow; theme: Theme }) => {
+const Footer = ({ 
+  colors, 
+  clayShadow, 
+  theme,
+  brandName,
+  tagline,
+}: { 
+  colors: typeof lightColors; 
+  clayShadow: typeof lightClayShadow; 
+  theme: Theme
+  brandName?: string
+  tagline?: string
+}) => {
   // Handle smooth scroll to section
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
@@ -1920,10 +2055,10 @@ const Footer = ({ colors, clayShadow, theme }: { colors: typeof lightColors; cla
               >
                 <Sparkles size={20} />
               </div>
-              Claymoji
+              {brandName || 'Claymoji'}
             </motion.div>
             <p style={{ color: colors.textSecondary, fontSize: '0.95rem', lineHeight: 1.7, marginBottom: 16 }}>
-              Making productivity playful.
+              {tagline || 'Making productivity playful.'}
             </p>
             <p style={{ 
               color: colors.textMuted, 
@@ -2002,7 +2137,7 @@ const Footer = ({ colors, clayShadow, theme }: { colors: typeof lightColors; cla
           }}
         >
           <div style={{ color: colors.textMuted, fontSize: '0.85rem' }}>
-            © {currentYear} Claymoji. Made with ❤️ and soft shadows.
+            © {currentYear} {brandName || 'Claymoji'}. Made with ❤️ and soft shadows.
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             {[
@@ -2055,6 +2190,9 @@ const Footer = ({ colors, clayShadow, theme }: { colors: typeof lightColors; cla
 export default function ClaymorphismLanding() {
   const [theme, setTheme] = useState<Theme>('light')
   
+  // Fetch CMS content with fallbacks
+  const content = useClaymorphismContent()
+  
   // Load theme from localStorage on mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('claymorphism-theme') as Theme
@@ -2072,6 +2210,9 @@ export default function ClaymorphismLanding() {
   
   const colors = theme === 'light' ? lightColors : darkColors
   const clayShadow = theme === 'light' ? lightClayShadow : darkClayShadow
+  
+  // Extract brand info from site settings
+  const { brandName, tagline } = content.siteSettings
   
   return (
     <div
@@ -2147,16 +2288,16 @@ export default function ClaymorphismLanding() {
       `}</style>
       
       <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-      <Nav colors={colors} clayShadow={clayShadow} />
-      <Hero colors={colors} clayShadow={clayShadow} theme={theme} />
-      <LogoGrid colors={colors} clayShadow={clayShadow} />
-      <Features colors={colors} clayShadow={clayShadow} theme={theme} />
-      <Stats colors={colors} clayShadow={clayShadow} theme={theme} />
-      <Testimonials colors={colors} clayShadow={clayShadow} />
-      <Pricing colors={colors} clayShadow={clayShadow} />
-      <About colors={colors} clayShadow={clayShadow} theme={theme} />
-      <CTA colors={colors} theme={theme} />
-      <Footer colors={colors} clayShadow={clayShadow} theme={theme} />
+      <Nav colors={colors} clayShadow={clayShadow} brandName={brandName} />
+      <Hero colors={colors} clayShadow={clayShadow} theme={theme} content={content.heroSection} />
+      <LogoGrid colors={colors} clayShadow={clayShadow} content={content.logoGrid} />
+      <Features colors={colors} clayShadow={clayShadow} theme={theme} content={content.features} />
+      <Stats colors={colors} clayShadow={clayShadow} theme={theme} content={content.statistics} />
+      <Testimonials colors={colors} clayShadow={clayShadow} content={content.testimonials} />
+      <Pricing colors={colors} clayShadow={clayShadow} content={content.pricingTiers} />
+      <About colors={colors} clayShadow={clayShadow} theme={theme} content={content.aboutSection} />
+      <CTA colors={colors} theme={theme} content={content.ctaSection} />
+      <Footer colors={colors} clayShadow={clayShadow} theme={theme} brandName={brandName} tagline={tagline} />
     </div>
   )
 }
