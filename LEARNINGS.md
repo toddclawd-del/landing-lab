@@ -8,6 +8,132 @@ Design techniques and concepts learned from building landing pages.
 
 ---
 
+## 2026-02-02 — Archival Index
+
+**Reference:** [Squarespace - Archival Index Trend](https://pros.squarespace.com/blog/design-trends) | [Kittl - Trinket Design](https://www.kittl.com/blogs/trinket-design-trend-stl/) | [archives.design](https://archives.design/)
+
+### 🎓 Concepts & Techniques
+
+**1. The Psychology of Collecting & Cataloging**
+- Humans have a deep instinct to collect, organize, and document — it creates meaning from chaos
+- The archival aesthetic taps into our relationship with museums, libraries, and specimen collections
+- Treating ordinary items like artifacts creates a sense of significance and care
+- In a world of infinite content, curation itself becomes the art
+- This trend is a counter-movement to AI-generated excess — it says "someone chose this carefully"
+
+**2. The Specimen Board Layout**
+- Inspired by botanical specimen sheets, entomology boards, and museum catalogs
+- Objects are isolated, labeled, and arranged with obsessive care
+- Each item gets a unique identifier (CAT. NO. 001, SP-001, etc.)
+- The grid is intentional but not rigid — "organized curiosity" is the goal
+- White/cream backgrounds let the specimens be the focus
+
+**3. Typography Pairing: Serif + Mono**
+- Serif fonts (Playfair Display, EB Garamond, Cormorant) provide editorial elegance
+- Monospace fonts (JetBrains Mono, IBM Plex Mono) handle data, labels, and metadata
+- The contrast between expressive serifs and utilitarian mono creates visual hierarchy
+- Italicized serifs add editorial flair without breaking the restrained aesthetic
+- Uppercase mono labels with wide letter-spacing (0.1em+) feel archival
+
+**4. The Catalog Number System**
+- Every specimen needs an identifier — it's what separates a collection from a pile
+- Format patterns: CAT. NO. 001, SP-001, 2024.01.15, Vol. I
+- Numbers should be small, understated, often in monospace
+- Place them consistently (top-left badge on images, left column in tables)
+- The numbering system itself communicates organization and intentionality
+
+**5. Color Theory: Muted Warmth**
+- Cream/off-white backgrounds (not pure white — too clinical)
+- Ink colors should be warm black (#1A1915) not pure black
+- Accent colors are understated: warm gold (#C4A574), muted sage, dusty rose
+- High-saturation colors feel wrong — they break the archival mood
+- Think aged paper, museum walls, vintage catalog printing
+
+**6. Paper Texture & Tactile Feel**
+- Subtle noise/grain overlay (SVG feTurbulence filter) adds analog warmth
+- Keep opacity very low (3-5%) — it's felt more than seen
+- The goal is to counter the "too clean" digital feel
+- Paper texture makes screens feel like printed matter
+- Optional: subtle vignette or aged edges for extra authenticity
+
+**7. The Index Table Pattern**
+- Tables aren't boring in archival design — they're the point
+- Columns: Number, Title, Type/Category, Date, Status
+- Row hover states provide interactivity without breaking the aesthetic
+- Status indicators can use subtle color coding (green = active, gold = in progress)
+- Tables communicate that this is a working system, not just decoration
+
+**8. Hover Reveals for Additional Context**
+- Archival design is dense but not cluttered — information reveals on interaction
+- Image cards can reveal descriptions, dimensions, or provenance on hover
+- The hover state respects the aesthetic (soft gradients, not harsh overlays)
+- AnimatePresence handles enter/exit transitions elegantly
+- Information hierarchy: title always visible, details on demand
+
+**9. Editorial Section Headers**
+- Small mono label above the headline ("SELECTED WORKS", "FULL CATALOG")
+- Large serif headline with tight line-height
+- Optional item count or metadata aligned right ("6 items cataloged")
+- The combination of label + headline + metadata creates clear section identity
+- Generous whitespace between sections — let them breathe
+
+**10. When Archival Design Works**
+- ✅ Design portfolios, creative studios, agencies
+- ✅ Art galleries, museums, cultural institutions
+- ✅ Editorial publications, magazines, journals
+- ✅ E-commerce for curated/artisanal products
+- ✅ Documentation, archives, libraries
+- ❌ Fast-paced tech startups (too slow/restrained)
+- ❌ Entertainment/gaming (not exciting enough)
+- ❌ Children's brands (too sophisticated)
+
+### 📋 Implementation Notes
+
+**Components Built:**
+- `PaperTexture` — SVG noise filter overlay for tactile analog feel
+- `Nav` — Fixed nav with scroll-triggered glassmorphism background
+- `Hero` — Parallax section with catalog number, serif headline, mono labels
+- `SpecimenCard` — Image cards with catalog badges, hover reveals, category labels
+- `CollectionSection` — Grid layout with section header and item count
+- `IndexSection` — Full table with sortable-looking columns, status colors, row hover
+- `AboutSection` — 12-column grid layout, stats with serif numbers + mono labels
+- `ContactSection` — Dark newsletter signup with email input
+- `Footer` — Minimal footer with social links and catalog number
+
+**Key Dependencies:**
+- `framer-motion` — useInView, useScroll, useTransform, AnimatePresence
+- Google Fonts: Playfair Display (serif), JetBrains Mono (mono), Inter (sans)
+
+**Color Palette:**
+- Cream: `#FAF8F5` (primary background)
+- Paper: `#F5F2ED` (secondary background)
+- Ink: `#1A1915` (primary text)
+- Ink Light: `#4A4840` (secondary text)
+- Ink Muted: `#8A8678` (tertiary/labels)
+- Accent: `#C4A574` (warm gold highlights)
+- Border: `#E5E0D8` (subtle dividers)
+
+**Animation Techniques Used:**
+- Staggered scroll reveals with useInView + delay
+- Parallax hero with useScroll + useTransform
+- Hover-triggered description overlays with AnimatePresence
+- Table row hover states
+- Subtle scroll-triggered nav background
+- Animated scroll indicator
+
+**Score: 89/100**
+
+| Category | Score | Notes |
+|----------|-------|-------|
+| Visual Impact | 23/25 | Strong archival aesthetic, specimen cards, warm palette |
+| Modern Feel | 18/20 | Hits 2026 Archival Index/Trinket trend perfectly |
+| Code Quality | 14/15 | TypeScript, clean components, reusable patterns |
+| Animation/Motion | 13/15 | Intentionally subtle — scroll reveals, hover states, parallax |
+| Responsiveness | 13/15 | Mobile works, grid collapses, table scrolls horizontally |
+| Performance | 8/10 | Lightweight — just images + paper texture overlay |
+
+---
+
 ## 2026-02-01 — Claymorphism
 
 **Reference:** [Oliver Revelo - What is Claymorphism](https://www.oliverrevelo.com/blog/what-is-claymorphism-in-web-design) | [Hype4 Academy - Claymorphism in UIs](https://hype4.academy/articles/design/claymorphism-in-user-interfaces) | [LogRocket - Implementing Claymorphism](https://blog.logrocket.com/implementing-claymorphism-css/)
