@@ -8,6 +8,158 @@ Design techniques and concepts learned from building landing pages.
 
 ---
 
+## 2026-02-03 — Human Scribble / Naive Design
+
+**Reference:** [Creative Bloq - Illustration Trends 2026](https://www.creativebloq.com/art/illustration/messy-meaningful-and-made-by-humans-the-biggest-illustration-trends-for-2026) | [TheeDigital - Web Design Trends 2026](https://www.theedigital.com/blog/web-design-trends) | [Kittl - Naive Design Trend](https://www.kittl.com/blogs/naive-design-trend-stl/)
+
+### 🎓 Concepts & Techniques
+
+**1. The Anti-AI Rebellion: Why Messy Beats Perfect**
+- In 2026, the design world is rebelling against AI's overly polished "perfect" aesthetic
+- Adobe's 2024 Creative Trends Report showed a 30% rise in searches for hand-drawn and imperfect design elements
+- Imperfection signals authenticity — it proves a human made this, not a machine
+- The philosophy: "Embrace the mess. Be naive, imperfect, and human."
+- Brands using hand-drawn elements are seen as more trustworthy and approachable
+- This isn't about being unsophisticated — it's about prioritizing feeling over technical prowess
+
+**2. The Psychology of Childlike Design**
+- Childlike illustrations tap into nostalgia and emotional safety
+- Uneven fills, scratchy linework, smiley suns — they feel honest and unpretentious
+- The "napkin sketch" aesthetic signals care, craft, and human hands
+- Pentagram's work for Super Peach and Studio Frith's Jolene Bakery exemplify this
+- The imperfection IS the point — it creates warmth that AI-generated perfection lacks
+- When intentional, messiness feels more considered than perfection ever could
+
+**3. Hand-Drawn SVG Elements: The Signature Visual Language**
+- Scribble underlines, wobbly circles, sketchy arrows, doodled stars and flowers
+- These elements are drawn with intentional imperfection — no perfect curves or symmetry
+- SVG path animations (pathLength) make scribbles "draw themselves" on screen
+- Stroke properties: `strokeLinecap: round`, uneven paths, varied stroke widths
+- Place decoratively: corners of cards, under headlines, floating in backgrounds
+- The goal: every element should look like it was drawn by hand in a notebook
+
+**4. Typography Pairing: Handwriting + Clean Sans**
+- Handwriting fonts (Caveat, Permanent Marker, Indie Flower) for headlines and personality
+- Clean sans-serif (DM Sans, Inter) for body text and readability
+- The contrast creates hierarchy: expressive display + practical body
+- Handwritten headlines at large sizes feel bold without being aggressive
+- Avoid using handwriting fonts for long paragraphs — they become fatiguing
+- Variable stroke weights in handwriting fonts add organic character
+
+**5. The Warm Color Palette**
+- Cream/off-white backgrounds (#FDF8F3) — warmer than pure white
+- Soft, approachable accent colors: coral (#E85D4C), mustard (#E8A84C), sage (#7DB87D)
+- Ink colors should be warm black (#1A1612) not pure black
+- High saturation is okay here — unlike archival design, naive design embraces playfulness
+- Colors should feel like crayons or colored pencils, not corporate brand guidelines
+- The overall mood: friendly, approachable, like a children's book for adults
+
+**6. Paper Texture & Tactile Feel**
+- Subtle paper grain overlay (SVG noise filter at 3-5% opacity)
+- Creates the illusion that designs exist on physical paper
+- Counters the "too clean" digital feel that makes screens feel cold
+- The texture is felt more than seen — it adds warmth subconsciously
+- Mix-blend-mode: multiply works well for grain overlays
+- Goal: screens that feel like printed matter, not sterile interfaces
+
+**7. Wobbly Motion: Animation That Feels Hand-Drawn**
+- Character-level text animations with slight random rotation (-2° to +2°)
+- Spring physics for button hovers (stiffness: 200-400, damping: 20-30)
+- Elements should "bounce" and "settle" like physical objects
+- Staggered reveals create a wave effect that feels organic
+- Avoid perfectly timed, mechanical animations — add randomness
+- pathLength animations for SVG scribbles create "drawing" effects
+
+**8. Floating Doodles as Ambient Background**
+- Decorative shapes (stars, flowers, circles) floating at low opacity (0.2-0.4)
+- Gentle bobbing motion (y: [0, -15, 0]) with slow duration (6-10s)
+- Adds playfulness without competing with content
+- Each doodle gets a different animation duration for organic variety
+- Place throughout the page to create depth layers
+- z-index: 0 so they float behind all content
+
+**9. Card Design: Intentional Tilts & Rough Borders**
+- Cards slightly rotated (1-2°) create a "pinned to corkboard" feel
+- Thick, visible borders (3-4px solid black) define edges clearly
+- Hover states straighten cards (rotate: 0) and lift them (y: -8)
+- Corner decorations (doodles, scribbles) add personality
+- Avoid perfect shadows — hard offset shadows or no shadows at all
+- The "sticker on paper" aesthetic is the goal
+
+**10. When Naive/Scribble Design Works**
+- ✅ Food & beverage brands (bakeries, cafes, organic products)
+- ✅ Children's products, family brands, educational content
+- ✅ Creative agencies, design studios, artists
+- ✅ Wellness, self-care, lifestyle brands
+- ✅ Local businesses, artisan products, craft goods
+- ❌ Finance, legal, enterprise B2B (too casual)
+- ❌ Luxury brands (lacks sophistication)
+- ❌ Medical/healthcare (needs more trust signals)
+
+### 📋 Implementation Notes
+
+**Components Built:**
+- `PaperTexture` — SVG noise filter overlay for tactile analog feel
+- `ScribbleUnderline` — Animated wavy line that draws itself under text
+- `ScribbleCircle` — Hand-drawn circle SVG with path animation
+- `ScribbleArrow` — Sketchy arrow pointing right or down
+- `ScribbleStar` — Wobbly 5-point star with fill and stroke
+- `DoodleFlower` — Simple flower doodle with petals radiating from center
+- `Squiggle` — Wavy horizontal line decoration
+- `WobblyText` — Character-level animation with random rotation per letter
+- `DoodleButton` — Button with hand-drawn corner accents and spring physics
+- `ServiceCard` — Tilted card with corner doodle and scribble underline
+- `WorkCard` — Portfolio card with sketch border and hover overlay
+- `TestimonialCard` — Quote card with handwritten quotation mark
+- `FloatingDoodles` — Ambient background layer with animated doodles
+- `Nav` — Fixed nav with scroll-triggered paper background
+- `Hero` — Wobbly text headline, badge, scroll indicator
+- `Services` — Grid of tilted service cards
+- `Work` — Portfolio grid with scribble decorations
+- `About` — Image with doodle frame, stats section
+- `Testimonials` — Quote cards with personality
+- `CTA` — Centered call-to-action with doodle accents
+- `Footer` — Multi-column links with brand consistency
+
+**Key Dependencies:**
+- `framer-motion` — useInView, useScroll, useTransform, AnimatePresence
+- Google Fonts: Caveat (handwriting), DM Sans (clean body)
+
+**Color Palette:**
+- Cream: `#FDF8F3` (primary background)
+- Paper: `#F5EDE4` (secondary background)
+- Ink: `#1A1612` (primary text)
+- Ink Light: `#4A433B` (secondary text)
+- Ink Muted: `#8A8178` (tertiary/labels)
+- Coral: `#E85D4C` (primary accent)
+- Mustard: `#E8A84C` (secondary accent)
+- Sage: `#7DB87D` (tertiary accent)
+- Sky: `#6BB5D8` (quaternary accent)
+- Lavender: `#9B8DC8` (accent)
+- Blush: `#E8A0A0` (accent)
+
+**Animation Techniques Used:**
+- SVG pathLength animation for scribble "drawing" effect
+- Character-level staggered reveals with random rotation
+- Spring physics for hover/tap interactions
+- Floating doodles with bobbing motion
+- Scroll-triggered parallax in hero
+- AnimatePresence for hover overlays
+- Paper texture overlay with multiply blend mode
+
+**Score: 90/100**
+
+| Category | Score | Notes |
+|----------|-------|-------|
+| Visual Impact | 23/25 | Distinctive hand-drawn aesthetic, warm palette, playful doodles throughout |
+| Modern Feel | 19/20 | Nails 2026 anti-AI trend perfectly; authentic, human, purposefully imperfect |
+| Code Quality | 14/15 | TypeScript, reusable SVG components, clean component architecture |
+| Animation/Motion | 14/15 | Wobbly text, pathLength scribbles, spring physics, floating doodles |
+| Responsiveness | 13/15 | Mobile-first grids, clamp typography; nav could use mobile menu |
+| Performance | 7/10 | Lightweight SVGs; floating doodles run continuously but simple transforms |
+
+---
+
 ## 2026-02-02 — Archival Index
 
 **Reference:** [Squarespace - Archival Index Trend](https://pros.squarespace.com/blog/design-trends) | [Kittl - Trinket Design](https://www.kittl.com/blogs/trinket-design-trend-stl/) | [archives.design](https://archives.design/)
