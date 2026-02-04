@@ -8,6 +8,180 @@ Design techniques and concepts learned from building landing pages.
 
 ---
 
+## 2026-02-04 — Cyber Brutalism
+
+**Reference:** [Tilda Education - Web Design Trends 2026](https://tilda.education/en/web-design-trends-2026) | [Medium - Aesthetics in the AI Era](https://medium.com/design-bootcamp/aesthetics-in-the-ai-era-visual-web-design-trends-for-2026-5a0f75a10e98) | [Clover Technology - Neo-Brutalism](https://www.clovertechnology.co/insights/how-neo-brutalism-took-over-digital-design-in-2025)
+
+### 🎓 Concepts & Techniques
+
+**1. Cyber Brutalism: Where Cyberpunk Meets Raw Interface**
+- A distinct evolution of neo-brutalism, fusing cyberpunk aesthetics with brutalist structure
+- Inspired by Blade Runner, Ghost in the Shell, and digital dystopia
+- Embraces digital noise, glitch, and system UI as intentional design elements
+- The aesthetic reveals "under-the-hood" technology rather than hiding it
+- A rebellion against polished AI-generated design — deliberately raw and mechanical
+- Perfect for tech products, Web3, security, and developer-focused brands
+
+**2. The Psychology of Dystopian UI**
+- Dark interfaces tap into our fascination with technology's underbelly
+- Glitch effects signal "alive systems" — imperfection implies authenticity
+- Terminal/command-line aesthetics appeal to builders and hackers
+- The surveillance aesthetic reflects Gen-Z's comfort with being "watched" in digital spaces
+- Creates a sense of power and control — you're the operator, not just a user
+- The mood is serious, technical, but also rebellious and countercultural
+
+**3. The Glitch Text Effect**
+- Chromatic aberration: offsetting red/green/blue channels creates "broken display" feel
+- CSS keyframes that randomly shift position, clip, and opacity
+- Two offset layers (cyan + magenta) with `mix-blend-mode: screen` for color separation
+- Timing is crucial: 90% stable, 10% glitch — constant glitching becomes annoying
+- The effect should feel like a signal interference, not a broken website
+- Apply to headlines and important text, not body copy
+
+**4. Monospace Typography as Identity**
+- JetBrains Mono, Space Mono, IBM Plex Mono, Fira Code — fonts from the dev world
+- Monospace signals technical authenticity and "builder culture"
+- Fixed-width characters create inherent grid structure
+- Pair with a sci-fi display font (Orbitron, Rajdhani, Audiowide) for headlines
+- Use all-caps with wide letter-spacing (0.1em+) for labels and status text
+- The uniformity of monospace creates visual rhythm without effort
+
+**5. The Dark Color Palette**
+- Primary background: near-black with subtle blue tint (#0a0a0f, #050508)
+- Pure black is actually rare — slight color shifts add depth
+- Neon accents: cyan (#00ffff), magenta (#ff00ff), green (#00ff41)
+- These colors reference CRT monitors, hacker terminals, and cyberpunk neon
+- Neon should glow: use text-shadow with multiple blur layers
+- High contrast ratio (neon on dark) ensures accessibility despite dramatic palette
+
+**6. The Glow/Neon Effect Formula**
+```css
+text-shadow:
+  0 0 5px #00ffff,      /* tight glow */
+  0 0 20px #00ffff,     /* medium spread */
+  0 0 40px #00ffff40;   /* wide, faded halo */
+```
+- Three layers of shadow create depth: tight core, medium spread, wide halo
+- The outermost layer should be transparent (40 = 25% opacity in hex)
+- Apply to important text and interactive elements
+- Box-shadow equivalent for containers and buttons
+- The glow should feel like light emission, not just decoration
+
+**7. Terminal/Console UI Pattern**
+- Cards styled as terminal windows with traffic light buttons (red/yellow/green)
+- Header bar with filename or process name in monospace
+- Content area with dark background, often with command prompt styling
+- Status indicators (blinking dots) show "activity"
+- Borders should be sharp (2-4px border-radius max) — brutalist, not soft
+- The pattern instantly communicates "technical" and "professional"
+
+**8. Perspective Grid Background**
+- CSS Grid with perspective transform creates "infinite horizon" effect
+- `transform: perspective(500px) rotateX(60deg)` tilts flat grid into 3D space
+- Horizontal + vertical lines create the classic cyberpunk floor grid
+- Mask with gradient to fade grid toward viewer
+- Add a glow line at the "horizon" for extra depth
+- Keep grid subtle (10-20% opacity) — it's atmosphere, not content
+
+**9. Scanlines + Noise Overlays (CRT Effects)**
+- Scanlines: repeating-linear-gradient creating horizontal lines every 2-4px
+- Keep opacity very low (2-5%) — it's felt more than seen
+- Noise: SVG feTurbulence filter as background-image
+- Combined effect simulates old CRT monitors
+- Creates nostalgia for terminal computing era
+- Use `pointer-events: none` and high z-index for overlays
+
+**10. ASCII Art as Decoration**
+- Box-drawing characters (╔═══╗, ║, ╚═══╝) for borders and frames
+- Creates immediate "terminal" association
+- Use sparingly — corners and dividers, not entire layouts
+- Monospace is essential for ASCII alignment
+- Consider animated ASCII (typing effect on load)
+- The aesthetic is deliberately retro-futuristic
+
+**11. Status Indicators and System UI Elements**
+- Blinking status dots (green/yellow/red) communicate state
+- Use CSS animation for pulsing: `opacity: [1, 0.3, 1]` over 1-2s
+- Badge patterns: `STATUS: ONLINE`, `NODE_ID: 0x7F3A`, `BUILD_v2.4.1`
+- These create immersive "operating system" feel
+- Metadata displayed prominently (not hidden) — the system is visible
+- Format: uppercase, monospace, with separators (//, |, ::)
+
+**12. When Cyber Brutalism Works**
+- ✅ Developer tools, APIs, SDKs, technical products
+- ✅ Web3, crypto, blockchain projects
+- ✅ Security, privacy, and infrastructure companies
+- ✅ Indie games, particularly cyberpunk/sci-fi themes
+- ✅ Creative tech studios, experimental portfolios
+- ❌ Healthcare, children's products, family brands
+- ❌ Luxury fashion, high-end retail
+- ❌ Traditional finance (too edgy/underground)
+- ❌ Accessibility-critical applications (low contrast can be problematic)
+
+### 📋 Implementation Notes
+
+**Components Built:**
+- `ScanLines` — Fixed overlay with repeating linear gradient for CRT effect
+- `NoiseOverlay` — SVG feTurbulence filter for analog noise texture
+- `CyberGrid` — Perspective-transformed grid background with horizon glow
+- `GlitchText` — Text with chromatic aberration animation (cyan/magenta offset layers)
+- `GlowText` — Neon text with multi-layer text-shadow
+- `TerminalCard` — Card styled as terminal window with traffic lights and status dot
+- `CyberButton` — Button with neon border, glow on hover, and sweep animation
+- `ASCIIBorder` — Box-drawing character decorations for section framing
+- `StatusBadge` — Status indicator with blinking dot (online/processing/error)
+- `TypingText` — Character-by-character typing animation with cursor
+- `Nav` — Fixed nav with terminal logo and scroll-triggered glassmorphism
+- `Hero` — Glitch headline, typing subtitle, neon stats
+- `Features` — Terminal cards with command-line snippets and status icons
+- `Showcase` — Project index with hover effects and status indicators
+- `ConsoleBanner` — Animated terminal output sequence
+- `CTA` — Centered call-to-action with background glow
+- `Footer` — Multi-column links with system metadata
+
+**Key Dependencies:**
+- `framer-motion` — useInView, useScroll, useTransform, AnimatePresence
+- Google Fonts: JetBrains Mono (monospace), Orbitron (display)
+
+**Color Palette:**
+- Void: `#050508` (deepest black)
+- Dark: `#0a0a0f` (primary background)
+- Surface: `#0d0d15` (card backgrounds)
+- Cyan: `#00ffff` (primary neon)
+- Magenta: `#ff00ff` (secondary neon)
+- Pink: `#ff2d6a` (accent)
+- Green: `#00ff41` (status/success)
+- Yellow: `#ffff00` (warning)
+- Blue: `#0080ff` (accent)
+- Text: `#e0e0e0` (primary)
+- Text Muted: `#808090` (secondary)
+- Text Dim: `#505060` (tertiary)
+- Grid: `#1a1a2e` (lines)
+- Border: `#2a2a3e` (dividers)
+
+**Animation Techniques Used:**
+- Chromatic aberration glitch (CSS keyframes with position/clip/opacity shifts)
+- Neon glow with layered text-shadow
+- Typing text animation with cursor blink
+- Status indicator pulse (opacity animation)
+- Scroll-triggered reveals with useInView
+- Parallax fade on hero section
+- Button hover sweep effect (moving gradient)
+- Terminal output sequence (staggered line reveals)
+
+**Score: 90/100**
+
+| Category | Score | Notes |
+|----------|-------|-------|
+| Visual Impact | 24/25 | Striking cyberpunk aesthetic, glitch effects, neon glows, perspective grid |
+| Modern Feel | 19/20 | Nails 2026 cyber brutalism trend; technical authenticity appeals to builders |
+| Code Quality | 14/15 | TypeScript, reusable components, clean color system |
+| Animation/Motion | 14/15 | Glitch text, typing effect, status pulses, scroll reveals |
+| Responsiveness | 12/15 | Mobile-first grids; nav could use hamburger menu on mobile |
+| Performance | 7/10 | CSS overlays are lightweight; glitch animation runs continuously |
+
+---
+
 ## 2026-02-03 — Human Scribble / Naive Design
 
 **Reference:** [Creative Bloq - Illustration Trends 2026](https://www.creativebloq.com/art/illustration/messy-meaningful-and-made-by-humans-the-biggest-illustration-trends-for-2026) | [TheeDigital - Web Design Trends 2026](https://www.theedigital.com/blog/web-design-trends) | [Kittl - Naive Design Trend](https://www.kittl.com/blogs/naive-design-trend-stl/)

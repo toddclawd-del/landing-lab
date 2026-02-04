@@ -4,6 +4,7 @@ All landing pages created, with references and scores.
 
 | Date | Trend | Reference | Score | Notes |
 |------|-------|-----------|-------|-------|
+| 2026-02-04 | Cyber Brutalism | [Tilda Education](https://tilda.education/en/web-design-trends-2026) | 90/100 | Cyberpunk + brutalist fusion, glitch text effects, terminal UI, neon glows, perspective grid, scanlines, ASCII decorations, dark dystopian aesthetic |
 | 2026-02-03 | Human Scribble | [Creative Bloq](https://www.creativebloq.com/art/illustration/messy-meaningful-and-made-by-humans-the-biggest-illustration-trends-for-2026) | 90/100 | Hand-drawn aesthetic rebelling against AI polish, SVG scribble animations, wobbly text, warm crayon palette, paper texture, naive/childlike design philosophy |
 | 2026-02-02 | Archival Index | [Squarespace Trends](https://pros.squarespace.com/blog/design-trends) | 89/100 | Museum catalog aesthetic, specimen cards with catalog numbers, serif + mono typography, cream palette, index table, editorial feel |
 | 2026-02-01 | Claymorphism | [Hype4 Academy](https://hype4.academy/articles/design/claymorphism-in-user-interfaces) | 91/100 | Soft 3D clay-like UI, inner+outer shadows, pastel palette, floating shapes, spring physics, playful SaaS aesthetic |
