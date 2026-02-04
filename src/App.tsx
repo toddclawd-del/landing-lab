@@ -26,6 +26,7 @@ import CreativeAgencyPage from './pages/2026-01-31-creative-agency'
 import Claymorphism from './pages/2026-02-01-claymorphism'
 import ArchivalIndex from './pages/2026-02-02-archival-index'
 import HumanScribble from './pages/2026-02-03-human-scribble'
+import CyberBrutalism from './pages/2026-02-04-cyber-brutalism'
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
         <Route path="/claymorphism" element={<Claymorphism />} />
         <Route path="/archival-index" element={<ArchivalIndex />} />
         <Route path="/human-scribble" element={<HumanScribble />} />
+        <Route path="/cyber-brutalism" element={<CyberBrutalism />} />
       </Routes>
     </HashRouter>
   )
