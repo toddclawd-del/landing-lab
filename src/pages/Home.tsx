@@ -33,12 +33,19 @@ interface LandingPage {
 const pages: LandingPage[] = [
   // Latest Landing Page
   {
+    slug: 'neo-deco',
+    title: 'Neo Deco',
+    inspiration: 'Art Deco revival — gold gradients, geometric patterns, luxury serif typography, sunburst motifs, The Meridian hotel',
+    date: '2026-02-05',
+    icon: Triangle,
+    featured: true
+  },
+  {
     slug: 'claymorphism',
     title: 'Claymorphism',
     inspiration: 'Soft 3D clay-like UI with inner/outer shadows, pastel palette, playful productivity SaaS',
     date: '2026-02-01',
     icon: Palette,
-    featured: true
   },
   {
     slug: 'creative-agency',

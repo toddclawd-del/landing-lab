@@ -27,6 +27,7 @@ import Claymorphism from './pages/2026-02-01-claymorphism'
 import ArchivalIndex from './pages/2026-02-02-archival-index'
 import HumanScribble from './pages/2026-02-03-human-scribble'
 import CyberBrutalism from './pages/2026-02-04-cyber-brutalism'
+import NeoDeco from './pages/2026-02-05-neo-deco'
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
         <Route path="/archival-index" element={<ArchivalIndex />} />
         <Route path="/human-scribble" element={<HumanScribble />} />
         <Route path="/cyber-brutalism" element={<CyberBrutalism />} />
+        <Route path="/neo-deco" element={<NeoDeco />} />
       </Routes>
     </HashRouter>
   )
