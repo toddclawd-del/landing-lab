@@ -8,6 +8,166 @@ Design techniques and concepts learned from building landing pages.
 
 ---
 
+## 2026-02-05 — Neo Deco (Art Deco Revival)
+
+**Reference:** [Yes I'm a Designer - 2026 Trends](https://yesimadesigner.com/2026-design-trends-that-actually-matters/) | [Eduvia Design - Art Deco Style](https://www.eduviadesign.com/art-deco-graphic-design-style/) | [Oblist - Art Deco 2026 Centennial](https://oblist.com/blogs/editorial/art-deco-2026-celebrating-100-years-timeless-elegance-art-deco-interior-design)
+
+### 🎓 Concepts & Techniques
+
+**1. Neo Deco: Art Deco Reborn for the Digital Age**
+- 2026 marks the ~100th anniversary of Art Deco's golden age (1920s-1940s)
+- Neo Deco strips the ornamental excess while keeping the structural elegance
+- It's a rebellion against years of ultra-minimal flat design — reintroducing bold geometry, confidence, and glamour
+- Where brutalism says "look how raw I am," Neo Deco says "look how refined I am"
+- Works beautifully for luxury hospitality, premium brands, high-end events, editorial, and fashion
+- The key tension: opulence without excess, decoration without clutter
+
+**2. The Psychology of Geometric Luxury**
+- Symmetry communicates stability, order, and trustworthiness — essential for luxury brands
+- Geometric patterns (chevrons, sunbursts, zigzags) create visual rhythm that guides the eye
+- Repeating patterns at low opacity become ambient texture — felt more than noticed
+- The sunburst motif is Art Deco's most iconic symbol: radiating lines suggest progress, dawn, optimism
+- Stepped/tiered forms (like the Chrysler Building) create visual hierarchy through architecture
+- These patterns don't need to shout — at 5-15% opacity they add richness without competing with content
+
+**3. The Metallic Gradient Formula**
+- Art Deco was defined by gold leaf, brass, chrome — metallic finishes create perceived value
+- In CSS, metallic gradients need multiple color stops to simulate reflective surfaces:
+  - Dark gold (#A08340) → Medium gold (#C9A96E) → Light gold (#E4D5A8) → Medium → Dark
+- `background-size: 200% 200%` with animated `background-position` creates a shimmer effect
+- The shimmer should be slow (6-8s cycle) — fast shimmer feels cheap, slow shimmer feels precious
+- Apply to headlines, decorative elements, and accents — never to body text
+- Gold on dark backgrounds has inherently high contrast and perceived value
+
+**4. The Dark Luxury Palette**
+- Primary background: near-black with warm undertone (#0D0B0E) — not pure black
+- Pure black (#000000) is rare in luxury design — it feels flat and digital
+- Adding slight purple/brown warmth to blacks creates depth and sophistication
+- Gold accents (#C9A96E) are the natural complement — warm metallics on warm darks
+- Supporting colors should be muted: emerald, ruby, champagne — jewel tones at reduced saturation
+- Text on dark backgrounds: use warm off-white (#E8E4DF, #FAF7F2) not pure white
+- The overall effect: a dimly-lit, candlelit atmosphere — intimate, exclusive
+
+**5. Serif Typography as Identity**
+- Playfair Display: high-contrast serif with ball terminals — elegant, editorial, distinctly Art Deco-adjacent
+- Serif fonts inherently communicate tradition, authority, and sophistication
+- Key technique: pairing italic serif headlines with clean sans body (DM Sans, Inter)
+- Italicized serifs add a calligraphic, personal quality — like hand-lettered signage
+- Ultra-wide letter-spacing (0.1em+) on uppercase sans labels creates "luxury label" effect
+- Font weight contrast matters: light/regular serifs for elegance, bold only for key words
+- The pairing creates tension: old-world headlines + modern body = Neo Deco
+
+**6. The Geometric Frame Pattern**
+- Art Deco interiors use ornate frames, borders, and moldings to define spaces
+- In CSS, layered borders (outer gold → dark gap → inner gold) simulate ornamental framing
+- Stepped corner accents (SVG) add Art Deco identity to any rectangular element
+- These frames should be subtle — 1-3px borders at reduced opacity
+- Apply to feature cards, image containers, and section boundaries
+- The double-border technique (border inside border with gap) is distinctly Art Deco
+
+**7. The Chevron & Diamond Motifs**
+- Chevrons (zigzag lines) are Art Deco's signature decorative pattern
+- A simple SVG polyline creates elegant section dividers
+- Diamond shapes (rotated squares) work as bullet points, section separators, and indicators
+- Together, they create a visual language that immediately signals "deco" without being literal
+- Place them between sections, under headlines, and around key content
+- Keep stroke weight light (1-1.5px) — delicate geometry feels more premium than thick
+
+**8. The Sunburst as Hero Element**
+- Radiating lines from a center point create the classic Art Deco sunrise/fan motif
+- SVG with `<line>` elements rotated around a center point is the simplest implementation
+- Rotate the sunburst slowly (120s full rotation) for subtle ambient motion
+- Concentric circles at different radii add depth to the sunburst composition
+- Keep opacity very low (3-5%) — it's atmosphere, not content
+- Works beautifully behind hero text, testimonials, or anywhere you need a focal point
+
+**9. Hover Reveals with Art Deco Accents**
+- Gallery images reveal stepped corner accents (Art Deco frames) on hover
+- The corners draw attention to the image bounds — like a museum frame appearing
+- Border inside the image (inset 12px with gold stroke) creates the "framed" effect
+- AnimatePresence handles smooth enter/exit transitions
+- The caption appears on hover at low position — unobtrusive but available
+- This pattern is distinctly different from every other hover approach we've built
+
+**10. When Neo Deco Works**
+- ✅ Luxury hotels, resorts, high-end hospitality
+- ✅ Premium fashion brands, jewelry, watches
+- ✅ Event venues, weddings, galas
+- ✅ Upscale restaurants, cocktail bars
+- ✅ Editorial magazines, culture publications
+- ✅ Architecture firms, interior design studios
+- ❌ Tech startups (too ornamental)
+- ❌ Children's products (too serious)
+- ❌ Budget brands (aesthetic mismatch)
+- ❌ Healthcare, utilities (overly decorative)
+
+### 📋 Implementation Notes
+
+**Components Built:**
+- `SunburstSVG` — Radiating line pattern with concentric circles, configurable size and opacity
+- `ChevronDivider` — Zigzag polyline SVG section separator
+- `GeometricFrame` — Multi-layered Art Deco border frame for cards (outer gold → gap → inner gold)
+- `SteppedCorner` — Chrysler Building-inspired stepped corner accent SVG (all 4 orientations)
+- `DiamondSeparator` — Diamond with gradient lines decorative divider
+- `ShimmerText` — Gold gradient text with animated background-position shimmer
+- `GoldButton` — Filled and outline variants with gold border and hover state
+- `AnimatedLine` — SVG line that draws itself into view with pathLength animation
+- `SectionLabel` — Small uppercase sans tracking label (gold)
+- `SectionTitle` — Large italic serif section headline
+- `Nav` — Centered logo with symmetrical links, scroll-triggered glassmorphism
+- `Hero` — Rotating sunburst, stepped corner accents, geometric border, shimmer headline, parallax scroll
+- `Marquee` — Infinite scrolling serif words with gold diamond separators
+- `ExperienceSection` — Numbered row layout (01-04) with hover slide effect
+- `SuitesSection` — Cards with GeometricFrame borders, image zoom, price badge, feature tags
+- `GallerySection` — Image grid with hover Art Deco corner reveals and caption
+- `StatsSection` — Gold gradient numbers with mono labels
+- `TestimonialSection` — Carousel with gold quotation mark, dot/diamond indicators, sunburst backdrop
+- `CTASection` — Geometric background pattern (CSS repeating triangles), shimmer headline
+- `Footer` — Centered logo, gold category headers, animated gold line separators
+
+**Key Dependencies:**
+- `framer-motion` — useInView, useScroll, useTransform, AnimatePresence, motion
+- Google Fonts: Playfair Display (serif, italic), DM Sans (body)
+
+**Color Palette:**
+- Noir: `#0D0B0E` (primary background)
+- Surface: `#141216` (secondary background)
+- Card: `#1A171D` (card backgrounds)
+- Gold: `#C9A96E` (primary accent)
+- Gold Light: `#E4D5A8` (highlight)
+- Gold Dark: `#A08340` (shadow)
+- Champagne: `#F5E6C8` (warm light)
+- Ivory: `#FAF7F2` (headline text)
+- Emerald: `#2D6A4F` (reserved accent)
+- Ruby: `#9B2335` (reserved accent)
+- Text: `#E8E4DF` (primary text)
+- Text Muted: `rgba(232, 228, 223, 0.55)` (secondary text)
+
+**Animation Techniques Used:**
+- Gold gradient shimmer (animated background-position on 200% size gradient)
+- Rotating sunburst SVG (120s continuous rotation)
+- SVG pathLength line draw animation
+- Scroll-linked parallax (hero y + opacity transforms)
+- Staggered scroll reveals with useInView + custom delay
+- AnimatePresence testimonial carousel with y-axis slide
+- Gallery hover: Art Deco stepped corners fade in
+- Suite card: image scale on hover + gold overlay
+- Experience rows: translateX on hover for subtle slide
+- Marquee: infinite x-axis translation
+
+**Score: 90/100**
+
+| Category | Score | Notes |
+|----------|-------|-------|
+| Visual Impact | 23/25 | Striking dark + gold palette, sunburst hero, geometric frames, shimmer text |
+| Modern Feel | 19/20 | Nails 2026 Neo Deco trend; celebrates Art Deco centennial with modern web sensibility |
+| Code Quality | 14/15 | TypeScript, reusable decorative SVG components, clean color/font system |
+| Animation/Motion | 14/15 | Gold shimmer, rotating sunburst, line draws, scroll reveals, testimonial carousel |
+| Responsiveness | 12/15 | auto-fit grids, clamp typography, nav simplifies on mobile; could add hamburger menu |
+| Performance | 8/10 | Lightweight SVGs and CSS animations; rotating sunburst is simple transform; no heavy assets |
+
+---
+
 ## 2026-02-04 — Cyber Brutalism
 
 **Reference:** [Tilda Education - Web Design Trends 2026](https://tilda.education/en/web-design-trends-2026) | [Medium - Aesthetics in the AI Era](https://medium.com/design-bootcamp/aesthetics-in-the-ai-era-visual-web-design-trends-for-2026-5a0f75a10e98) | [Clover Technology - Neo-Brutalism](https://www.clovertechnology.co/insights/how-neo-brutalism-took-over-digital-design-in-2025)
