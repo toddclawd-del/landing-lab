@@ -8,6 +8,171 @@ Design techniques and concepts learned from building landing pages.
 
 ---
 
+## 2026-02-06 — Surveillance Thermal (Heatmap + CCTV Aesthetic)
+
+**Reference:** [Zeka Graphic - 2026 Trends](https://www.zekagraphic.com/11-graphic-design-trends-2026/) | [Graphics Illustrations - Heatmapping Trend](https://graphics-illustrations.com/color-me-hot-riding-the-wave-of-the-heatmapping-design-trend/) | [Really Good Designs - 2026 Trends](https://reallygooddesigns.com/web-design-trends-2026/)
+
+### 🎓 Concepts & Techniques
+
+**1. Surveillance Design: Life Inside the Algorithm**
+- The 2026 Surveillance Design trend reflects our era of data anxiety and algorithmic observation
+- It uses visual metaphors from security systems: CCTV grids, face-detection boxes, tracking overlays, heatmap gradients
+- The aesthetic is both haunting and mesmerizing — a commentary on privacy in the digital age
+- It transforms observation itself into visual art, making the invisible systems visible
+- The mood is dystopian but compelling — users are cast as operators, not just visitors
+- Perfect for security tech, privacy-focused brands, AI ethics, or conceptual tech products
+
+**2. The Thermal/Infrared Color Spectrum**
+- Thermal imaging uses a specific color gradient from cold to hot:
+  - Coldest: Deep purple-black (#1a0a2e)
+  - Cold: Purple (#2d1b69)
+  - Cool: Violet (#6b21a8)
+  - Warm: Magenta (#c026d3)
+  - Warmer: Red (#ef4444)
+  - Hot: Orange (#f97316)
+  - Hottest: Yellow (#fbbf24)
+  - Peak: Off-white (#fef3c7)
+- This spectrum mimics actual infrared camera output — instantly recognizable
+- Gradients should flow from cold (background/less important) to hot (foreground/focus areas)
+- Apply to backgrounds, text highlights, and data visualizations
+- The orange-red range is your primary accent territory
+
+**3. The Psychology of Surveillance Aesthetics**
+- Dark backgrounds evoke night vision and covert observation
+- Grid overlays suggest systematic monitoring — nothing escapes the system
+- Detection boxes (corner brackets) draw attention and imply active scanning
+- Blinking status indicators create a sense of "live" activity
+- Metadata and timestamps communicate real-time awareness
+- The overall effect: you're in a control room, watching the world
+
+**4. CCTV-Style UI Patterns**
+- Header bars with status indicators (blinking dots) simulate camera feeds
+- Corner bracket frames create "detection box" effects around key content
+- Grid overlays (1-2% opacity) create subtle structure without overwhelming content
+- Scanline animations (horizontal moving lines) simulate active scanning
+- Recording indicators ("REC ●") add authenticity to card components
+- Feed IDs ("CAM_01", "SECTOR_A7") create a system-wide identity language
+
+**5. The Tracking Badge Pattern**
+- Small, pill-shaped elements with status dots and monospace text
+- Status colors: green (active), cyan (monitoring), red/orange (alert)
+- Include system-style IDs: NODE_7F3A, SYS_ONLINE, BUILD_v2.4.1
+- Blinking animation (opacity pulse) indicates live status
+- Place at key positions: nav, hero, section headers, footer
+- Creates a sense of interconnected system identity
+
+**6. Live Data Visualization Elements**
+- Animated heatmap grids with cells that pulse at different intensities
+- Network topology diagrams with nodes and connection lines
+- Data feed logs with scrolling activity entries
+- Real-time timestamps that update on the page
+- Progress/status bars with thermal gradient fills
+- These elements make static pages feel like live dashboards
+
+**7. Typography for Surveillance UI**
+- Monospace fonts (JetBrains Mono, Space Mono) for system text, metadata, labels
+- Clean geometric sans (Space Grotesk) for headlines and body
+- Small font sizes (0.65-0.8rem) for metadata — dense but readable
+- Wide letter-spacing (0.05-0.2em) on uppercase labels
+- Avoid decorative fonts — the aesthetic is utilitarian, technical, precise
+- Number styling matters: status codes, timestamps, and IDs should be consistent
+
+**8. Scanning Line Animations**
+- Horizontal lines that travel vertically across sections
+- Use `linear-gradient(90deg, transparent, [hot color], transparent)`
+- Add glow with `box-shadow: 0 0 20px [color]`
+- Speed: 2-4 seconds for full traverse — slow enough to notice, fast enough to feel active
+- Trigger on hover for cards, continuous in hero sections
+- Creates a sense of active analysis/processing
+
+**9. Thermal Blob Backgrounds**
+- Large, blurred, organic shapes with thermal gradients
+- Use `radial-gradient(circle, hot center, cool middle, transparent edge)`
+- Apply heavy blur (40-80px) for ambient atmosphere
+- Animate with subtle scale/opacity pulsing (6-10s cycle)
+- Position off-center, partially off-screen
+- Creates depth and warmth without competing with content
+
+**10. When Surveillance Thermal Works**
+- ✅ Security and privacy tech products
+- ✅ AI/ML platforms and tools
+- ✅ Data analytics dashboards
+- ✅ Cybersecurity companies
+- ✅ Conceptual/artistic tech projects
+- ✅ Biometric and sensing technology
+- ❌ Children's products (too dark/unsettling)
+- ❌ Healthcare (surveillance associations are negative)
+- ❌ Finance (too dystopian for trust-building)
+- ❌ Hospitality/lifestyle (wrong emotional tone)
+
+### 📋 Implementation Notes
+
+**Components Built:**
+- `ScanlineOverlay` — Fixed overlay with repeating gradient for CRT scanline effect
+- `GridOverlay` — CSS grid pattern overlay for CCTV structure
+- `ThermalGradient` — SVG defs with thermal spectrum linear gradients
+- `Timestamp` — Live-updating timestamp in ISO format
+- `TrackingBadge` — Status indicator with blinking dot and system ID
+- `DetectionBox` — Content wrapper with corner bracket detection frame
+- `ScanningLine` — Animated horizontal line that traverses vertically
+- `ThermalBlob` — Blurred radial gradient background element with pulse animation
+- `CCTVCard` — Feature card styled as CCTV feed with header bar, status indicator, scanning overlay
+- `Nav` — Fixed nav with thermal logo, tracking badge, live timestamp
+- `Hero` — Thermal blobs, scanning line, detection box headline, gradient text
+- `StatsBar` — Stat counters with thermal gradient numbers
+- `Features` — Grid of CCTV-style cards with hover scan effects
+- `HeatmapVisualization` — Animated grid with randomized heat values, detection overlay
+- `NetworkSection` — SVG network topology with animated connection pulses
+- `DataFeed` — Activity log table with color-coded status indicators
+- `CTA` — Centered call-to-action with thermal blob backgrounds
+- `Footer` — Multi-column links with thermal accent colors
+
+**Key Dependencies:**
+- `framer-motion` — useInView, useScroll, useTransform, AnimatePresence
+- Google Fonts: Space Grotesk (display/body), JetBrains Mono (mono/system)
+
+**Color Palette:**
+- Void: `#050505` (deepest black)
+- Dark: `#0a0a0c` (primary background)
+- Surface: `#101014` (secondary background)
+- Card: `#16161a` (card backgrounds)
+- Coldest: `#1a0a2e` (deep purple-black)
+- Cold: `#2d1b69` (purple)
+- Cool: `#6b21a8` (violet)
+- Warm: `#c026d3` (magenta)
+- Warmer: `#ef4444` (red)
+- Hot: `#f97316` (orange - primary accent)
+- Hottest: `#fbbf24` (yellow)
+- White: `#fef3c7` (peak thermal)
+- Text: `#e8e8ec` (primary)
+- Text Muted: `rgba(232, 232, 236, 0.55)` (secondary)
+- Text Dim: `rgba(232, 232, 236, 0.35)` (tertiary)
+- Cyan: `#06b6d4` (status)
+- Green: `#22c55e` (active status)
+
+**Animation Techniques Used:**
+- Scanning line translate (y: 0% → 100%, linear, repeat)
+- Thermal blob scale/opacity pulse (6-10s, subtle variation)
+- Status dot opacity pulse (1-2s cycle)
+- Heatmap cell intensity variation (staggered, random timing)
+- Network connection pulse (circles traveling along lines)
+- Scroll-triggered reveals with useInView
+- Parallax hero with scroll-linked transforms
+- Detection box hover scan effect
+
+**Score: 88/100**
+
+| Category | Score | Notes |
+|----------|-------|-------|
+| Visual Impact | 22/25 | Striking thermal palette, scanning effects, detection boxes, network visualization |
+| Modern Feel | 18/20 | Nails 2026 surveillance anxiety trend; technical authenticity |
+| Code Quality | 14/15 | TypeScript, reusable components, clean color system |
+| Animation/Motion | 14/15 | Scanning lines, blob pulses, network pulses, heatmap cells |
+| Responsiveness | 12/15 | Grid auto-fit, clamp typography; could improve mobile nav |
+| Performance | 8/10 | Lightweight overlays and CSS animations; continuous blob animation |
+
+---
+
 ## 2026-02-05 — Neo Deco (Art Deco Revival)
 
 **Reference:** [Yes I'm a Designer - 2026 Trends](https://yesimadesigner.com/2026-design-trends-that-actually-matters/) | [Eduvia Design - Art Deco Style](https://www.eduviadesign.com/art-deco-graphic-design-style/) | [Oblist - Art Deco 2026 Centennial](https://oblist.com/blogs/editorial/art-deco-2026-celebrating-100-years-timeless-elegance-art-deco-interior-design)

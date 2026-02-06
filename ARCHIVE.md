@@ -4,6 +4,7 @@ All landing pages created, with references and scores.
 
 | Date | Trend | Reference | Score | Notes |
 |------|-------|-----------|-------|-------|
+| 2026-02-06 | Surveillance Thermal | [Zeka Graphic](https://www.zekagraphic.com/11-graphic-design-trends-2026/) | 88/100 | Thermal heatmap + surveillance aesthetic — infrared gradient spectrum, CCTV grid overlays, detection boxes, tracking badges, live timestamps, network topology, data feed logs, "VANTA" systems concept |
 | 2026-02-05 | Neo Deco | [Yes I'm a Designer](https://yesimadesigner.com/2026-design-trends-that-actually-matters/) | 90/100 | Art Deco revival for its centennial — gold gradients, geometric patterns (sunbursts, chevrons, stepped corners), Playfair Display serif + DM Sans, dark noir palette, luxury hotel concept "The Meridian" |
 | 2026-02-04 | Cyber Brutalism | [Tilda Education](https://tilda.education/en/web-design-trends-2026) | 90/100 | Cyberpunk + brutalist fusion, glitch text effects, terminal UI, neon glows, perspective grid, scanlines, ASCII decorations, dark dystopian aesthetic |
 | 2026-02-03 | Human Scribble | [Creative Bloq](https://www.creativebloq.com/art/illustration/messy-meaningful-and-made-by-humans-the-biggest-illustration-trends-for-2026) | 90/100 | Hand-drawn aesthetic rebelling against AI polish, SVG scribble animations, wobbly text, warm crayon palette, paper texture, naive/childlike design philosophy |
