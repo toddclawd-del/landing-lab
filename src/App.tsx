@@ -28,6 +28,7 @@ import ArchivalIndex from './pages/2026-02-02-archival-index'
 import HumanScribble from './pages/2026-02-03-human-scribble'
 import CyberBrutalism from './pages/2026-02-04-cyber-brutalism'
 import NeoDeco from './pages/2026-02-05-neo-deco'
+import SurveillanceThermal from './pages/2026-02-06-surveillance-thermal'
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
         <Route path="/human-scribble" element={<HumanScribble />} />
         <Route path="/cyber-brutalism" element={<CyberBrutalism />} />
         <Route path="/neo-deco" element={<NeoDeco />} />
+        <Route path="/surveillance-thermal" element={<SurveillanceThermal />} />
       </Routes>
     </HashRouter>
   )

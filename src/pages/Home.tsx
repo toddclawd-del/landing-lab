@@ -33,12 +33,19 @@ interface LandingPage {
 const pages: LandingPage[] = [
   // Latest Landing Page
   {
+    slug: 'surveillance-thermal',
+    title: 'Surveillance Thermal',
+    inspiration: 'Thermal heatmap design — infrared gradients, CCTV grid overlays, tracking boxes, data anxiety aesthetic, VANTA systems',
+    date: '2026-02-06',
+    icon: CircleDot,
+    featured: true
+  },
+  {
     slug: 'neo-deco',
     title: 'Neo Deco',
     inspiration: 'Art Deco revival — gold gradients, geometric patterns, luxury serif typography, sunburst motifs, The Meridian hotel',
     date: '2026-02-05',
     icon: Triangle,
-    featured: true
   },
   {
     slug: 'claymorphism',
