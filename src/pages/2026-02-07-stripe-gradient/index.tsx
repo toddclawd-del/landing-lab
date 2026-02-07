@@ -173,8 +173,6 @@ const useCounter = (end: number, duration = 2000, startOnView = true) => {
 const Hero = () => {
   return (
     <section className="stripe-hero">
-      <AnimatedGradient />
-      
       <div className="stripe-hero-content">
         <motion.div
           className="stripe-hero-text"
@@ -571,6 +569,12 @@ const Footer = () => {
 export default function StripeGradient() {
   return (
     <div className="stripe-page">
+      {/* Full-page gradient background */}
+      <div className="stripe-gradient-fullpage">
+        <AnimatedGradient />
+      </div>
+      
+      {/* Content layers */}
       <Hero />
       <Stats />
       <Customers />
