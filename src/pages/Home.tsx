@@ -33,12 +33,19 @@ interface LandingPage {
 const pages: LandingPage[] = [
   // Latest Landing Page
   {
+    slug: 'stripe-gradient',
+    title: 'Stripe Gradient',
+    inspiration: 'stripe.com — Animated WebGL gradient hero, text blend effects, massive whitespace, stats bar, customer showcase cards',
+    date: '2026-02-07',
+    icon: Sparkles,
+    featured: true
+  },
+  {
     slug: 'surveillance-thermal',
     title: 'Surveillance Thermal',
     inspiration: 'Thermal heatmap design — infrared gradients, CCTV grid overlays, tracking boxes, data anxiety aesthetic, VANTA systems',
     date: '2026-02-06',
     icon: CircleDot,
-    featured: true
   },
   {
     slug: 'neo-deco',
