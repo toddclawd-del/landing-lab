@@ -24,12 +24,12 @@ const AnimatedGradient = () => {
     canvas.height = rect.height * dpr
     ctx.scale(dpr, dpr)
     
-    // Gradient colors from spec
+    // Gradient colors - Orange/Coral theme
     const colors = [
-      { r: 110, g: 195, b: 244 }, // Light blue
-      { r: 58, g: 58, b: 255 },   // Deep blue
-      { r: 255, g: 97, b: 171 },  // Pink
-      { r: 230, g: 57, b: 70 },   // Red-coral
+      { r: 255, g: 107, b: 53 },  // Vibrant orange
+      { r: 255, g: 179, b: 71 },  // Golden yellow
+      { r: 255, g: 140, b: 90 },  // Coral
+      { r: 255, g: 87, b: 51 },   // Deep orange-red
     ]
     
     // Blob positions (normalized 0-1)
@@ -55,8 +55,8 @@ const AnimatedGradient = () => {
       const width = rect.width
       const height = rect.height
       
-      // Clear canvas
-      ctx.fillStyle = '#0A2540'
+      // Clear canvas - dark base for orange glow
+      ctx.fillStyle = '#1a1a1a'
       ctx.fillRect(0, 0, width, height)
       
       // Update and draw blobs
@@ -529,7 +529,7 @@ const Footer = () => {
       <div className="stripe-container">
         <div className="stripe-footer-grid">
           <div className="stripe-footer-brand">
-            <svg className="stripe-logo" viewBox="0 0 60 25" fill="#635BFF">
+            <svg className="stripe-logo" viewBox="0 0 60 25" fill="#FF6B35">
               <path d="M59.64 14.28h-8.06c.19 1.93 1.6 2.55 3.2 2.55 1.64 0 2.96-.37 4.05-.95v3.32a8.33 8.33 0 0 1-4.56 1.1c-4.01 0-6.83-2.5-6.83-7.48 0-4.19 2.39-7.52 6.3-7.52 3.92 0 5.96 3.28 5.96 7.5 0 .4-.03 1.04-.06 1.48zm-6.3-5.63c-1.03 0-2.14.83-2.24 2.8h4.51c-.05-1.97-1.24-2.8-2.27-2.8zM41.24 20.57V5.57h4.36v1.58c.93-1.28 2.49-1.94 4.03-1.94.47 0 .93.04 1.35.14v4.14c-.57-.18-1.18-.27-1.84-.27-1.36 0-2.73.58-3.54 1.58v9.77h-4.36zM26.7 20.57V6.2c0-.56.02-1.48.09-2.2h4.41c.07.37.13 1.15.13 1.64 1.1-1.3 2.83-2 4.6-2 2.96 0 4.52 1.94 4.52 5.08v11.85H36.1V9.98c0-1.36-.46-2.32-1.84-2.32-1.26 0-2.49.65-3.2 1.58v11.33H26.7zM22.3 3.52c0 1.3-.93 2.32-2.47 2.32-1.54 0-2.47-1.02-2.47-2.32s.93-2.31 2.47-2.31c1.54 0 2.47 1.01 2.47 2.31zm-4.65 17.05V5.57h4.36v15h-4.36zM8.07 20.57l-5.9-15h4.78l3.63 10.14L14.21 5.57h4.78l-5.9 15H8.07zM0 8.37h4.18V5.17L0 4.31v4.06z"/>
             </svg>
             <p className="footer-tagline">The new standard in online payments</p>

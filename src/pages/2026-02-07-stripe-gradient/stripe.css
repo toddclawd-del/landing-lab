@@ -3,16 +3,16 @@
    Reference: stripe.com
    ======================================== */
 
-/* CSS Variables */
+/* CSS Variables - Orange/White Theme */
 .stripe-page {
-  --stripe-downriver: #0A2540;
-  --stripe-squeeze: #F6F9FC;
-  --stripe-purple: #635BFF;
-  --stripe-cyan: #00D4FF;
+  --stripe-downriver: #1a1a1a;
+  --stripe-squeeze: #FFF8F5;
+  --stripe-purple: #FF6B35;
+  --stripe-cyan: #FFB347;
   --stripe-white: #FFFFFF;
-  --stripe-muted: #ADBDCC;
-  --stripe-link: #0570de;
-  --stripe-dark: #30313d;
+  --stripe-muted: rgba(255, 255, 255, 0.7);
+  --stripe-link: #FF6B35;
+  --stripe-dark: #1a1a1a;
   
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   
@@ -138,7 +138,7 @@
   left: -10%;
   right: -10%;
   height: 80px;
-  background: linear-gradient(to bottom, transparent 0%, rgba(10, 37, 64, 0.5) 100%);
+  background: linear-gradient(to bottom, transparent 0%, rgba(26, 26, 26, 0.5) 100%);
   transform: skewY(-3deg);
   transform-origin: bottom left;
   z-index: 5;
@@ -163,12 +163,12 @@
 }
 
 .stripe-btn-primary {
-  background: var(--stripe-white);
-  color: var(--stripe-downriver);
+  background: #FF6B35;
+  color: var(--stripe-white);
 }
 
 .stripe-btn-primary:hover {
-  background: #f0f0f0;
+  background: #FF5722;
   transform: translateY(-1px);
 }
 
@@ -218,7 +218,7 @@
   position: relative;
   z-index: 1;
   padding: 40px 0 80px;
-  background: rgba(10, 37, 64, 0.7);
+  background: rgba(26, 26, 26, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -245,7 +245,7 @@
   font-weight: 600;
   line-height: 1;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--stripe-purple), var(--stripe-cyan));
+  background: linear-gradient(135deg, #FF6B35, #FFB347);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -295,7 +295,7 @@
   position: relative;
   z-index: 1;
   padding: 120px 0;
-  background: rgba(10, 37, 64, 0.6);
+  background: rgba(26, 26, 26, 0.6);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -383,13 +383,14 @@
   gap: 4px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--stripe-purple);
+  color: #FF6B35;
   text-decoration: none;
   transition: gap 0.2s ease;
 }
 
 .stripe-customer-link:hover {
   gap: 8px;
+  color: #FFB347;
 }
 
 /* ========================================
@@ -400,7 +401,7 @@
   position: relative;
   z-index: 1;
   padding: 120px 0;
-  background: rgba(10, 37, 64, 0.75);
+  background: rgba(26, 26, 26, 0.75);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -427,7 +428,7 @@
   display: inline-block;
   font-size: 13px;
   font-weight: 600;
-  color: var(--stripe-cyan);
+  color: #FFB347;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 16px;
@@ -578,13 +579,14 @@
   gap: 4px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--stripe-purple);
+  color: #FF6B35;
   text-decoration: none;
   transition: gap 0.2s ease;
 }
 
 .stripe-link:hover {
   gap: 8px;
+  color: #FF5722;
 }
 
 /* ========================================
@@ -595,7 +597,7 @@
   position: relative;
   z-index: 1;
   padding: 80px 0 40px;
-  background: rgba(10, 37, 64, 0.9);
+  background: rgba(26, 26, 26, 0.9);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
@@ -663,7 +665,7 @@
 }
 
 .stripe-footer-col a:hover {
-  color: var(--stripe-purple);
+  color: #FF6B35;
 }
 
 .stripe-footer-bottom {
