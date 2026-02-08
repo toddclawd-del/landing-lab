@@ -30,6 +30,7 @@ import CyberBrutalism from './pages/2026-02-04-cyber-brutalism'
 import NeoDeco from './pages/2026-02-05-neo-deco'
 import SurveillanceThermal from './pages/2026-02-06-surveillance-thermal'
 import StripeGradient from './pages/2026-02-07-stripe-gradient'
+import LinearLook from './pages/2026-02-08-linear-look'
 
 function App() {
   return (
@@ -68,6 +69,7 @@ function App() {
         <Route path="/neo-deco" element={<NeoDeco />} />
         <Route path="/surveillance-thermal" element={<SurveillanceThermal />} />
         <Route path="/stripe-gradient" element={<StripeGradient />} />
+        <Route path="/linear-look" element={<LinearLook />} />
       </Routes>
     </HashRouter>
   )

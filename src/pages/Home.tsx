@@ -33,12 +33,19 @@ interface LandingPage {
 const pages: LandingPage[] = [
   // Latest Landing Page
   {
+    slug: 'linear-look',
+    title: 'The Linear Look',
+    inspiration: 'linear.app — Dark SaaS aesthetic, glassmorphism, glow blobs, animated border shine, circuit board decorations, bento grid',
+    date: '2026-02-08',
+    icon: Zap,
+    featured: true
+  },
+  {
     slug: 'stripe-gradient',
     title: 'Stripe Gradient',
     inspiration: 'stripe.com — Animated WebGL gradient hero, text blend effects, massive whitespace, stats bar, customer showcase cards',
     date: '2026-02-07',
     icon: Sparkles,
-    featured: true
   },
   {
     slug: 'surveillance-thermal',
