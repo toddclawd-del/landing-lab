@@ -10,32 +10,32 @@ import {
   ArrowRight,
   Github,
   Twitter,
+  Circle,
 } from 'lucide-react'
 
 // ============================================================================
-// DESIGN TOKENS - The Linear Look Palette
+// DESIGN TOKENS - The Linear Look Palette (Updated to match linear.app)
 // ============================================================================
 
 const colors = {
   bg: {
-    base: '#0A0A0B',
-    elevated: '#141417',
+    base: '#08090A',           // was #0A0A0B - slightly darker
+    elevated: '#262626',       // was #141417 - matches Linear
     surface: '#1C1C21',
   },
   text: {
-    primary: '#FAFAFA',
-    secondary: '#A1A1AA',
-    tertiary: '#52525B',
+    primary: '#F7F8F8',        // was #FAFAFA
+    secondary: '#8A8F98',      // was #A1A1AA - Linear's actual gray
+    tertiary: '#505050',       // was #52525B
   },
   border: {
     default: 'rgba(255, 255, 255, 0.06)',
     hover: 'rgba(255, 255, 255, 0.12)',
   },
-  glow: {
-    purple: '#8B5CF6',
-    blue: '#3B82F6',
-    teal: '#14B8A6',
-    pink: '#EC4899',
+  accent: '#5E6AD2',           // Linear's desaturated indigo (replaces vibrant purple)
+  cta: {
+    bg: '#E6E6E6',             // Off-white CTA button
+    text: '#08090A',           // Dark text on light CTA
   },
 }
 
@@ -67,7 +67,7 @@ const staggerContainer: Variants = {
 }
 
 const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: 0.95 },
+  hidden: { opacity: 0, scale: 0.98 },
   visible: {
     opacity: 1,
     scale: 1,
@@ -79,101 +79,31 @@ const scaleIn: Variants = {
 }
 
 // ============================================================================
-// GLOW BLOB COMPONENT
+// SUBTLE AMBIENT GLOW (Much more restrained)
 // ============================================================================
 
-interface GlowBlobProps {
-  color: string
-  size: number
-  top?: string
-  left?: string
-  right?: string
-  bottom?: string
-  delay?: number
-}
-
-function GlowBlob({ color, size, top, left, right, bottom, delay = 0 }: GlowBlobProps) {
+function AmbientGlow() {
   return (
-    <motion.div
-      className="absolute rounded-full pointer-events-none"
+    <div
+      className="absolute inset-0 pointer-events-none overflow-hidden"
       style={{
-        width: size,
-        height: size,
-        top,
-        left,
-        right,
-        bottom,
-        background: `radial-gradient(circle, ${color}40 0%, transparent 70%)`,
-        filter: 'blur(80px)',
-        mixBlendMode: 'screen',
-      }}
-      animate={{
-        x: [0, 30, -20, 0],
-        y: [0, -25, 15, 0],
-        scale: [1, 1.1, 0.95, 1],
-      }}
-      transition={{
-        duration: 12,
-        ease: 'easeInOut',
-        repeat: Infinity,
-        delay,
+        background: `radial-gradient(ellipse 80% 50% at 50% 0%, rgba(94, 106, 210, 0.08) 0%, transparent 60%)`,
       }}
     />
   )
 }
 
 // ============================================================================
-// ANIMATED BORDER SHINE CARD
+// SIMPLE CARD (No animated borders)
 // ============================================================================
 
-interface ShineCardProps {
-  children: React.ReactNode
-  className?: string
-  delay?: number
-}
-
-function ShineCard({ children, className = '', delay = 0 }: ShineCardProps) {
-  return (
-    <motion.div
-      className={`relative group ${className}`}
-      variants={scaleIn}
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
-    >
-      {/* Animated border gradient */}
-      <div
-        className="absolute -inset-px rounded-xl overflow-hidden"
-        style={{
-          background: `conic-gradient(from ${delay * 45}deg, transparent, rgba(255,255,255,0.5), transparent 60%)`,
-          animation: `spin 4s linear infinite`,
-          animationDelay: `${delay * 0.5}s`,
-        }}
-      />
-      {/* Inner card */}
-      <div
-        className="relative rounded-xl p-6 h-full"
-        style={{
-          background: colors.bg.elevated,
-          backdropFilter: 'blur(16px)',
-        }}
-      >
-        {children}
-      </div>
-    </motion.div>
-  )
-}
-
-// ============================================================================
-// GLASSMORPHISM CARD
-// ============================================================================
-
-interface GlassCardProps {
+interface SimpleCardProps {
   children: React.ReactNode
   className?: string
   span?: 'default' | 'wide' | 'tall' | 'large'
 }
 
-function GlassCard({ children, className = '', span = 'default' }: GlassCardProps) {
+function SimpleCard({ children, className = '', span = 'default' }: SimpleCardProps) {
   const spanClasses = {
     default: '',
     wide: 'md:col-span-2',
@@ -183,29 +113,20 @@ function GlassCard({ children, className = '', span = 'default' }: GlassCardProp
 
   return (
     <motion.div
-      className={`relative group rounded-xl overflow-hidden ${spanClasses[span]} ${className}`}
+      className={`relative group rounded-xl ${spanClasses[span]} ${className}`}
       variants={scaleIn}
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.2 }}
     >
-      {/* Animated shine border */}
-      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div
-          className="absolute inset-0 rounded-xl"
-          style={{
-            background: 'conic-gradient(from 180deg, transparent, rgba(255,255,255,0.4), transparent 60%)',
-            animation: 'spin 3s linear infinite',
-          }}
-        />
-      </div>
-      
-      {/* Card content */}
       <div
-        className="relative m-px rounded-xl p-6 h-full transition-all duration-200"
+        className="rounded-xl p-6 h-full transition-colors duration-200"
         style={{
-          background: `rgba(255, 255, 255, 0.03)`,
-          backdropFilter: 'blur(16px)',
+          background: `rgba(255, 255, 255, 0.02)`,
           border: `1px solid ${colors.border.default}`,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = colors.border.hover
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = colors.border.default
         }}
       >
         {children}
@@ -215,94 +136,115 @@ function GlassCard({ children, className = '', span = 'default' }: GlassCardProp
 }
 
 // ============================================================================
-// CIRCUIT BOARD DECORATION
+// PRODUCT UI MOCK (Linear-style issue board)
 // ============================================================================
 
-function CircuitDecoration({ className = '' }: { className?: string }) {
+function ProductScreenshot() {
+  const issues = [
+    { id: 'LIN-142', title: 'Implement keyboard shortcuts for navigation', status: 'in-progress', assignee: 'A' },
+    { id: 'LIN-143', title: 'Add dark mode toggle to settings panel', status: 'todo', assignee: 'B' },
+    { id: 'LIN-144', title: 'Optimize bundle size for faster loading', status: 'done', assignee: 'C' },
+    { id: 'LIN-145', title: 'Design new onboarding flow mockups', status: 'in-progress', assignee: 'D' },
+    { id: 'LIN-146', title: 'Fix pagination bug on mobile devices', status: 'todo', assignee: 'E' },
+  ]
+
+  const statusColors: Record<string, string> = {
+    'todo': '#8A8F98',
+    'in-progress': '#5E6AD2',
+    'done': '#4ADE80',
+  }
+
   return (
-    <svg
-      className={`absolute pointer-events-none ${className}`}
-      width="200"
-      height="300"
-      viewBox="0 0 200 300"
-      fill="none"
+    <motion.div
+      className="relative mx-auto max-w-4xl mt-16"
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Vertical line */}
-      <motion.path
-        d="M100 0 L100 120 L150 170 L150 300"
-        stroke="url(#circuitGradient)"
-        strokeWidth="1"
-        strokeDasharray="8 4"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 2, ease: 'easeInOut' }}
-      />
-      {/* Branch 1 */}
-      <motion.path
-        d="M100 60 L40 60 L40 140"
-        stroke="url(#circuitGradient)"
-        strokeWidth="1"
-        strokeDasharray="8 4"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.5, delay: 0.5, ease: 'easeInOut' }}
-      />
-      {/* Branch 2 */}
-      <motion.path
-        d="M150 200 L180 200 L180 260"
-        stroke="url(#circuitGradient)"
-        strokeWidth="1"
-        strokeDasharray="8 4"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.5, delay: 1, ease: 'easeInOut' }}
-      />
-      {/* Nodes */}
-      <motion.circle
-        cx="100"
-        cy="60"
-        r="4"
-        fill={colors.glow.purple}
-        initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.2, 1] }}
-        transition={{ duration: 0.5, delay: 0.8 }}
-      />
-      <motion.circle
-        cx="40"
-        cy="60"
-        r="3"
-        fill={colors.glow.blue}
-        initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.2, 1] }}
-        transition={{ duration: 0.5, delay: 1.2 }}
-      />
-      <motion.circle
-        cx="150"
-        cy="170"
-        r="4"
-        fill={colors.glow.teal}
-        initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.2, 1] }}
-        transition={{ duration: 0.5, delay: 1.5 }}
-      />
-      <motion.circle
-        cx="180"
-        cy="200"
-        r="3"
-        fill={colors.glow.pink}
-        initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.2, 1] }}
-        transition={{ duration: 0.5, delay: 1.8 }}
+      {/* Subtle ambient glow behind the screenshot */}
+      <div
+        className="absolute -inset-20 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse 60% 40% at 50% 50%, rgba(94, 106, 210, 0.12) 0%, transparent 70%)`,
+          filter: 'blur(40px)',
+        }}
       />
       
-      <defs>
-        <linearGradient id="circuitGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={colors.glow.purple} stopOpacity="0.6" />
-          <stop offset="50%" stopColor={colors.glow.blue} stopOpacity="0.4" />
-          <stop offset="100%" stopColor={colors.glow.teal} stopOpacity="0.2" />
-        </linearGradient>
-      </defs>
-    </svg>
+      {/* App window frame */}
+      <div
+        className="relative rounded-xl overflow-hidden"
+        style={{
+          background: colors.bg.elevated,
+          border: `1px solid ${colors.border.default}`,
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+        }}
+      >
+        {/* Title bar */}
+        <div
+          className="flex items-center gap-2 px-4 py-3"
+          style={{ borderBottom: `1px solid ${colors.border.default}` }}
+        >
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-full" style={{ background: '#FF5F57' }} />
+            <div className="w-3 h-3 rounded-full" style={{ background: '#FEBC2E' }} />
+            <div className="w-3 h-3 rounded-full" style={{ background: '#28C840' }} />
+          </div>
+          <div className="flex-1 text-center">
+            <span className="text-xs" style={{ color: colors.text.tertiary }}>
+              Linear — Active Issues
+            </span>
+          </div>
+        </div>
+
+        {/* Issue list */}
+        <div className="p-4 space-y-2">
+          {issues.map((issue) => (
+            <div
+              key={issue.id}
+              className="flex items-center gap-3 p-3 rounded-lg transition-colors duration-150"
+              style={{
+                background: 'rgba(255, 255, 255, 0.02)',
+              }}
+            >
+              {/* Status indicator */}
+              <Circle
+                className="w-4 h-4 flex-shrink-0"
+                style={{ color: statusColors[issue.status] }}
+                fill={issue.status === 'done' ? statusColors[issue.status] : 'transparent'}
+                strokeWidth={2}
+              />
+              
+              {/* Issue ID */}
+              <span
+                className="text-xs font-medium flex-shrink-0"
+                style={{ color: colors.text.tertiary, width: '56px' }}
+              >
+                {issue.id}
+              </span>
+              
+              {/* Title */}
+              <span
+                className="text-sm flex-1 truncate"
+                style={{ color: colors.text.primary }}
+              >
+                {issue.title}
+              </span>
+              
+              {/* Avatar placeholder */}
+              <div
+                className="w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0"
+                style={{
+                  background: colors.accent,
+                  color: colors.text.primary,
+                }}
+              >
+                {issue.assignee}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
   )
 }
 
@@ -316,8 +258,8 @@ function GridBackground() {
       className="absolute inset-0 pointer-events-none"
       style={{
         backgroundImage: `
-          linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
+          linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)
         `,
         backgroundSize: '64px 64px',
         maskImage: 'radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 70%)',
@@ -397,12 +339,8 @@ const features = [
   },
 ]
 
-const stats = [
-  { value: '99.99%', label: 'Uptime SLA' },
-  { value: '< 50ms', label: 'API Latency' },
-  { value: '10M+', label: 'Weekly Events' },
-  { value: '2,400+', label: 'Companies' },
-]
+// Customer logos placeholder
+const customers = ['Vercel', 'Stripe', 'Figma', 'Notion', 'Linear', 'Raycast']
 
 // ============================================================================
 // MAIN COMPONENT
@@ -415,16 +353,11 @@ export default function LinearLook() {
       style={{
         background: colors.bg.base,
         color: colors.text.primary,
-        fontFamily: 'Inter, system-ui, sans-serif',
+        fontFamily: '"Inter", system-ui, sans-serif',
       }}
     >
-      {/* Global spin animation */}
+      {/* Accessibility: reduced motion support */}
       <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
         @media (prefers-reduced-motion: reduce) {
           *, *::before, *::after {
             animation-duration: 0.01ms !important;
@@ -438,7 +371,7 @@ export default function LinearLook() {
       <motion.nav
         className="fixed top-0 left-0 right-0 z-50 px-6 py-4"
         style={{
-          background: `rgba(10, 10, 11, 0.8)`,
+          background: `rgba(8, 9, 10, 0.8)`,
           backdropFilter: 'blur(12px)',
           borderBottom: `1px solid ${colors.border.default}`,
         }}
@@ -451,12 +384,12 @@ export default function LinearLook() {
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{
-                background: `linear-gradient(135deg, ${colors.glow.purple}, ${colors.glow.blue})`,
+                background: colors.accent,
               }}
             >
               <Command className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-lg tracking-tight">Linear</span>
+            <span className="text-lg tracking-tight" style={{ fontWeight: 510 }}>Linear</span>
           </div>
           
           <div className="hidden md:flex items-center gap-8">
@@ -465,7 +398,7 @@ export default function LinearLook() {
                 key={item}
                 href="#"
                 className="text-sm transition-colors duration-200"
-                style={{ color: colors.text.secondary }}
+                style={{ color: colors.text.secondary, fontWeight: 450 }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = colors.text.primary)}
                 onMouseLeave={(e) => (e.currentTarget.style.color = colors.text.secondary)}
               >
@@ -477,21 +410,22 @@ export default function LinearLook() {
           <div className="flex items-center gap-4">
             <a
               href="#"
-              className="text-sm hidden sm:block"
+              className="text-sm hidden sm:block transition-colors duration-200"
               style={{ color: colors.text.secondary }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = colors.text.primary)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = colors.text.secondary)}
             >
               Sign in
             </a>
-            <motion.button
-              className="px-4 py-2 rounded-lg text-sm font-medium"
+            <button
+              className="px-4 py-2 rounded-[10px] text-sm font-medium transition-opacity duration-200 hover:opacity-90"
               style={{
-                background: `linear-gradient(135deg, ${colors.glow.purple}, ${colors.glow.blue})`,
+                background: colors.cta.bg,
+                color: colors.cta.text,
               }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
             >
               Start Building
-            </motion.button>
+            </button>
           </div>
         </div>
       </motion.nav>
@@ -499,23 +433,15 @@ export default function LinearLook() {
       {/* ====================== HERO ====================== */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
         <GridBackground />
-        
-        {/* Glow blobs */}
-        <GlowBlob color={colors.glow.purple} size={600} top="-10%" left="10%" delay={0} />
-        <GlowBlob color={colors.glow.blue} size={500} top="20%" right="5%" delay={2} />
-        <GlowBlob color={colors.glow.teal} size={400} bottom="10%" left="30%" delay={4} />
-        
-        {/* Circuit decorations */}
-        <CircuitDecoration className="left-8 top-40 opacity-40 hidden lg:block" />
-        <CircuitDecoration className="right-8 top-60 opacity-40 hidden lg:block scale-x-[-1]" />
+        <AmbientGlow />
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
           <motion.div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8 text-sm"
             style={{
-              background: `rgba(139, 92, 246, 0.1)`,
-              border: `1px solid rgba(139, 92, 246, 0.3)`,
-              color: colors.glow.purple,
+              background: `rgba(94, 106, 210, 0.1)`,
+              border: `1px solid rgba(94, 106, 210, 0.2)`,
+              color: colors.accent,
             }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -526,12 +452,12 @@ export default function LinearLook() {
           </motion.div>
 
           <motion.h1
-            className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight mb-6"
+            className="text-4xl md:text-6xl lg:text-7xl tracking-tight mb-6"
             style={{
-              background: `linear-gradient(180deg, ${colors.text.primary} 0%, ${colors.text.secondary} 100%)`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              color: colors.text.primary,  // Plain white, no gradient
               lineHeight: 1.1,
+              fontWeight: 510,  // Linear's weight, not 600
+              letterSpacing: '-0.02em',
             }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -559,83 +485,77 @@ export default function LinearLook() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <motion.button
-              className="px-6 py-3 rounded-lg font-medium flex items-center gap-2"
+            {/* Primary CTA - Light button (Linear style) */}
+            <button
+              className="px-6 py-3 rounded-[10px] font-medium flex items-center gap-2 transition-opacity duration-200 hover:opacity-90"
               style={{
-                background: `linear-gradient(135deg, ${colors.glow.purple}, ${colors.glow.blue})`,
+                background: colors.cta.bg,
+                color: colors.cta.text,
               }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
             >
               Get Started Free
               <ArrowRight className="w-4 h-4" />
-            </motion.button>
+            </button>
 
-            <motion.button
-              className="px-6 py-3 rounded-lg font-medium flex items-center gap-2"
+            {/* Secondary CTA - Ghost button */}
+            <button
+              className="px-6 py-3 rounded-[10px] font-medium flex items-center gap-2 transition-colors duration-200"
               style={{
                 background: 'transparent',
                 border: `1px solid ${colors.border.hover}`,
                 color: colors.text.primary,
               }}
-              whileHover={{
-                scale: 1.05,
-                borderColor: colors.text.secondary,
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = colors.text.secondary
               }}
-              whileTap={{ scale: 0.98 }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = colors.border.hover
+              }}
             >
               <Github className="w-4 h-4" />
               View on GitHub
-            </motion.button>
+            </button>
           </motion.div>
+
+          {/* Product Screenshot (replaces circuit decorations) */}
+          <ProductScreenshot />
         </div>
       </section>
 
-      {/* ====================== STATS BAR ====================== */}
+      {/* ====================== CUSTOMER LOGOS (Replaces stats bar) ====================== */}
       <Section>
         <motion.div
           className="max-w-5xl mx-auto px-6"
           variants={fadeInUp}
         >
-          <div
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-2xl"
-            style={{
-              background: colors.bg.elevated,
-              border: `1px solid ${colors.border.default}`,
-            }}
+          <p
+            className="text-sm text-center mb-8"
+            style={{ color: colors.text.tertiary }}
           >
-            {stats.map((stat, i) => (
-              <div
-                key={stat.label}
-                className="text-center py-4"
-                style={{
-                  borderRight: i < stats.length - 1 && i !== 1 ? `1px solid ${colors.border.default}` : 'none',
-                }}
+            Trusted by teams at
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+            {customers.map((name) => (
+              <span
+                key={name}
+                className="text-lg font-medium"
+                style={{ color: colors.text.tertiary }}
               >
-                <div
-                  className="text-2xl md:text-3xl font-bold mb-1"
-                  style={{
-                    background: `linear-gradient(135deg, ${colors.text.primary}, ${colors.glow.purple})`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  {stat.value}
-                </div>
-                <div className="text-sm" style={{ color: colors.text.tertiary }}>
-                  {stat.label}
-                </div>
-              </div>
+                {name}
+              </span>
             ))}
           </div>
         </motion.div>
       </Section>
 
-      {/* ====================== BENTO FEATURES ====================== */}
+      {/* ====================== FEATURES ====================== */}
       <Section>
         <div className="max-w-6xl mx-auto px-6">
           <motion.div className="text-center mb-16" variants={fadeInUp}>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
+            <h2
+              className="text-3xl md:text-4xl tracking-tight mb-4"
+              style={{ fontWeight: 510, letterSpacing: '-0.02em' }}
+            >
               Everything you need to ship faster
             </h2>
             <p className="text-lg max-w-2xl mx-auto" style={{ color: colors.text.secondary }}>
@@ -650,21 +570,26 @@ export default function LinearLook() {
             {features.map((feature) => {
               const Icon = feature.icon
               return (
-                <GlassCard key={feature.title} span={feature.span}>
+                <SimpleCard key={feature.title} span={feature.span}>
                   <div
                     className="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
                     style={{
-                      background: `rgba(139, 92, 246, 0.1)`,
-                      border: `1px solid rgba(139, 92, 246, 0.2)`,
+                      background: `rgba(94, 106, 210, 0.1)`,
+                      border: `1px solid rgba(94, 106, 210, 0.15)`,
                     }}
                   >
-                    <Icon className="w-5 h-5" style={{ color: colors.glow.purple }} />
+                    <Icon className="w-5 h-5" style={{ color: colors.accent }} />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                  <h3
+                    className="text-lg mb-2"
+                    style={{ fontWeight: 510 }}
+                  >
+                    {feature.title}
+                  </h3>
                   <p style={{ color: colors.text.secondary, lineHeight: 1.6 }}>
                     {feature.description}
                   </p>
-                </GlassCard>
+                </SimpleCard>
               )
             })}
           </motion.div>
@@ -674,19 +599,21 @@ export default function LinearLook() {
       {/* ====================== SHOWCASE CARD ====================== */}
       <Section>
         <div className="max-w-5xl mx-auto px-6">
-          <ShineCard className="overflow-hidden" delay={0}>
+          <motion.div
+            className="relative rounded-xl overflow-hidden"
+            style={{
+              background: colors.bg.elevated,
+              border: `1px solid ${colors.border.default}`,
+            }}
+            variants={scaleIn}
+          >
             <div className="relative p-8 md:p-12">
-              {/* Background glow */}
-              <div
-                className="absolute inset-0 opacity-30"
-                style={{
-                  background: `radial-gradient(ellipse at 30% 50%, ${colors.glow.purple}30, transparent 60%)`,
-                }}
-              />
-              
               <div className="relative z-10 grid md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h3 className="text-2xl md:text-3xl font-semibold mb-4 tracking-tight">
+                  <h3
+                    className="text-2xl md:text-3xl mb-4 tracking-tight"
+                    style={{ fontWeight: 510, letterSpacing: '-0.02em' }}
+                  >
                     Built for developers,
                     <br />
                     loved by teams
@@ -696,20 +623,25 @@ export default function LinearLook() {
                     extensibility in mind. Integrate with your existing tools seamlessly.
                   </p>
                   <div className="flex items-center gap-4">
-                    <motion.button
-                      className="px-4 py-2 rounded-lg text-sm font-medium"
+                    <button
+                      className="px-4 py-2 rounded-[10px] text-sm font-medium transition-colors duration-200"
                       style={{
                         background: colors.bg.surface,
                         border: `1px solid ${colors.border.hover}`,
                       }}
-                      whileHover={{ scale: 1.05 }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = colors.text.tertiary
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = colors.border.hover
+                      }}
                     >
                       Read Documentation
-                    </motion.button>
+                    </button>
                     <a
                       href="#"
-                      className="text-sm flex items-center gap-1"
-                      style={{ color: colors.glow.purple }}
+                      className="text-sm flex items-center gap-1 transition-opacity duration-200 hover:opacity-80"
+                      style={{ color: colors.accent }}
                     >
                       API Reference <ArrowRight className="w-4 h-4" />
                     </a>
@@ -727,51 +659,56 @@ export default function LinearLook() {
                   }}
                 >
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-3 h-3 rounded-full bg-red-500/60" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
-                    <div className="w-3 h-3 rounded-full bg-green-500/60" />
+                    <div className="w-3 h-3 rounded-full" style={{ background: '#FF5F57' }} />
+                    <div className="w-3 h-3 rounded-full" style={{ background: '#FEBC2E' }} />
+                    <div className="w-3 h-3 rounded-full" style={{ background: '#28C840' }} />
                   </div>
                   <pre style={{ color: colors.text.secondary }}>
-                    <span style={{ color: colors.glow.purple }}>import</span> {'{'} Linear {'}'}{' '}
-                    <span style={{ color: colors.glow.purple }}>from</span>{' '}
-                    <span style={{ color: colors.glow.teal }}>'@linear/sdk'</span>
+                    <span style={{ color: colors.accent }}>import</span> {'{'} Linear {'}'}{' '}
+                    <span style={{ color: colors.accent }}>from</span>{' '}
+                    <span style={{ color: '#4ADE80' }}>'@linear/sdk'</span>
                     {'\n\n'}
-                    <span style={{ color: colors.glow.purple }}>const</span> client ={' '}
-                    <span style={{ color: colors.glow.purple }}>new</span>{' '}
-                    <span style={{ color: colors.glow.blue }}>Linear</span>
+                    <span style={{ color: colors.accent }}>const</span> client ={' '}
+                    <span style={{ color: colors.accent }}>new</span>{' '}
+                    <span style={{ color: colors.text.primary }}>Linear</span>
                     {'({ apiKey })'}
                     {'\n\n'}
                     <span style={{ color: colors.text.tertiary }}>// Create an issue</span>
                     {'\n'}
-                    <span style={{ color: colors.glow.purple }}>await</span> client.
-                    <span style={{ color: colors.glow.blue }}>createIssue</span>
+                    <span style={{ color: colors.accent }}>await</span> client.
+                    <span style={{ color: colors.text.primary }}>createIssue</span>
                     {'({'}
                     {'\n'}
                     {'  title: '}
-                    <span style={{ color: colors.glow.teal }}>"Ship faster"</span>
+                    <span style={{ color: '#4ADE80' }}>"Ship faster"</span>
                     {','}
                     {'\n'}
                     {'  teamId: '}
-                    <span style={{ color: colors.glow.teal }}>"TEAM_123"</span>
+                    <span style={{ color: '#4ADE80' }}>"TEAM_123"</span>
                     {'\n}'}
                     {')'}
                   </pre>
                 </div>
               </div>
             </div>
-          </ShineCard>
+          </motion.div>
         </div>
       </Section>
 
       {/* ====================== CTA SECTION ====================== */}
       <Section className="relative">
-        {/* Background glows */}
-        <GlowBlob color={colors.glow.purple} size={500} top="0" left="20%" delay={0} />
-        <GlowBlob color={colors.glow.blue} size={400} bottom="0" right="25%" delay={2} />
+        {/* Very subtle ambient glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `radial-gradient(ellipse 60% 40% at 50% 50%, rgba(94, 106, 210, 0.06) 0%, transparent 70%)`,
+          }}
+        />
 
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
           <motion.h2
-            className="text-3xl md:text-5xl font-semibold tracking-tight mb-6"
+            className="text-3xl md:text-5xl tracking-tight mb-6"
+            style={{ fontWeight: 510, letterSpacing: '-0.02em' }}
             variants={fadeInUp}
           >
             Ready to build faster?
@@ -784,27 +721,18 @@ export default function LinearLook() {
             Join thousands of teams shipping better products with Linear.
           </motion.p>
           <motion.div variants={fadeInUp}>
-            <motion.button
-              className="px-8 py-4 rounded-xl font-medium text-lg relative overflow-hidden group"
+            <button
+              className="px-8 py-4 rounded-xl font-medium text-lg transition-opacity duration-200 hover:opacity-90"
               style={{
-                background: `linear-gradient(135deg, ${colors.glow.purple}, ${colors.glow.blue})`,
+                background: colors.cta.bg,
+                color: colors.cta.text,
               }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
             >
-              {/* Shine effect on hover */}
-              <span
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-                  animation: 'shine 1.5s ease-in-out infinite',
-                }}
-              />
-              <span className="relative z-10 flex items-center gap-2">
+              <span className="flex items-center gap-2">
                 Get Started — It's Free
                 <ArrowRight className="w-5 h-5" />
               </span>
-            </motion.button>
+            </button>
           </motion.div>
         </div>
       </Section>
@@ -822,7 +750,7 @@ export default function LinearLook() {
               <div
                 className="w-6 h-6 rounded flex items-center justify-center"
                 style={{
-                  background: `linear-gradient(135deg, ${colors.glow.purple}, ${colors.glow.blue})`,
+                  background: colors.accent,
                 }}
               >
                 <Command className="w-3 h-3 text-white" />
@@ -839,28 +767,34 @@ export default function LinearLook() {
                   href="#"
                   className="text-sm transition-colors duration-200"
                   style={{ color: colors.text.tertiary }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = colors.text.secondary)}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = colors.text.tertiary)}
                 >
                   {item}
                 </a>
               ))}
-              <a href="#" style={{ color: colors.text.tertiary }}>
+              <a
+                href="#"
+                className="transition-colors duration-200"
+                style={{ color: colors.text.tertiary }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = colors.text.secondary)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = colors.text.tertiary)}
+              >
                 <Twitter className="w-4 h-4" />
               </a>
-              <a href="#" style={{ color: colors.text.tertiary }}>
+              <a
+                href="#"
+                className="transition-colors duration-200"
+                style={{ color: colors.text.tertiary }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = colors.text.secondary)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = colors.text.tertiary)}
+              >
                 <Github className="w-4 h-4" />
               </a>
             </div>
           </div>
         </div>
       </footer>
-
-      {/* Shine keyframes */}
-      <style>{`
-        @keyframes shine {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-      `}</style>
     </div>
   )
 }
