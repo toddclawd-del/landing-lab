@@ -4,6 +4,7 @@ All landing pages created, with references and scores.
 
 | Date | Trend | Reference | Score | Notes |
 |------|-------|-----------|-------|-------|
+| 2026-02-08 | The Linear Look | [linear.app](https://linear.app/) | 93/100 | Dark SaaS aesthetic, glassmorphism cards, animated border shine (conic-gradient rotation), glow blobs with drift, circuit board SVG decorations, bento grid layout, code snippet showcase, prefers-reduced-motion support |
 | 2026-02-07 | Stripe Gradient | [stripe.com](https://stripe.com/) | 92/100 | Animated WebGL gradient hero with flowing color blobs, text blend effects (mix-blend-mode: color-burn), massive stats bar with counter animations, customer showcase cards, code demo section, dark theme with signature purple accent |
 | 2026-02-06 | Surveillance Thermal | [Zeka Graphic](https://www.zekagraphic.com/11-graphic-design-trends-2026/) | 88/100 | Thermal heatmap + surveillance aesthetic — infrared gradient spectrum, CCTV grid overlays, detection boxes, tracking badges, live timestamps, network topology, data feed logs, "VANTA" systems concept |
 | 2026-02-05 | Neo Deco | [Yes I'm a Designer](https://yesimadesigner.com/2026-design-trends-that-actually-matters/) | 90/100 | Art Deco revival for its centennial — gold gradients, geometric patterns (sunbursts, chevrons, stepped corners), Playfair Display serif + DM Sans, dark noir palette, luxury hotel concept "The Meridian" |
