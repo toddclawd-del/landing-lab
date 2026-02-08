@@ -10,7 +10,6 @@ import {
   ArrowRight,
   Github,
   Twitter,
-  Circle,
 } from 'lucide-react'
 
 // ============================================================================
@@ -136,112 +135,164 @@ function SimpleCard({ children, className = '', span = 'default' }: SimpleCardPr
 }
 
 // ============================================================================
-// PRODUCT UI MOCK (Linear-style issue board)
+// PRODUCT UI MOCK (Linear-style - LARGE and dominant like the real site)
 // ============================================================================
 
-function ProductScreenshot() {
-  const issues = [
-    { id: 'LIN-142', title: 'Implement keyboard shortcuts for navigation', status: 'in-progress', assignee: 'A' },
-    { id: 'LIN-143', title: 'Add dark mode toggle to settings panel', status: 'todo', assignee: 'B' },
-    { id: 'LIN-144', title: 'Optimize bundle size for faster loading', status: 'done', assignee: 'C' },
-    { id: 'LIN-145', title: 'Design new onboarding flow mockups', status: 'in-progress', assignee: 'D' },
-    { id: 'LIN-146', title: 'Fix pagination bug on mobile devices', status: 'todo', assignee: 'E' },
+function LargeProductScreenshot() {
+  // Inbox items - left panel
+  const inboxItems = [
+    { id: 'ENG-135', title: 'Refactor sonic crawler', subtitle: 'nan assigned you', time: '2h', priority: 'urgent' },
+    { id: 'LLM-001', title: 'LLM Chatbot', subtitle: 'New project update by raissa', time: '8h', priority: 'normal' },
+    { id: 'ENG-159', title: 'Error uploading images via API', subtitle: 'SLA breached', time: '1d', priority: 'high' },
+    { id: 'DES-498', title: 'Redesign users settings...', subtitle: 'karri mentioned you', time: '2d', priority: 'normal' },
+    { id: 'ENG-160', title: 'Holtzmann engine is broken', subtitle: 'You asked to be reminded about this issue', time: '4d', priority: 'normal' },
   ]
 
-  const statusColors: Record<string, string> = {
-    'todo': '#8A8F98',
-    'in-progress': '#5E6AD2',
-    'done': '#4ADE80',
+  const priorityColors: Record<string, string> = {
+    urgent: '#F97316',
+    high: '#EF4444',
+    normal: '#8A8F98',
   }
 
   return (
     <motion.div
-      className="relative mx-auto max-w-4xl mt-16"
-      initial={{ opacity: 0, y: 40 }}
+      className="relative w-full mt-12 md:mt-16"
+      initial={{ opacity: 0, y: 60 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Subtle ambient glow behind the screenshot */}
-      <div
-        className="absolute -inset-20 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse 60% 40% at 50% 50%, rgba(94, 106, 210, 0.12) 0%, transparent 70%)`,
-          filter: 'blur(40px)',
-        }}
-      />
-      
-      {/* App window frame */}
-      <div
-        className="relative rounded-xl overflow-hidden"
-        style={{
-          background: colors.bg.elevated,
-          border: `1px solid ${colors.border.default}`,
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        }}
-      >
-        {/* Title bar */}
+      {/* Wide container - extends beyond content width like Linear */}
+      <div className="relative max-w-7xl mx-auto px-4">
+        {/* Subtle ambient glow */}
         <div
-          className="flex items-center gap-2 px-4 py-3"
-          style={{ borderBottom: `1px solid ${colors.border.default}` }}
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `radial-gradient(ellipse 80% 50% at 50% 20%, rgba(94, 106, 210, 0.08) 0%, transparent 70%)`,
+            filter: 'blur(60px)',
+            transform: 'translateY(40px)',
+          }}
+        />
+        
+        {/* Main app UI - mimics Linear's actual layout */}
+        <div
+          className="relative rounded-t-xl overflow-hidden"
+          style={{
+            background: '#1C1C21',
+            boxShadow: '0 -20px 80px -20px rgba(0, 0, 0, 0.6)',
+          }}
         >
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-full" style={{ background: '#FF5F57' }} />
-            <div className="w-3 h-3 rounded-full" style={{ background: '#FEBC2E' }} />
-            <div className="w-3 h-3 rounded-full" style={{ background: '#28C840' }} />
-          </div>
-          <div className="flex-1 text-center">
-            <span className="text-xs" style={{ color: colors.text.tertiary }}>
-              Linear — Active Issues
-            </span>
-          </div>
-        </div>
-
-        {/* Issue list */}
-        <div className="p-4 space-y-2">
-          {issues.map((issue) => (
+          {/* Two-panel layout like Linear */}
+          <div className="flex min-h-[420px] md:min-h-[520px]">
+            {/* Left sidebar - Inbox */}
             <div
-              key={issue.id}
-              className="flex items-center gap-3 p-3 rounded-lg transition-colors duration-150"
-              style={{
-                background: 'rgba(255, 255, 255, 0.02)',
-              }}
+              className="w-1/3 md:w-[320px] flex-shrink-0"
+              style={{ borderRight: `1px solid ${colors.border.default}` }}
             >
-              {/* Status indicator */}
-              <Circle
-                className="w-4 h-4 flex-shrink-0"
-                style={{ color: statusColors[issue.status] }}
-                fill={issue.status === 'done' ? statusColors[issue.status] : 'transparent'}
-                strokeWidth={2}
-              />
-              
-              {/* Issue ID */}
-              <span
-                className="text-xs font-medium flex-shrink-0"
-                style={{ color: colors.text.tertiary, width: '56px' }}
-              >
-                {issue.id}
-              </span>
-              
-              {/* Title */}
-              <span
-                className="text-sm flex-1 truncate"
-                style={{ color: colors.text.primary }}
-              >
-                {issue.title}
-              </span>
-              
-              {/* Avatar placeholder */}
+              {/* Sidebar header */}
               <div
-                className="w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0"
-                style={{
-                  background: colors.accent,
-                  color: colors.text.primary,
-                }}
+                className="flex items-center justify-between px-4 py-3"
+                style={{ borderBottom: `1px solid ${colors.border.default}` }}
               >
-                {issue.assignee}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium" style={{ color: colors.text.primary }}>Inbox</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                    <span className="text-xs" style={{ color: colors.text.tertiary }}>⌘</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Inbox items */}
+              <div className="p-2">
+                {inboxItems.map((item, idx) => (
+                  <div
+                    key={item.id}
+                    className="flex items-start gap-3 px-3 py-2.5 rounded-lg mb-1"
+                    style={{
+                      background: idx === 0 ? 'rgba(255, 255, 255, 0.04)' : 'transparent',
+                    }}
+                  >
+                    {/* Priority dot */}
+                    <div
+                      className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
+                      style={{ background: priorityColors[item.priority] }}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs" style={{ color: colors.text.tertiary }}>{item.id}</span>
+                        <span className="text-sm truncate" style={{ color: colors.text.primary }}>{item.title}</span>
+                      </div>
+                      <span className="text-xs" style={{ color: colors.text.tertiary }}>{item.subtitle}</span>
+                    </div>
+                    <span className="text-xs flex-shrink-0" style={{ color: colors.text.tertiary }}>{item.time}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+
+            {/* Right panel - Issue detail */}
+            <div className="flex-1 p-6">
+              {/* Breadcrumb */}
+              <div className="flex items-center gap-2 mb-6 text-sm">
+                <span style={{ color: colors.accent }}>⚙ Engineering</span>
+                <span style={{ color: colors.text.tertiary }}>›</span>
+                <span style={{ color: colors.text.secondary }}>🌾 Spice harvester</span>
+                <span style={{ color: colors.text.tertiary }}>›</span>
+                <span style={{ color: colors.text.tertiary }}>ENG-135</span>
+              </div>
+
+              {/* Issue title */}
+              <h2
+                className="text-2xl md:text-3xl mb-6"
+                style={{ color: colors.text.primary, fontWeight: 510 }}
+              >
+                Refactor sonic crawler
+              </h2>
+
+              {/* Code snippet / comment preview */}
+              <div
+                className="rounded-lg p-4 mb-4"
+                style={{
+                  background: colors.bg.base,
+                  border: `1px solid ${colors.border.default}`,
+                }}
+              >
+                <p className="text-sm mb-3" style={{ color: colors.text.secondary }}>
+                  <span style={{ color: colors.accent }}>Comment.documentContent</span> is defined wrongly. It should be a{' '}
+                  <code className="px-1.5 py-0.5 rounded text-xs" style={{ background: 'rgba(255,255,255,0.06)', color: '#F97316' }}>LazyManyToOne</code>
+                </p>
+                <pre className="text-xs overflow-x-auto" style={{ color: colors.text.tertiary }}>
+                  <span style={{ color: colors.text.tertiary }}>{'/** The document content that this comment is associated with. */'}</span>{'\n'}
+                  <span style={{ color: colors.accent }}>@ManyToOne</span>{'(() => DocumentContent,'}<span style={{ color: '#4ADE80' }}>{"'comments'"}</span>{', { optional: '}<span style={{ color: '#F97316' }}>true</span>{' })'}{'\n'}
+                  <span style={{ color: colors.accent }}>public</span>{' documentContent?: DocumentContent;'}
+                </pre>
+              </div>
+
+              <p className="text-sm" style={{ color: colors.text.secondary }}>
+                We would be accessing <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'rgba(255,255,255,0.06)' }}>CachedPromise{'<DocumentContent>'}</code>
+                <br />
+                property touch.
+              </p>
+            </div>
+          </div>
+
+          {/* Left nav rail - absolute positioned */}
+          <div
+            className="absolute left-0 top-0 bottom-0 w-12 hidden md:flex flex-col items-center py-4 gap-3"
+            style={{
+              background: '#161619',
+              borderRight: `1px solid ${colors.border.default}`,
+            }}
+          >
+            <div className="w-6 h-6 rounded flex items-center justify-center" style={{ background: colors.accent }}>
+              <span className="text-xs text-white font-medium">L</span>
+            </div>
+            <div className="w-6 h-6 rounded flex items-center justify-center text-xs" style={{ color: colors.text.tertiary }}>📥</div>
+            <div className="w-6 h-6 rounded flex items-center justify-center text-xs" style={{ color: colors.text.tertiary }}>📋</div>
+            <div className="w-6 h-6 rounded flex items-center justify-center text-xs" style={{ color: colors.text.tertiary }}>🗂</div>
+            <div className="mt-auto w-6 h-6 rounded-full flex items-center justify-center text-xs" style={{ background: '#5E6AD2', color: 'white' }}>1</div>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -431,95 +482,79 @@ export default function LinearLook() {
       </motion.nav>
 
       {/* ====================== HERO ====================== */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+      <section className="relative pt-32 pb-8 md:pt-44 md:pb-12 overflow-hidden">
         <GridBackground />
         <AmbientGlow />
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <motion.div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8 text-sm"
-            style={{
-              background: `rgba(94, 106, 210, 0.1)`,
-              border: `1px solid rgba(94, 106, 210, 0.2)`,
-              color: colors.accent,
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <Sparkles className="w-4 h-4" />
-            Now with AI-powered workflows
-          </motion.div>
+          {/* No badge/pill - Linear doesn't have announcements in hero */}
 
           <motion.h1
-            className="text-4xl md:text-6xl lg:text-7xl tracking-tight mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl tracking-tight mb-6"
             style={{
-              color: colors.text.primary,  // Plain white, no gradient
-              lineHeight: 1.1,
-              fontWeight: 510,  // Linear's weight, not 600
+              color: colors.text.primary,
+              lineHeight: 1.15,
+              fontWeight: 510,
               letterSpacing: '-0.02em',
             }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            Build products at the
+            Linear is a purpose-built tool for
             <br />
-            speed of thought
+            planning and building products
           </motion.h1>
 
           <motion.p
-            className="text-lg md:text-xl max-w-2xl mx-auto mb-10"
+            className="text-base md:text-lg max-w-xl mx-auto mb-8"
             style={{ color: colors.text.secondary, lineHeight: 1.6 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+          >
+            Meet the system for modern software development.
+            <br />
+            Streamline issues, projects, and product roadmaps.
+          </motion.p>
+
+          <motion.div
+            className="flex flex-row items-center justify-center gap-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            The modern platform for issue tracking and project management.
-            Purpose-built for high-performance teams.
-          </motion.p>
-
-          <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
             {/* Primary CTA - Light button (Linear style) */}
             <button
-              className="px-6 py-3 rounded-[10px] font-medium flex items-center gap-2 transition-opacity duration-200 hover:opacity-90"
+              className="px-5 py-2.5 rounded-lg font-medium transition-opacity duration-200 hover:opacity-90"
               style={{
                 background: colors.cta.bg,
                 color: colors.cta.text,
+                fontSize: '15px',
               }}
             >
-              Get Started Free
-              <ArrowRight className="w-4 h-4" />
+              Start building
             </button>
 
-            {/* Secondary CTA - Ghost button */}
-            <button
-              className="px-6 py-3 rounded-[10px] font-medium flex items-center gap-2 transition-colors duration-200"
+            {/* Secondary - Plain text link with arrow (NOT a styled button) */}
+            <a
+              href="#"
+              className="flex items-center gap-1.5 transition-colors duration-200"
               style={{
-                background: 'transparent',
-                border: `1px solid ${colors.border.hover}`,
                 color: colors.text.primary,
+                fontSize: '15px',
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = colors.text.secondary
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = colors.border.hover
-              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = colors.text.secondary)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = colors.text.primary)}
             >
-              <Github className="w-4 h-4" />
-              View on GitHub
-            </button>
+              New: Linear Reviews (Beta)
+              <ArrowRight className="w-4 h-4" />
+            </a>
           </motion.div>
-
-          {/* Product Screenshot (replaces circuit decorations) */}
-          <ProductScreenshot />
         </div>
+
+        {/* Product Screenshot - LARGE and dominant like Linear's */}
+        <LargeProductScreenshot />
       </section>
 
       {/* ====================== CUSTOMER LOGOS (Replaces stats bar) ====================== */}
