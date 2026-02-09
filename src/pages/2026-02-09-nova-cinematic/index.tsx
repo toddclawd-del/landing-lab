@@ -135,7 +135,7 @@ export default function NovaCinematic() {
           duration: 0.4
         })
 
-        // Text reveals during scroll
+        // Text reveals during scroll (scrub: 1 matches product animation smoothing)
         const revealTexts = document.querySelectorAll(`.${styles.revealText}`)
         revealTexts.forEach((text, i) => {
           gsap.fromTo(text,
@@ -147,7 +147,7 @@ export default function NovaCinematic() {
                 trigger: productPinRef.current,
                 start: `${15 + i * 25}% top`,
                 end: `${30 + i * 25}% top`,
-                scrub: true
+                scrub: 1
               }
             }
           )
@@ -158,7 +158,7 @@ export default function NovaCinematic() {
               trigger: productPinRef.current,
               start: `${40 + i * 25}% top`,
               end: `${55 + i * 25}% top`,
-              scrub: true
+              scrub: 1
             }
           })
         })
