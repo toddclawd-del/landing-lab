@@ -31,6 +31,7 @@ import NeoDeco from './pages/2026-02-05-neo-deco'
 import SurveillanceThermal from './pages/2026-02-06-surveillance-thermal'
 import StripeGradient from './pages/2026-02-07-stripe-gradient'
 import LinearLook from './pages/2026-02-08-linear-look'
+import NovaCinematic from './pages/2026-02-09-nova-cinematic'
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
         <Route path="/surveillance-thermal" element={<SurveillanceThermal />} />
         <Route path="/stripe-gradient" element={<StripeGradient />} />
         <Route path="/linear-look" element={<LinearLook />} />
+        <Route path="/nova-cinematic" element={<NovaCinematic />} />
       </Routes>
     </HashRouter>
   )
