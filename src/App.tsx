@@ -32,6 +32,7 @@ import SurveillanceThermal from './pages/2026-02-06-surveillance-thermal'
 import StripeGradient from './pages/2026-02-07-stripe-gradient'
 import LinearLook from './pages/2026-02-08-linear-look'
 import NovaCinematic from './pages/2026-02-09-nova-cinematic'
+import Neonwave from './pages/2026-02-10-neonwave'
 
 function App() {
   return (
@@ -72,6 +73,7 @@ function App() {
         <Route path="/stripe-gradient" element={<StripeGradient />} />
         <Route path="/linear-look" element={<LinearLook />} />
         <Route path="/nova-cinematic" element={<NovaCinematic />} />
+        <Route path="/neonwave" element={<Neonwave />} />
       </Routes>
     </HashRouter>
   )

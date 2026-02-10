@@ -4,6 +4,7 @@ All landing pages created, with references and scores.
 
 | Date | Trend | Reference | Score | Notes |
 |------|-------|-----------|-------|-------|
+| 2026-02-10 | Synthwave Outrun | [Dribbble Synthwave](https://dribbble.com/search/shots/popular/web-design?q=synthwave) | 93/100 | Full 80s retro-future aesthetic — perspective grid animation, chrome text gradients, sliced retro sun, neon glow effects, VHS scanlines, animated audio visualizer bars, glassmorphism feature cards with rainbow border glow, flicker animations |
 | 2026-02-09 | Cinematic Scroll | [apple.com/airpods-pro](https://www.apple.com/airpods-pro/) | 92/100 | Apple-style scroll-driven storytelling, GSAP ScrollTrigger pinned sections, 3D product rotation on scrub, stat counters, parallax features, waveform comparison, pulse animations, prefers-reduced-motion support |
 | 2026-02-08 | The Linear Look | [linear.app](https://linear.app/) | 93/100 | Dark SaaS aesthetic, glassmorphism cards, animated border shine (conic-gradient rotation), glow blobs with drift, circuit board SVG decorations, bento grid layout, code snippet showcase, prefers-reduced-motion support |
 | 2026-02-07 | Stripe Gradient | [stripe.com](https://stripe.com/) | 92/100 | Animated WebGL gradient hero with flowing color blobs, text blend effects (mix-blend-mode: color-burn), massive stats bar with counter animations, customer showcase cards, code demo section, dark theme with signature purple accent |
