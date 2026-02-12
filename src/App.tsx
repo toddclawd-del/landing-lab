@@ -34,6 +34,7 @@ import LinearLook from './pages/2026-02-08-linear-look'
 import NovaCinematic from './pages/2026-02-09-nova-cinematic'
 import Neonwave from './pages/2026-02-10-neonwave'
 import ChromeDreams from './pages/2026-02-11-chrome-dreams'
+import TheBroadsheet from './pages/2026-02-12-the-broadsheet'
 
 function App() {
   return (
@@ -76,6 +77,7 @@ function App() {
         <Route path="/nova-cinematic" element={<NovaCinematic />} />
         <Route path="/neonwave" element={<Neonwave />} />
         <Route path="/chrome-dreams" element={<ChromeDreams />} />
+        <Route path="/the-broadsheet" element={<TheBroadsheet />} />
       </Routes>
     </HashRouter>
   )
